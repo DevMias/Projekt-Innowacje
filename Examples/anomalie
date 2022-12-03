@@ -1,0 +1,60 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Feb 25 15:39:14 2022
+
+@author: adamp
+"""
+
+import pandas as pd
+#s = pd.read_csv("D:/PythonWorkspace/do zajęć/temperature.csv", index_col="Time", parse_dates=True, squeeze=True)
+from adtk.data import validate_series
+import matplotlib.pyplot as plt
+from datetime import datetime
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import IsolationForest
+
+def parser(s):
+    return datetime.strptime(s, '%d/%m/%Y')
+
+s1 = pd.read_csv("D:/PythonWorkspace/do zajęć/Dane historyczne dla CHF_PLN4.csv",parse_dates=[0], index_col=0, date_parser=parser)
+
+#s1 = pd.read_csv("D:/PythonWorkspace/do zajęć/Dane historyczne dla CHF_PLN3.csv", index_col="Time", parse_dates=True,  squeeze=True)
+s1 = validate_series(s1)
+#print(s1)
+
+plt.figure(figsize=(10,4))
+plt.plot(s1)
+plt.title('Kurs CHF/PLN', fontsize=20)
+plt.ylabel('Kurs', fontsize=16)
+plt.show()
+
+scaler = StandardScaler()
+np_scaled = scaler.fit_transform(s1.values.reshape(-1, 1))
+data = pd.DataFrame(np_scaled)
+
+
+
+# train isolation forest
+outliers_fraction = float(.01)
+model =  IsolationForest(contamination=outliers_fraction)
+model.fit(data) 
+
+s1['anomaly'] = model.predict(data)
+
+#plt.plot(s1['anomaly'])
+
+#print(s1['anomaly'])
+
+# visualization
+fig, ax = plt.subplots(figsize=(10,6))
+
+a = s1.loc[s1['anomaly'] == -1, ['Ostatnio']] #anomaly
+#print(s1)
+
+ax.plot(s1.index, s1['Ostatnio'], color='black', label = 'Normal')
+ax.scatter(a.index,a['Ostatnio'], color='red', label = 'Anomaly')
+plt.legend()
+plt.show();
+
+
