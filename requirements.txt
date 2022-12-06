@@ -1,0 +1,6 @@
+pandas
+PyQt5
+tensorflow
+sklearn
+pyqtgraph
+scikit-learn
