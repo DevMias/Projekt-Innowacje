@@ -7,6 +7,17 @@ from backend.AutoEncoder import auto_encoder
 
 
 def all_methods_combined(data: pd.arrays, target: str, date: str):
+    """
+    It takes the results of each method and combines them into one dataframe
+
+    :param data: the dataframe that contains the data
+    :type data: pd.arrays
+    :param target: the column name of the target variable
+    :type target: str
+    :param date: the date column in the dataframe
+    :type date: str
+    :return: A dataframe with the date, exchange, and the anomaly results for each method.
+    """
     all_methods = data.copy()
     all_methods['isolation_forest'] = isolation_forest(data, target, date)['Anomaly']
     all_methods['standard_deviation'] = standard_deviation(data, target, date)['Anomaly']

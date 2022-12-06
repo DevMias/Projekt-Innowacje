@@ -4,6 +4,13 @@ from backend import backend_functions
 
 
 def create_plot(graph, plot_info):
+    """
+    It creates a plot
+
+    :param graph: pg.PlotWidget()
+    :param plot_info: a dictionary containing all the information about the plot
+    :return: Graph
+    """
     if graph is None:
         graph = pg.PlotWidget()
 

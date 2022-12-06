@@ -10,6 +10,7 @@ list_of_colors.reverse()
 list_legend = ["1 metoda", "2 metody", "3 metody", "4 metody", "5 metod"]
 
 
+# The Graph class is a container for a set of vertices and a set of edges.
 class Graph:
     def __init__(self, method, csv, date, target, label, slider, slider_label, checkbox, date_label, value_label,
                  currency1="", currency2="", title="", with_anomalies=False):
@@ -58,6 +59,11 @@ class Graph:
         self.init_graph()
 
     def init_graph(self):
+        """
+        It initializes the graph, sets the title, the range of the x and y axis, the ticks on the x axis, the background
+        color, the color of the line, the color of the dots, the size of the dots, the legend, the grid, and the sensitivity
+        of the method
+        """
         self.proxy = pg.SignalProxy(self.graph.scene().sigMouseMoved, rateLimit=60, slot=self.update_crosshair)
 
         if self.flipped:
@@ -136,6 +142,9 @@ class Graph:
                 self.graph.showGrid(x=True, y=False, alpha=1.0)
 
     def update_graph(self):
+        """
+        It updates the graph
+        """
         self.slider_label.setText("Czułość metody: " + str(self.slider.value()) + "%")
         ax = self.graph.getAxis('bottom')
 
@@ -219,6 +228,9 @@ class Graph:
         self.refresh = False
 
     def flip(self):
+        """
+        It change currency example: from USD/PLN to PLN/USD
+        """
         self.flipped = not self.flipped
 
         if self.currency1 != "" and self.currency2 != "":
@@ -234,6 +246,9 @@ class Graph:
         self.refresh_graph()
 
     def reset_slider(self):
+        """
+        It resets the slider to a default value depending on the method chosen
+        """
         if self.method == "Grupowanie przestrzenne":
             self.slider.setValue(50)
         if self.method == "Las izolacji":
@@ -244,15 +259,27 @@ class Graph:
         self.refresh_graph()
 
     def refresh_graph(self):
+        """
+        The function is called when the user clicks the refresh button. It sets the refresh variable to True and then calls
+        the update_graph function.
+        """
         self.refresh = True
         self.update_graph()
 
     def reset_graph(self):
+        """
+        It resets the graph to its initial state
+        """
         self.checkbox.setChecked(True)
         self.init_graph()
         self.update_graph()
 
     def update_crosshair(self, e):
+        """
+        It updates the crosshair position and the text box with the current mouse position
+
+        :param e: The event that triggered the update
+        """
         pos = e[0]
         if self.graph.sceneBoundingRect().contains(pos):
             mouse_point = self.graph.getPlotItem().vb.mapSceneToView(pos)

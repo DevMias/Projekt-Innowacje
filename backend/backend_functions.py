@@ -42,6 +42,12 @@ y - year
 
 
 def return_date(date):
+    """
+    It takes a date object and returns a string of the date in the format YYYYMMDD
+
+    :param date: the date you want to get the data for
+    :return: A string of the date in the format YYYYMMDD
+    """
     month = str(date.date().month())
     day = str(date.date().day())
     if date.date().month() < 10:
@@ -53,10 +59,32 @@ def return_date(date):
 
 
 def string_to_date(date):
+    """
+    It takes a string in the format YYYYMMDD and returns a QDate object
+
+    :param date: The date to be converted
+    :return: A QDate object.
+    """
     return QDate(int(date[:4]), int(date[4:6]), int(date[6:8]))
 
 
 def create_link(currency1: str, currency2: str, date_start: str, date_stop: str, interval: str) -> str:
+    """
+    It creates a link to the stooq.pl website, which contains the data
+    we want to download
+
+    :param currency1: str - the first currency
+    :type currency1: str
+    :param currency2: str - currency to which we want to convert
+    :type currency2: str
+    :param date_start: the date from which you want to start downloading data
+    :type date_start: str
+    :param date_stop: the last date of the data you want to download
+    :type date_stop: str
+    :param interval: d - daily, w - weekly, m - monthly, q - quarterly, y - yearly
+    :type interval: str
+    :return: It is a link to the website with the data.
+    """
     if interval == "Dzienny":
         interval = 'd'
     if interval == "Tygodniowy":
@@ -75,6 +103,17 @@ def create_link(currency1: str, currency2: str, date_start: str, date_stop: str,
 
 
 def error(text, inform_text="", title="Błąd", icon=QMessageBox.Critical, buttons=QMessageBox.Ok):
+    """
+    It creates a message box with the given parameters
+
+    :param text: The main text of the message box
+    :param inform_text: The text that is displayed below the main text
+    :param title: The title of the message box, defaults to Błąd (optional)
+    :param icon: QMessageBox.Critical, QMessageBox.Information, QMessageBox.Question, QMessageBox.Warning
+    :param buttons: QMessageBox.Ok, QMessageBox.Cancel, QMessageBox.Yes, QMessageBox.No, QMessageBox.Abort,
+    QMessageBox.Retry, QMessageBox.Ignore
+    :return: The return value is the standard button enum value of the button that was clicked.
+    """
     msg = QMessageBox()
     msg.setWindowIcon(QIcon(app_logo))
     msg.setText(text)
@@ -87,6 +126,14 @@ def error(text, inform_text="", title="Błąd", icon=QMessageBox.Critical, butto
 
 
 def check_date(data, date, date_format):
+    """
+    It checks if the dates in the file are in the correct order and if they are in the correct format
+
+    :param data: the dataframe
+    :param date: name of the column with dates
+    :param date_format: a string containing the format of the date, e.g. "Rok-Miesiąc-Dzień"
+    :return: The dataframe with the date column in the correct order.
+    """
     date_as_list = list(data[date][0])
 
     separator = None
@@ -151,6 +198,12 @@ def check_date(data, date, date_format):
 
 
 def download_csv_without_errors(link):
+    """
+    It tries to download a CSV file from a link, and if it fails, it returns None
+
+    :param link: the link to the csv file
+    :return: A dataframe
+    """
     try:
         dataframe = pd.read_csv(link, sep=',')
 
@@ -163,6 +216,15 @@ def download_csv_without_errors(link):
 
 
 def download_csv(filepath: str, separator=',', from_file=False) -> pd.arrays:
+    """
+    > This function downloads a csv file from a url or reads it from a file and returns a pandas dataframe
+
+    :param filepath: The path to the file you want to download
+    :type filepath: str
+    :param separator: the separator used in the csv file, defaults to , (optional)
+    :param from_file: if True, the filepath is a filepath to a file that contains a list of filepaths to the csv files to be
+    downloaded, defaults to False (optional)
+    """
     try:
         if from_file:
             f = open(filepath, "r").read()
@@ -200,6 +262,20 @@ def download_csv(filepath: str, separator=',', from_file=False) -> pd.arrays:
 
 
 def run_method(data: pd.arrays, target: str, date: str, method: str, parameter=0):
+    """
+    This function takes in a dataframe, a target variable, a date, a method, and a parameter, and returns a dataframe with
+    the predicted values for the target variable.
+
+    :param data: the dataframe that contains the data
+    :type data: pd.arrays
+    :param target: the name of the target variable
+    :type target: str
+    :param date: the date of the data
+    :type date: str
+    :param method: the method to be used for the analysis
+    :type method: str
+    :param parameter: the parameter for the method, if it has one, defaults to 0 (optional)
+    """
     if method == "Odchylenie standardowe":
         return standard_deviation(data, target, date)
     if method == "Grupowanie przestrzenne":
@@ -217,6 +293,14 @@ def run_method(data: pd.arrays, target: str, date: str, method: str, parameter=0
 
 
 def input_errors(currency1, currency2, start_date, stop_date):
+    """
+    This function checks if the input is valid.
+
+    :param currency1: The first currency in the pair
+    :param currency2: The currency you want to convert to
+    :param start_date: The start date of the data you want to pull
+    :param stop_date: the date you want to stop at
+    """
     my_errors = ""
 
     if currency1 == currency2:

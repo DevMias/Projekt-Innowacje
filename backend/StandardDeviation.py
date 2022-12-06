@@ -4,6 +4,19 @@ import numpy as np
 
 
 def standard_deviation(data: pd.arrays, target: str, date: str) -> pd.arrays:
+    """
+    It takes in a dataframe, a target column, and a date column, and returns a dataframe with the target column, date
+    column, and a new column called "Anomaly" which is a boolean value that is True if the value in the target column is
+    outside of one standard deviation of the mean of the target column
+
+    :param data: the dataframe you want to analyze
+    :type data: pd.arrays
+    :param target: The column name of the data you want to analyze
+    :type target: str
+    :param date: the date column in the dataframe
+    :type date: str
+    :return: A dataframe with the date, exchange, and anomaly columns.
+    """
     ad_data = deepcopy(data)
     target_col = ad_data[[target]].copy()
 

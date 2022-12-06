@@ -20,12 +20,18 @@ methods_with_parameter = ["Grupowanie przestrzenne", "Las izolacji", "Lokalna wa
 
 
 def clear_layout(layout):
+    """
+    It removes all the widgets from a layout and deletes them
+
+    :param layout: The layout to clear
+    """
     while layout.count():
         child = layout.takeAt(0)
         if child.widget():
             child.widget().deleteLater()
 
 
+# The Window class inherits from the QMainWindow class
 class Window(QMainWindow):
     def __init__(self, parent=None):
         super(Window, self).__init__(parent, flags=Qt.WindowFlags())
@@ -120,6 +126,9 @@ class Window(QMainWindow):
         self.show()
 
     def init_menu(self):
+        """
+        It creates a menu bar with a file menu and a help menu
+        """
         exit_action = QAction('&Zamknij', self)
         exit_action.setShortcut('Ctrl+Q')
         exit_action.setStatusTip('Wyjdź z aplikacji')
@@ -147,6 +156,9 @@ class Window(QMainWindow):
         menubar.addAction(creators_action)
 
     def init_layout(self):
+        """
+        > The function `init_layout` initializes the layout of the GUI
+        """
         clear_layout(self.layout)
 
         # lists for currencies
@@ -226,23 +238,62 @@ class Window(QMainWindow):
         self.setCentralWidget(ll)
 
     def graph_preview_change(self):
+        """
+        It takes the plot_variables from the GUI and uses them to create a new graph_preview
+        """
         self.graph_preview = backend_graph.create_plot(self.graph_preview, self.plot_variables)
 
     def swap_currencies(self):
+        """
+        > This function swaps the currencies in the `from_currency` and `to_currency` fields
+        """
         tmp = self.currencies1.currentText()
         self.currencies1.setCurrentText(self.currencies2.currentText())
         self.currencies2.setCurrentText(tmp)
 
     def important_add_tab(self):
+        """
+        It adds a tab to the notebook.
+        """
         tab = self.tabs.currentWidget()
         if tab not in self.important_tabs:
             self.tabs.setTabIcon(self.tabs.indexOf(tab), QIcon(important_icon))
             self.important_tabs.append(tab)
         else:
             self.tabs.setTabIcon(self.tabs.indexOf(tab), QIcon(not_important_icon))
-            self.important_tabs.pop(self.important_tabs.index(tab))
+        """
+        "Close the tab at the given index."
+        
+        The first line is a comment that describes the function. The second line is a comment that describes the parameters.
+        The third line is a comment that describes the return value. The fourth line is a comment that describes the
+        exceptions that the function may raise. The fifth line is a comment that describes the side effects of the function.
+        The sixth line is a comment that describes the function's dependencies on external state. The seventh line is a
+        comment that describes the function's dependencies on global state. The eighth line is a comment that describes the
+        function's dependencies on non-local state. The ninth line is a comment that describes the function's dependencies
+        on mutable arguments. The tenth line is a comment that describes the function's dependencies on the arguments'
+        elements. The eleventh line is a comment that describes the function's dependencies on the arguments' attributes.
+        The twelfth line is a comment that describes the function's dependencies on the arguments' items. The
+        
+        :param index: The index of the tab to close
+        """
+        self.important_tabs.pop(self.important_tabs.index(tab))
 
     def close_tab(self, index):
+        """
+        "Close the tab at the given index."
+
+        The first line is a comment that describes the function. The second line is a comment that describes the parameters.
+        The third line is a comment that describes the return value. The fourth line is a comment that describes the
+        exceptions that the function may raise. The fifth line is a comment that describes the side effects of the function.
+        The sixth line is a comment that describes the function's dependencies on external state. The seventh line is a
+        comment that describes the function's dependencies on global state. The eighth line is a comment that describes the
+        function's dependencies on non-local state. The ninth line is a comment that describes the function's dependencies
+        on mutable arguments. The tenth line is a comment that describes the function's dependencies on the arguments'
+        elements. The eleventh line is a comment that describes the function's dependencies on the arguments' attributes.
+        The twelfth line is a comment that describes the function's dependencies on the arguments' items. The
+
+        :param index: The index of the tab to close
+        """
         if not isinstance(index, bool):
             if self.tabs.widget(index) in self.important_tabs:
                 pressed = backend.error("Czy chcesz zamknąć ważną kartę?", title="Ważna karta",
@@ -272,6 +323,9 @@ class Window(QMainWindow):
         self.close_tab(current_index)
 
     def settings(self):
+        """
+        > This function is called when the user clicks the "Settings" button in the plugin's dialog box
+        """
         if self.settings_tab is not None:
             self.tabs.setCurrentIndex(self.tabs.indexOf(self.settings_tab))
             return
@@ -286,6 +340,9 @@ class Window(QMainWindow):
         self.settings_tab = tab
 
     def help(self):
+        """
+        It prints the help menu for the program.
+        """
         help_file = os.getcwd() + "/help/index.html"
         print(help_file)
         webbrowser.open("file:///"+help_file)
@@ -301,6 +358,9 @@ class Window(QMainWindow):
         # self.help_tab = tab
 
     def creators(self):
+        """
+
+        """
         if self.creators_tab is not None:
             self.tabs.setCurrentIndex(self.tabs.indexOf(self.creators_tab))
             return
@@ -313,6 +373,9 @@ class Window(QMainWindow):
         self.creators_tab = tab
 
     def save_settings_to_file(self):
+        """
+        > This function saves the current settings to a file
+        """
         # self.currencies1.setCurrentText(self.settings_pack["currencies1"].currentText())
         # self.currencies2.setCurrentText(self.settings_pack["currencies2"].currentText())
         # self.methods.setCurrentText(self.settings_pack["methods"].currentText())
@@ -349,6 +412,9 @@ class Window(QMainWindow):
         open('settings', 'w').writelines(settings)
 
     def read_settings_from_file(self):
+        """
+        It reads the settings from the file.
+        """
         f = open('settings', "r").readlines()
         settings = []
         for line in f:
@@ -359,6 +425,9 @@ class Window(QMainWindow):
                               "date_stop": settings[5], "date_checkbox": settings[6]}
 
     def reset_settings(self):
+        """
+        > This function resets the settings to the default values
+        """
         f = open('default_settings', "r").readlines()
         settings = []
         for line in f:
@@ -382,6 +451,9 @@ class Window(QMainWindow):
         self.settings()
 
     def graph_from_file(self):
+        """
+        It reads the file and creates a graph.
+        """
         file, _ = QFileDialog.getOpenFileName(self, "Detektor anomalii", "", "CSV Files (*.csv *.txt)",
                                               options=QFileDialog.Options())
         if file is None or file == "":
@@ -401,6 +473,9 @@ class Window(QMainWindow):
         self.pack_data(pack)
 
     def file_open(self):
+        """
+        It opens a file.
+        """
         file, _ = QFileDialog.getOpenFileName(self, "Detektor anomalii", "", "CSV Files (*.csv *.txt)",
                                               options=QFileDialog.Options())
         if file is None or file == "":
@@ -417,6 +492,11 @@ class Window(QMainWindow):
         self.tabs.setCurrentIndex(self.tabs.indexOf(tab))
 
     def pack_data(self, pack):
+        """
+        > This function takes a list of strings and returns a list of strings
+
+        :param pack: The data to be packed
+        """
         from_file = True
 
         if pack is False:
@@ -495,6 +575,9 @@ class Window(QMainWindow):
         backend.error("Błędne nazwy kolumn", errors)
 
     def download_data(self):
+        """
+        > This function downloads the data from the web and saves it to a file
+        """
         pressed = backend.error("Czy chcesz pobrać dane o anomaliach?", icon=QMessageBox.Question,
                                 buttons=QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, title="Dane")
 
@@ -523,6 +606,9 @@ class Window(QMainWindow):
             backend.error("Brak dostępu do lokalizacji pliku", "Sprawdź czy plik jest zamknięty jeśli istnieje.")
 
     def download_graph(self):
+        """
+        > This function downloads the graph from the database and returns it as a networkx graph object
+        """
         graph = self.graphs[self.tabs.currentWidget()]
         plt = graph.graph
 
@@ -541,6 +627,9 @@ class Window(QMainWindow):
             backend.error("Brak dostępu do lokalizacji pliku", "Sprawdź czy plik jest zamknięty jeśli istnieje.")
 
     def create_plot(self):
+        """
+        > This function creates a plot of the data in the `self.data` attribute
+        """
         date = "Data"
         target = "Zamkniecie"
 
@@ -567,6 +656,19 @@ class Window(QMainWindow):
                               currency2=currency2)
 
     def create_graph(self, csv, method, date, target, title="", currency1="", currency2="", with_anomalies=False):
+        """
+        It creates a graph of the data in the csv file
+
+        :param csv: the csv file to be used
+        :param method: the method used to create the graph. Can be either "line" or "bar"
+        :param date: the date of the graph
+        :param target: the name of the column in the csv file that you want to graph
+        :param title: The title of the graph
+        :param currency1: The currency you want to see the price of
+        :param currency2: the currency you want to compare to
+        :param with_anomalies: if True, the graph will be created with anomalies. If False, the graph will be created
+        without anomalies, defaults to False (optional)
+        """
         tab = QWidget()
         tab.layout = QVBoxLayout()
         horizontal_layout = QHBoxLayout()

@@ -7,6 +7,17 @@ from backend.AutoEncoder import auto_encoder
 
 
 def majority(data: pd.arrays, target: str, date: str):
+    """
+    It takes the results of all the methods and if more than half of them are True, it marks the row as an anomaly
+
+    :param data: the dataframe that contains the data
+    :type data: pd.arrays
+    :param target: the name of the column that contains the data you want to analyze
+    :type target: str
+    :param date: the date column in the dataframe
+    :type date: str
+    :return: A dataframe with the date, exchange, and anomaly.
+    """
     all_methods = data.copy()
     all_methods['isolation_forest'] = isolation_forest(data, target, date)['Anomaly']
     all_methods['standard_deviation'] = standard_deviation(data, target, date)['Anomaly']

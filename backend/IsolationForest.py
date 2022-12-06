@@ -5,6 +5,22 @@ from sklearn.ensemble import IsolationForest
 
 
 def isolation_forest(data: pd.arrays, target: str, date: str, contamination=0.2):
+    """
+    The function takes in a dataframe, a target column, a date column, and a contamination value. It then creates a copy of
+    the dataframe, and creates a new dataframe with the target column. It then scales the target column, and fits the scaled
+    data to an Isolation Forest model. The model then predicts anomalies, and the function returns a dataframe with the
+    date, exchange, and anomaly columns
+
+    :param data: pd.arrays - the dataframe that contains the data you want to analyze
+    :type data: pd.arrays
+    :param target: The column name of the target variable
+    :type target: str
+    :param date: the date column in the dataframe
+    :type date: str
+    :param contamination: The amount of contamination of the data set, i.e. the proportion of outliers in the data set. Used
+    when fitting to define the threshold on the decision function
+    :return: A dataframe with the date, exchange, and anomaly columns.
+    """
     ad_data = deepcopy(data)
 
     target_col = ad_data[[target]].copy()

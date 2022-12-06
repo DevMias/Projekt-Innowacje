@@ -8,6 +8,21 @@ from sklearn.model_selection import train_test_split
 
 
 def auto_encoder(data: pd.arrays, target: str, date: str, split_perc=0.5):
+    """
+    The function takes in a dataframe, a target column, a date column, and a split percentage. It then splits the data into
+    training and testing sets, and uses the training set to train an autoencoder. The autoencoder is then used to predict
+    the testing set, and the predictions are compared to the actual values. If the difference between the prediction and the
+    actual value is greater than a threshold, then the value is considered an anomaly
+
+    :param data: the dataframe containing the data to be used for the model
+    :type data: pd.arrays
+    :param target: the column name of the data you want to predict
+    :type target: str
+    :param date: the date column in the dataframe
+    :type date: str
+    :param split_perc: The percentage of the data to be used for testing
+    :return: A dataframe with the date, exchange, and anomaly columns.
+    """
     features = data[[target]].copy()
     target_data = data[[target]].copy()
 
@@ -25,6 +40,7 @@ def auto_encoder(data: pd.arrays, target: str, date: str, split_perc=0.5):
     x_train_scaled = min_max_scaler.fit_transform(train_data.copy())
     x_test_scaled = min_max_scaler.transform(features.copy())
 
+    # It's a subclass of `Model` that takes a `shape` argument and creates a `Dense` layer with that shape
     class AutoEncoder(Model):
 
         def __init__(self, output_units, code_size=8):
@@ -49,6 +65,13 @@ def auto_encoder(data: pd.arrays, target: str, date: str, split_perc=0.5):
             ])
 
         def call(self, inputs):
+            """
+            The encoder takes the input, encodes it, and passes it to the decoder. The decoder then decodes it and returns
+            the result
+
+            :param inputs: the input data
+            :return: The decoded output of the autoencoder.
+            """
             encoded = self.encoder(inputs)
             decoded = self.decoder(encoded)
             return decoded
@@ -81,6 +104,13 @@ def auto_encoder(data: pd.arrays, target: str, date: str, split_perc=0.5):
 
 
 def find_threshold(model, x_train_scaled):
+    """
+    It takes the model and the scaled training data as input, and returns the threshold for anomaly scores
+
+    :param model: The trained model
+    :param x_train_scaled: The scaled training data
+    :return: The threshold for anomaly scores
+    """
     reconstructions = model.predict(x_train_scaled)
     # provides losses of individual instances
 
@@ -92,6 +122,15 @@ def find_threshold(model, x_train_scaled):
 
 
 def get_predictions(model, x_test_scaled, threshold):
+    """
+    It takes the model, the scaled test data, and a threshold value, and returns a series of 0s and 1s, where 0 is an
+    anomaly and 1 is normal
+
+    :param model: the trained model
+    :param x_test_scaled: the scaled test data
+    :param threshold: The threshold for the loss function
+    :return: A series of 0s and 1s, where 0 is an anomaly and 1 is normal.
+    """
     predictions = model.predict(x_test_scaled)
     # provides losses of individual instances
 

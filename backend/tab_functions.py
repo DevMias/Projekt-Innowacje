@@ -8,6 +8,16 @@ from front.styles import buttonStyleSheet, labelStyleSheet, comboBoxStyleSheet, 
 
 
 def create_graph_tab(close, pack_fun, methods_list, file, important):
+    """
+    It creates a tab for the graph
+
+    :param close: function that closes the tab
+    :param pack_fun: function that will be called when the button is pressed
+    :param methods_list: list of methods to choose from
+    :param file: path to the file
+    :param important: function that will be called when the user clicks the "important" button
+    :return: A tuple of two elements.
+    """
     csv_data, error1 = backend.download_csv(file, from_file=True)
 
     if error1 == "empty":
@@ -128,6 +138,18 @@ def create_graph_tab(close, pack_fun, methods_list, file, important):
 
 
 def create_settings_tab(method_list, interval_list, close, save, reset):
+    """
+    It creates a tab with settings for the program
+
+    :param method_list: list of methods
+    :param interval_list: list of intervals
+    :param close: function that closes the window
+    :param save: function that saves the settings
+    :param reset: function that resets the settings to default
+    :return: A tuple of two elements:
+        1. A QWidget object
+        2. A dictionary of QWidgets
+    """
     settings = read_settings_from_file()
 
     tab = QWidget()
@@ -239,6 +261,11 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
 
 
 def create_creators_tab(close):
+    """
+    This function creates a tab in the GUI that allows the user to add creators to the database.
+
+    :param close: The close price of the stock
+    """
     tab = QWidget()
     tab.layout = QVBoxLayout()
 
@@ -295,6 +322,11 @@ def create_creators_tab(close):
 
 
 def create_help_tab(close):
+    """
+    > This function creates a help tab in the GUI
+
+    :param close: The function to call when the user clicks the close button
+    """
     tab = QWidget()
     tab.layout = QVBoxLayout()
 
@@ -360,6 +392,9 @@ def create_help_tab(close):
 
 
 def read_settings_from_file():
+    """
+    It reads the settings from a file.
+    """
     f = open('settings', "r").readlines()
     settings = []
     for line in f:
@@ -370,6 +405,16 @@ def read_settings_from_file():
 
 
 def create_button(text="", style="", icon=None, function=None, min_size=None, max_size=None):
+    """
+    This function creates a button with the given text, style, icon, function, min_size, and max_size
+
+    :param text: The text that will be displayed on the button
+    :param style: This is the style of the button. It can be any of the following:
+    :param icon: The icon to be displayed on the button
+    :param function: The function to be called when the button is clicked
+    :param min_size: The minimum size of the button
+    :param max_size: The maximum size of the button
+    """
     button = QPushButton(text)
     button.setStyleSheet(style)
     if icon is not None:
