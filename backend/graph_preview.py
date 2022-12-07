@@ -4,6 +4,7 @@ from backend import backend_functions
 
 
 def create_plot(graph, plot_info):
+    # TODO the same function name like method in main.py, maybe we should consider one function to do all stuff?
     """
     It creates a plot
 
@@ -26,6 +27,7 @@ def create_plot(graph, plot_info):
                                          backend_functions.return_date(plot_info["dates"][0]),
                                          backend_functions.return_date(plot_info["dates"][1]),
                                          plot_info["interval"].currentText())
+    # TODO handle with no internet connection (take some static data from file or sth)
     csv = backend_functions.download_csv_without_errors(link)
 
     graph.clear()

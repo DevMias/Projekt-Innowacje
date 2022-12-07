@@ -40,6 +40,7 @@ def all_methods_combined(data: pd.arrays, target: str, date: str):
             if result:
                 counter += 1
 
+        # TODO simplify by using loops
         if counter == 1:
             all_methods.loc[x, 'Anomaly_1'] = True
         if counter == 2:

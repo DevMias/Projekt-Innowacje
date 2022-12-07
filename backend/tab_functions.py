@@ -16,7 +16,7 @@ def create_graph_tab(close, pack_fun, methods_list, file, important):
     :param methods_list: list of methods to choose from
     :param file: path to the file
     :param important: function that will be called when the user clicks the "important" button
-    :return: A tuple of two elements.
+    :return: A tuple of two elements (QWidget, dict)
     """
     csv_data, error1 = backend.download_csv(file, from_file=True)
 
@@ -142,15 +142,20 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
     It creates a tab with settings for the program
 
     :param method_list: list of methods
+    :type list of Strings
     :param interval_list: list of intervals
+    :type list of Strings
     :param close: function that closes the window
+    :type function object to specify buttons action
     :param save: function that saves the settings
+    :type function object to specify buttons action
     :param reset: function that resets the settings to default
+    :type function object to specify buttons action
     :return: A tuple of two elements:
-        1. A QWidget object
-        2. A dictionary of QWidgets
+        1. A QWidget object, aka whole tab
+        2. A dictionary of QWidgets, pack that contains all settings of tab
     """
-    settings = read_settings_from_file()
+    settings = read_settings_from_file()    # dictionary with settings
 
     tab = QWidget()
     tab.layout = QVBoxLayout()
@@ -213,14 +218,17 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
     # intervals.setCurrentText(settings["intervals"])
     intervals.setCurrentIndex(int(settings["intervals"]))
 
+    # setting names for methods in combo box
     for method in method_list:
         methods.addItem(method)
 
     # methods.setCurrentText(settings["methods"])
-    methods.setCurrentIndex(int(settings["methods"]))
+    methods.setCurrentIndex(int(settings["methods"]))   # set default method on index taken from settings file
 
+    # reload (reset) current settings to settings from file
     button_reset = create_button(style=buttonStyleSheet, text="Resetuj", function=reset, max_size=(150, 40))
 
+    # close setting_tab
     button_close = create_button(style=buttonStyleSheet, icon=QIcon(close_icon), function=close, max_size=(40, 40))
 
     default_label = QLabel("Ustawienia wartości domyślnych")
@@ -230,6 +238,7 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
     date_checkbox.setText("Ostatni rok")
     date_checkbox.setChecked(True)
 
+    # writing current settings to file named 'settings'
     button_save = create_button(style=buttonStyleSheet, text="Zapisz", function=save, min_size=(150, 40))
 
     tab.layout = QGridLayout()
@@ -262,9 +271,10 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
 
 def create_creators_tab(close):
     """
-    This function creates a tab in the GUI that allows the user to add creators to the database.
+    This function creates a tab in the GUI
 
-    :param close: The close price of the stock
+    :param close: The function to call when the user clicks the close button
+    :type function
     """
     tab = QWidget()
     tab.layout = QVBoxLayout()
@@ -320,7 +330,7 @@ def create_creators_tab(close):
 
     return tab
 
-
+@DeprecationWarning
 def create_help_tab(close):
     """
     > This function creates a help tab in the GUI
@@ -391,9 +401,10 @@ def create_help_tab(close):
     return tab
 
 
-def read_settings_from_file():
+def read_settings_from_file() -> dict:
+    # TODO The same name of function like name of method in main.py
     """
-    It reads the settings from a file.
+    It reads the settings from a file and return dictionary with settings
     """
     f = open('settings', "r").readlines()
     settings = []
@@ -409,7 +420,7 @@ def create_button(text="", style="", icon=None, function=None, min_size=None, ma
     This function creates a button with the given text, style, icon, function, min_size, and max_size
 
     :param text: The text that will be displayed on the button
-    :param style: This is the style of the button. It can be any of the following:
+    :param style: This is the style of the button predefined in 'style.py'
     :param icon: The icon to be displayed on the button
     :param function: The function to be called when the button is clicked
     :param min_size: The minimum size of the button

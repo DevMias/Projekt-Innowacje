@@ -46,6 +46,7 @@ def return_date(date):
     It takes a date object and returns a string of the date in the format YYYYMMDD
 
     :param date: the date you want to get the data for
+    :type QDateEdit
     :return: A string of the date in the format YYYYMMDD
     """
     month = str(date.date().month())
@@ -75,7 +76,7 @@ def create_link(currency1: str, currency2: str, date_start: str, date_stop: str,
 
     :param currency1: str - the first currency
     :type currency1: str
-    :param currency2: str - currency to which we want to convert
+    :param currency2: str - the second currency
     :type currency2: str
     :param date_start: the date from which you want to start downloading data
     :type date_start: str
@@ -103,7 +104,9 @@ def create_link(currency1: str, currency2: str, date_start: str, date_stop: str,
 
 
 def error(text, inform_text="", title="Błąd", icon=QMessageBox.Critical, buttons=QMessageBox.Ok):
+    # TODO maybe we should rename this function to message_popup or sth?
     """
+    Called when user want to close importatn tab via 'X' on tab or 'X' button
     It creates a message box with the given parameters
 
     :param text: The main text of the message box
@@ -296,8 +299,8 @@ def input_errors(currency1, currency2, start_date, stop_date):
     """
     This function checks if the input is valid.
 
-    :param currency1: The first currency in the pair
-    :param currency2: The currency you want to convert to
+    :param currency1: The first currency
+    :param currency2: The second currency
     :param start_date: The start date of the data you want to pull
     :param stop_date: the date you want to stop at
     """
@@ -306,6 +309,7 @@ def input_errors(currency1, currency2, start_date, stop_date):
     if currency1 == currency2:
         my_errors = "Podane waluty są takie same\n"
 
+    # TODO subtraction of QDate object may simplify if's ?
     if start_date.year() > stop_date.year():
         my_errors += "Data początkowa jest datą pózniejszą niż końcowa\n"
     elif start_date.year() == stop_date.year():
