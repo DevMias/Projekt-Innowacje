@@ -256,14 +256,13 @@ class Window(QMainWindow):
         """
         It adds a tab to the important_tabs (if user try to close important tab then will have to approve this operation)
         """
-        # TODO rapair adding tabs to important_tabs (indent last line of this method)
         tab = self.tabs.currentWidget()
         if tab not in self.important_tabs:
             self.tabs.setTabIcon(self.tabs.indexOf(tab), QIcon(important_icon))
             self.important_tabs.append(tab)
         else:
             self.tabs.setTabIcon(self.tabs.indexOf(tab), QIcon(not_important_icon))
-        self.important_tabs.pop(self.important_tabs.index(tab))
+            self.important_tabs.pop(self.important_tabs.index(tab))
 
     def close_tab(self, index):
         """
