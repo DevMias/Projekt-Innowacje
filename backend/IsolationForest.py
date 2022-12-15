@@ -3,31 +3,43 @@ from copy import deepcopy
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import IsolationForest
 
+# returning list because now we have two series
 
-def isolation_forest(data: pd.arrays, target: str, date: str, contamination=0.2):
-    ad_data = deepcopy(data)
 
-    target_col = ad_data[[target]].copy()
+def isolation_forest(data1: pd.arrays, data2: pd.arrays, target: str, date: str, contamination=0.2) -> list:
 
-    scaler = StandardScaler()
-    np_scaled = scaler.fit_transform(target_col.values.reshape(-1, 1))
-    data_scaled = pd.DataFrame(np_scaled)
+    # Check if data2 is not None (possibly important)
+    if data2 is not None:
+        ad_datas = [deepcopy(data1), deepcopy(data2)]
+        target_cols = [ad_datas[0][[target]].copy(), ad_datas[1][[target]].copy()]
+        array_length = 2
+    else:
+        ad_datas = [deepcopy(data1)]
+        target_cols = [ad_datas[0][[target]].copy()]
+        array_length = 1
 
-    forest = IsolationForest(n_estimators=100, contamination=contamination)
+    # loop to get two series of isolation forest
+    for i in range(0, array_length):
 
-    forest.fit(data_scaled)
-    target_col['Anomaly_after_method'] = forest.fit_predict(data_scaled)
+        scaler = StandardScaler()
+        np_scaled = scaler.fit_transform(target_cols[i].values.reshape(-1, 1))
+        data_scaled = pd.DataFrame(np_scaled)
 
-    target_col.loc[target_col['Anomaly_after_method'] != -1, 'Anomaly'] = False
-    target_col.loc[target_col['Anomaly_after_method'] == -1, 'Anomaly'] = True
+        forest = IsolationForest(n_estimators=100, contamination=contamination)
 
-    target_col['Date'] = data[date]
-    target_col = target_col.rename(columns={target: "Exchange"})
+        forest.fit(data_scaled)
+        target_cols[i]['Anomaly_after_method'] = forest.fit_predict(data_scaled)
 
-    target_col = target_col.drop('Anomaly_after_method', axis=1)
+        target_cols[i].loc[target_cols[i]['Anomaly_after_method'] != -1, 'Anomaly'] = False
+        target_cols[i].loc[target_cols[i]['Anomaly_after_method'] == -1, 'Anomaly'] = True
 
-    target_col.insert(0, 'Date', target_col.pop('Date'))
-    target_col.insert(1, 'Exchange', target_col.pop('Exchange'))
-    target_col.insert(2, 'Anomaly', target_col.pop('Anomaly'))
+        target_cols[i]['Date'] = ad_datas[i][date]
+        target_cols[i] = target_cols[i].rename(columns={target: "Exchange"})
 
-    return target_col
+        target_cols[i] = target_cols[i].drop('Anomaly_after_method', axis=1)
+
+        target_cols[i].insert(0, 'Date', target_cols[i].pop('Date'))
+        target_cols[i].insert(1, 'Exchange', target_cols[i].pop('Exchange'))
+        target_cols[i].insert(2, 'Anomaly', target_cols[i].pop('Anomaly'))
+
+    return target_cols
