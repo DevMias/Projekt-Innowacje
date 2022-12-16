@@ -213,7 +213,7 @@ def run_method(data: pd.arrays, target: str, date: str, method: str, parameter=0
     if method == "Autoenkoder":
         return auto_encoder(data, target, date)
     if method == "Wszystkie":
-        return all_methods_combined(data, target, date)
+        return all_methods_combined(data1=data, target=target, date=date)
 
 
 def input_errors(currency1, currency2, start_date, stop_date):

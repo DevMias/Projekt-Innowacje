@@ -5,7 +5,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import LocalOutlierFactor
 
 
-def local_outlier(data1: pd.arrays = None, data2: pd.array = None, target: str = 'Exchange', date: str = 'Date', contamination: float = .25, ) -> pd.DataFrame:
+def local_outlier(data1: pd.arrays = None, data2: pd.array = None, target: str = 'Exchange', date: str = 'Date', contamination: float = .25, ):
     #return local_outlier_differential_analysis(data, target, date, contamination=.25)
 
     # test case: data2 != None
@@ -39,14 +39,6 @@ def local_outlier(data1: pd.arrays = None, data2: pd.array = None, target: str =
         features[i].rename(columns={date: "Date"}, inplace=True)
         features[i].rename(columns={target: "Exchange"}, inplace=True)
 
-    # POSTPROCESSING:
-    if data2 is None:
-        print(features[0])
-        return features[0]   # output like: df(Date, Exchange, Anomaly)
-    else:
-        result = pd.DataFrame(features[0]['Date'])
-        for i in range(len(features)):
-            result['Exchange_'+str(i+1)] = features[i]['Exchange']
-            result['Anomaly_'+str(i+1)] = features[i]['Anomaly']
-        print(result)
-        return result   # output like: df(Date, Exchange_1, Anomaly_1, Exchange_2, Anomaly_2)
+    if len(features) == 1:
+        return features[0]
+    return features
