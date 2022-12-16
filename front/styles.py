@@ -1,27 +1,55 @@
 buttonStyleSheet = """
-QPushButton {
-    background-color: #2B5DD1;
-    color: #FFFFFF;
-    border-style: outset;
+QPushButton { 
+    background-color: rgb(75, 78, 82);
+    color: rgb(0, 0, 0);
     padding: 2px;
     font: bold 20px;
-    border-width: 6px;
-    border-radius: 10px;
-    border-color: #2752B8;
+    border: 3px outset rgb(24, 26, 25);
+    border-radius: 15px;
 }
 QPushButton:pressed {
-    background-color: #193984;
+    background-color: rgb(96, 101, 107);
+}
+"""
+
+swapButtonStyleSheet = """
+QPushButton {
+    background-color: rgb(75, 78, 82);
+    color: rgb(0, 0, 0);
+    padding: 15px;
+    font: bold 20px;
+    border: 3px outset rgb(24, 26, 25);
+    border-radius: 15px;
+}
+QPushButton:pressed {
+    background-color: rgb(96, 101, 107);
+}
+"""
+
+generatePlotButtonStyleSheet = """
+QPushButton { 
+    background-color: rgb(75, 78, 82);
+    color: rgb(0, 0, 0);
+    padding: 10px;
+    margin: 0 400px;
+    font: bold 20px;
+    border: 3px outset rgb(24, 26, 25);
+    border-radius: 15px;
+}
+QPushButton:pressed {
+    background-color: rgb(96, 101, 107);
 }
 """
 
 DateEditStyleSheet = """
 QDateEdit
 {
-    border: 1px solid gray;
+    border: 1px solid rgb(24, 26, 25);
     border-radius: 3px;
-    background-color : white;
+    background-color : rgb(75, 78, 82);
     padding : 2px;
     font: 15px;
+    color: rgb(0, 0 ,0)
 }
     
 QDateEdit::down-arrow
@@ -32,14 +60,13 @@ QDateEdit::down-arrow
 
 comboBoxStyleSheet = """
 QComboBox {
-    border: 1px solid gray;
+    border: 1px solid rgb(24, 26, 25);
     border-radius: 3px;
     padding: 1px 18px 1px 3px;
     min-width: 6em;
-    border-color: gray;
     font: 15px;
-    color: #000000;
-    background-color: #FFFFFF;
+    color: rgb(0, 0, 0);
+    background-color: rgb(75, 78, 82);
 }
 
 QComboBox::down-arrow {

@@ -54,12 +54,12 @@ class Window(QMainWindow):
         self.graphs = {}
 
         # generate plot button
-        self.button_plot = backend_funcs.create_button(text="Wygeneruj wykres", style=buttonStyleSheet,
-                                                       min_size=(100, 40), function=self.create_plot)
+        self.button_plot = backend_funcs.create_button(text="Wygeneruj wykres", style=generatePlotButtonStyleSheet,
+                                                    function=self.create_plot)
 
         # swap currencies button
-        self.button_swap = backend_funcs.create_button(style=buttonStyleSheet, icon=QIcon(swap_icon), max_size=(65, 65),
-                                                       min_size=(65, 65), function=self.swap_currencies)
+        self.button_swap = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
+                                                    function=self.swap_currencies)
 
         # calendars for setting dates
         self.calendar_start_label = QLabel("Data początkowa")
