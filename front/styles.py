@@ -31,7 +31,7 @@ QPushButton {
     background-color: rgb(75, 78, 82);
     color: rgb(0, 0, 0);
     padding: 10px;
-    margin: 0 400px;
+    /*margin: 0 400px;*/
     font: bold 20px;
     border: 3px outset rgb(24, 26, 25);
     border-radius: 15px;
@@ -140,7 +140,16 @@ QLabel {
 }
 """
 
-tabStyleSheet = """
+mainTabStyleSheet = """
+QWidget {
+    background-color: #393939;
+}
+"""
+
+windowStyleSheet = """
+QWidget {
+    background-color: #323232;
+}
 """
 
 

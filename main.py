@@ -44,7 +44,7 @@ class Window(QMainWindow):
 
         # tabs
         self.tabs = QTabWidget(self)
-        self.tabs.setStyleSheet(tabStyleSheet)
+        self.tabs.setStyleSheet(mainTabStyleSheet)
         self.tabs.setMovable(True)
         self.tabs.setTabsClosable(True)
         self.tabs.setTabShape(1)
@@ -107,6 +107,7 @@ class Window(QMainWindow):
         self.resize(1280, 720)
         self.setWindowTitle("Detektor anomalii")
         self.setWindowIcon(QIcon(app_logo))
+        self.setStyleSheet(windowStyleSheet)
         font_qt = QFont()
 
         self.alpha = [0, 0]
@@ -217,6 +218,8 @@ class Window(QMainWindow):
         self.tab_main.layout.addWidget(self.methods, 13, 0, 1, 2)
         self.tab_main.layout.addWidget(self.button_plot, 14, 0, 1, 3)
         self.tab_main.layout.addWidget(self.graph_preview, 2, 2, 12, 1)
+
+        self.tab_main.setStyleSheet(mainTabStyleSheet)
 
         self.layout.addWidget(self.tabs)
         self.tab_main.setLayout(self.tab_main.layout)
