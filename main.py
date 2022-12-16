@@ -37,17 +37,18 @@ class Window(QMainWindow):
         self.creators_tab = None
         self.button_settings = backend_funcs.create_button(style=buttonStyleSheet, icon=QIcon(settings_icon),
                                                            min_size=(45, 45), max_size=(45, 45), function=self.settings)
+        # self.setObjectName('testowe_id')
         self.settings_pack = None
         self.read_settings_from_file()
         self.interval_list = ["Dzienny", "Tygodniowy", "Miesięczny", "Kwartalny", "Roczny"]
         self.pack = {}
-
         # tabs
         self.tabs = QTabWidget(self)
+        # self.tabs.setFixedSize(800, 600) # dla testow
         self.tabs.setStyleSheet(mainTabStyleSheet)
         self.tabs.setMovable(True)
         self.tabs.setTabsClosable(True)
-        self.tabs.setTabShape(1)
+        self.tabs.setTabShape(0) # to mozna zmienic
         self.tabs.tabCloseRequested.connect(lambda index: self.close_tab(index))
         self.tab_main = QWidget()
         self.tabs.addTab(self.tab_main, "Start")
@@ -55,11 +56,11 @@ class Window(QMainWindow):
 
         # generate plot button
         self.button_plot = backend_funcs.create_button(text="Wygeneruj wykres", style=generatePlotButtonStyleSheet,
-                                                    function=self.create_plot)
+                                                       function=self.create_plot)
 
         # swap currencies button
         self.button_swap = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
-                                                    function=self.swap_currencies)
+                                                       function=self.swap_currencies)
 
         # calendars for setting dates
         self.calendar_start_label = QLabel("Data początkowa")
@@ -107,6 +108,7 @@ class Window(QMainWindow):
         self.resize(1280, 720)
         self.setWindowTitle("Detektor anomalii")
         self.setWindowIcon(QIcon(app_logo))
+        self.setObjectName("JakiesID")  ####
         self.setStyleSheet(windowStyleSheet)
         font_qt = QFont()
 
@@ -115,9 +117,9 @@ class Window(QMainWindow):
         font_qt.setFamily("Arial")
         font_qt.setPointSize(30)
         self.init_menu()
-        self.layout = QGridLayout()
+        self.layout = QGridLayout()  # 1.layout
+        self.layout.setObjectName("testoweid")
         self.init_layout()
-
         self.show()
 
     def init_menu(self):
@@ -199,8 +201,10 @@ class Window(QMainWindow):
         self.graph_preview = backend_graph.create_plot(self.graph_preview, self.plot_variables)
 
         # main tab layout
-        self.tab_main.layout = QGridLayout()
+        self.tab_main.layout = QGridLayout()  # 2. layout
         self.tab_main.layout.setSpacing(10)
+        self.tab_main.layout.setContentsMargins(0, 0, 0, 0)
+
         self.tab_main.layout.addWidget(self.title_label, 1, 0, 1, 2)
         self.tab_main.layout.addWidget(self.button_settings, 1, 2, alignment=Qt.AlignRight)
         self.tab_main.layout.addWidget(self.title, 2, 0, 1, 2)
@@ -219,6 +223,7 @@ class Window(QMainWindow):
         self.tab_main.layout.addWidget(self.button_plot, 14, 0, 1, 3)
         self.tab_main.layout.addWidget(self.graph_preview, 2, 2, 12, 1)
 
+        self.tab_main.layout.setObjectName("testoweid")  ###
         self.tab_main.setStyleSheet(mainTabStyleSheet)
 
         self.layout.addWidget(self.tabs)
@@ -226,6 +231,7 @@ class Window(QMainWindow):
 
         ll = QWidget()
         ll.setLayout(self.layout)
+        ll.setObjectName("testoweid")
         self.setCentralWidget(ll)
 
     def graph_preview_change(self):
@@ -291,7 +297,7 @@ class Window(QMainWindow):
     def help(self):
         help_file = os.getcwd() + "/help/index.html"
         print(help_file)
-        webbrowser.open("file:///"+help_file)
+        webbrowser.open("file:///" + help_file)
         # if self.help_tab is not None:
         #     self.tabs.setCurrentIndex(self.tabs.indexOf(self.help_tab))
         #     return

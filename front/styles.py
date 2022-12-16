@@ -76,6 +76,7 @@ QComboBox::down-arrow {
 
 labelStyleSheet = """
 QLabel {
+    border: 0;
     padding: 2px;
     font: bold 15px;
 }
@@ -141,14 +142,45 @@ QLabel {
 """
 
 mainTabStyleSheet = """
-QWidget {
-    background-color: #393939;
-}
+    QWidget {
+        background-color: #393939;
+    }
+    QTabWidget{
+        border:2px solid #939393;
+        width:80px;
+        height:18px;
+        padding:20px;
+        font-weight:bold;
+        overflow:visible;
+        font-size:16px;
+        color:white;
+    }
+    QTabWidget::pane{
+        border: none; /* tu byl ten border zepsuty*/
+    }
+    QTabWidget::tab{
+        border: 2px solid red;            
+    }
+    QTabBar::tab:selected { 
+        background-color: #393939;
+        width:80px;
+        height:18px;
+        padding:10px;
+        font-weight:bold;
+        font-size:16px;
+        color:white;
+        border-bottom:1px solid white;
+    }
 """
 
 windowStyleSheet = """
 QWidget {
     background-color: #323232;
+}
+
+QLabel{
+    border:0;
+    padding: 10px;
 }
 """
 
