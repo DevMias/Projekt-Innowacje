@@ -147,11 +147,10 @@ mainTabStyleSheet = """
     }
     QTabWidget{
         border:2px solid #939393;
-        width:80px;
+        min-width:80px;
         height:18px;
         padding:20px;
         font-weight:bold;
-        overflow:visible;
         font-size:16px;
         color:white;
     }
@@ -163,7 +162,7 @@ mainTabStyleSheet = """
     }
     QTabBar::tab:selected { 
         background-color: #393939;
-        width:80px;
+        min-width:80px;
         height:18px;
         padding:10px;
         font-weight:bold;
