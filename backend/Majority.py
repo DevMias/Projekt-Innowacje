@@ -11,7 +11,7 @@ def majority(data: pd.arrays, target: str, date: str):
     all_methods['isolation_forest'] = isolation_forest(data, target, date)['Anomaly']
     all_methods['standard_deviation'] = standard_deviation(data, target, date)['Anomaly']
     all_methods['db_scan'] = db_scan(data, target, date)['Anomaly']
-    all_methods['local_outlier'] = local_outlier(data, target, date)['Anomaly']
+    all_methods['local_outlier'] = local_outlier(data1=data, target=target, date=date)['Anomaly']
     all_methods['auto_encoder'] = auto_encoder(data, target, date)['Anomaly']
 
     all_methods = all_methods.assign(Anomaly=False)

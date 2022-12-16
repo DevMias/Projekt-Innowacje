@@ -207,7 +207,7 @@ def run_method(data: pd.arrays, target: str, date: str, method: str, parameter=0
     if method == "Las izolacji":
         return isolation_forest(data, target, date, parameter)
     if method == "Lokalna wartość odstająca":
-        return local_outlier(data, target, date, parameter)
+        return local_outlier(data1=data, target=target, date=date, contamination=parameter)
     if method == "Większościowa":
         return majority(data, target, date)
     if method == "Autoenkoder":
