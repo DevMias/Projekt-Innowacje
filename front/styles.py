@@ -1,43 +1,42 @@
 buttonStyleSheet = """
 QPushButton { 
     background-color: rgb(75, 78, 82);
-    color: rgb(0, 0, 0);
+    color: white;
     padding: 2px;
-    font: bold 20px;
-    border: 3px outset rgb(24, 26, 25);
-    border-radius: 15px;
+    font: 20px;
+    border: 1px inset rgb(24, 26, 25);
+    border-radius: 10px;
 }
-QPushButton:pressed {
-    background-color: rgb(96, 101, 107);
+QPushButton:hover {
+    background-color: rgb(28, 185, 199);
 }
 """
 
 swapButtonStyleSheet = """
 QPushButton {
     background-color: rgb(75, 78, 82);
-    color: rgb(0, 0, 0);
+    color: white;
     padding: 15px;
-    font: bold 20px;
-    border: 3px outset rgb(24, 26, 25);
-    border-radius: 15px;
+    font: 20px;
+    border: 1px inset rgb(24, 26, 25);
+    border-radius: 10px;
 }
-QPushButton:pressed {
-    background-color: rgb(96, 101, 107);
+QPushButton:hover {
+    background-color: rgb(28, 185, 199);
 }
 """
 
 generatePlotButtonStyleSheet = """
 QPushButton { 
     background-color: rgb(75, 78, 82);
-    color: rgb(0, 0, 0);
+    color: white;
     padding: 10px;
-    /*margin: 0 400px;*/
     font: bold 20px;
-    border: 3px outset rgb(24, 26, 25);
-    border-radius: 15px;
+    border: 1px inset rgb(24, 26, 25);
+    border-radius: 10px;
 }
-QPushButton:pressed {
-    background-color: rgb(96, 101, 107);
+QPushButton:hover {
+    background-color: rgb(28, 185, 199);
 }
 """
 
@@ -46,7 +45,7 @@ QDateEdit
 {
     border: 1px solid rgb(24, 26, 25);
     border-radius: 3px;
-    background-color : rgb(75, 78, 82);
+    background-color: rgb(75, 78, 82);
     padding : 2px;
     font: 15px;
     color: rgb(0, 0 ,0)
@@ -79,6 +78,9 @@ QLabel {
     border: 0;
     padding: 2px;
     font: bold 15px;
+}
+QLabel#graph_title {
+    margin-top: 20px;
 }
 
 QLineEdit {

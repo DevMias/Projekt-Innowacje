@@ -56,7 +56,8 @@ class Window(QMainWindow):
 
         # generate plot button
         self.button_plot = backend_funcs.create_button(text="Wygeneruj wykres", style=generatePlotButtonStyleSheet,
-                                                       function=self.create_plot)
+                                                    function=self.create_plot)
+        self.button_plot.setFixedWidth(300)                                            
 
         # swap currencies button
         self.button_swap = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
@@ -98,8 +99,10 @@ class Window(QMainWindow):
         self.currencies2.setStyleSheet(comboBoxStyleSheet)
 
         self.title_label = QLabel("Tytuł wykresu")
+        self.title_label.setObjectName("graph_title")
         self.title_label.setStyleSheet(labelStyleSheet)
         self.title = QLineEdit()
+        self.title.setFixedWidth(400)
         self.title.setStyleSheet(labelStyleSheet)
         self.title.setMaxLength(50)
 
@@ -114,7 +117,7 @@ class Window(QMainWindow):
 
         self.alpha = [0, 0]
 
-        font_qt.setFamily("Arial")
+        font_qt.setFamily("Times New Roman")
         font_qt.setPointSize(30)
         self.init_menu()
         self.layout = QGridLayout()  # 1.layout
@@ -174,7 +177,7 @@ class Window(QMainWindow):
         interval_image = ["numbers/" + name + ".png" for name in self.interval_list]
 
         for image, interval in zip(interval_image, self.interval_list):
-            self.interval.addItem(QIcon(image), interval)
+            self.interval.addItem(interval)
 
         # self.interval.setCurrentText(self.settings_pack["intervals"])
         self.interval.setCurrentIndex(int(self.settings_pack["intervals"]))
@@ -205,9 +208,12 @@ class Window(QMainWindow):
         self.tab_main.layout.setSpacing(10)
         self.tab_main.layout.setContentsMargins(0, 0, 0, 0)
 
-        self.tab_main.layout.addWidget(self.title_label, 1, 0, 1, 2)
-        self.tab_main.layout.addWidget(self.button_settings, 1, 2, alignment=Qt.AlignRight)
-        self.tab_main.layout.addWidget(self.title, 2, 0, 1, 2)
+        self.tab_main.layout.addWidget(self.title_label, 0, 2, alignment = Qt.AlignHCenter)
+
+        #Ustawic to jako tab
+        #self.tab_main.layout.addWidget(self.button_settings, 0, 2, alignment = Qt.AlignRight)
+
+        self.tab_main.layout.addWidget(self.title, 1, 2, alignment = Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.currencies_label, 3, 0, 1, 2)
         self.tab_main.layout.addWidget(self.currencies1, 4, 0, 1, 1)
         self.tab_main.layout.addWidget(self.currencies2, 5, 0, 1, 1)
@@ -220,7 +226,7 @@ class Window(QMainWindow):
         self.tab_main.layout.addWidget(self.interval, 11, 0, 1, 2)
         self.tab_main.layout.addWidget(self.method_label, 12, 0, 1, 2)
         self.tab_main.layout.addWidget(self.methods, 13, 0, 1, 2)
-        self.tab_main.layout.addWidget(self.button_plot, 14, 0, 1, 3)
+        self.tab_main.layout.addWidget(self.button_plot, 14, 2, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.graph_preview, 2, 2, 12, 1)
 
         self.tab_main.layout.setObjectName("testoweid")  ###
