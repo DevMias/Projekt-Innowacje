@@ -3,10 +3,12 @@ from copy import deepcopy
 from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
 
+
 # returning list because now we have two series
 
 
-def db_scan(data1: pd.arrays, data2: pd.arrays, target: str, date: str, multiplayer=0.5) -> list:
+def db_scan(data1: pd.arrays = None, data2: pd.arrays = None, target: str = None, date: str = None,
+            multiplayer=0.5):
     multiplayer = 1 - multiplayer + 0.01
     epsilon = 16 / data1.count().values[0]
     epsilon *= multiplayer
@@ -23,7 +25,6 @@ def db_scan(data1: pd.arrays, data2: pd.arrays, target: str, date: str, multipla
 
     # loop to get two series of db_scan
     for i in range(0, array_length):
-
         scaler = StandardScaler()
         np_scaled = scaler.fit_transform(target_cols[i].values.reshape(-1, 1))
         data_scaled = pd.DataFrame(np_scaled)
@@ -45,4 +46,4 @@ def db_scan(data1: pd.arrays, data2: pd.arrays, target: str, date: str, multipla
         target_cols[i].insert(1, 'Exchange', target_cols[i].pop('Exchange'))
         target_cols[i].insert(2, 'Anomaly', target_cols[i].pop('Anomaly'))
 
-    return target_cols
+    return target_cols[0]
