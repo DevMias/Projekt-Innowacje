@@ -6,9 +6,16 @@ QPushButton {
     font: 20px;
     border: 1px inset rgb(24, 26, 25);
     border-radius: 10px;
+    width:60px;
 }
 QPushButton:hover {
     background-color: rgb(28, 185, 199);
+}
+#year_checkbox{
+    font-size:26px;
+    color: red;
+    text-transform: uppercase;
+    font-family: "Calibri", Times, serif;
 }
 """
 
@@ -43,33 +50,57 @@ QPushButton:hover {
 DateEditStyleSheet = """
 QDateEdit
 {
-    border: 1px solid rgb(24, 26, 25);
+    color: white;
     border-radius: 3px;
-    background-color: rgb(75, 78, 82);
-    padding : 2px;
-    font: 15px;
-    color: rgb(0, 0 ,0)
+    border: 1px solid rgb(24, 26, 25);
+    font: 18px;
+    background-color:rgb(75, 78, 82);
+    text-align:center;
+    margin-left: 5px;
+    padding:4px;
+}
+
+#settings_element{
+    max-width:600px;
+    min-width:400px;
+    text-align:center;
+    background-color:rgb(75, 78, 82);
+    border: 1px solid rgb(24, 26, 25);
 }
     
 QDateEdit::down-arrow
 {
     image: url(icons/arrow_down.png);
 }
+QDateEdit::drop-down {
+    width: 28px;
+}
 """
 
 comboBoxStyleSheet = """
 QComboBox {
+    color: white;
     border: 1px solid rgb(24, 26, 25);
-    border-radius: 3px;
     padding: 1px 18px 1px 3px;
     min-width: 6em;
-    font: 15px;
-    color: rgb(0, 0, 0);
+    font: 18px;
     background-color: rgb(75, 78, 82);
+    margin-left: 5px;
+    padding:4px;
 }
 
+#settings_element{
+    max-width:500px;
+    min-width:500px;
+    text-align:center;
+    border: 1px solid rgb(24, 26, 25);
+    background-color:rgb(75, 78, 82);
+}
 QComboBox::down-arrow {
     image: url(icons/arrow_down.png);
+}
+QComboBox::drop-down {
+    width: 28px;
 }
 """
 
@@ -77,15 +108,28 @@ labelStyleSheet = """
 QLabel {
     border: 0;
     padding: 2px;
-    font: bold 15px;
+    font: bold 22px;
+    text-transform:uppercase;
+    color:white;
 }
 QLabel#graph_title {
     margin-top: 20px;
+    color:white;
 }
-
+#graph_fields{
+    margin: 0 auto;
+    text-align:right;
+}
 QLineEdit {
-    padding: 2px;
+    color:white;
+    padding: 8px;
+    border: 0;
+    border-bottom: 1px solid rgb(169, 167, 169);
+    background-color:rgb(67, 66, 67);
     font: 15px;
+}
+#default_label{
+    margin-left:200px; /* label z settingsow */
 }
 """
 
@@ -121,6 +165,12 @@ QLabel {
 }
 """
 
+settingsLayoutStyleSheet = """
+    QPushButton{
+    width:64px;
+    }
+"""
+
 labelStyleSheet_green = """
 QLabel {
     padding: 2px;
@@ -154,34 +204,35 @@ mainTabStyleSheet = """
         padding:20px;
         font-weight:bold;
         font-size:16px;
-        color:white;
     }
     QTabWidget::pane{
         border: none; /* tu byl ten border zepsuty*/
     }
-    QTabWidget::tab{
-        border: 2px solid red;            
+    QTabBar::tab{
+        color:white;
+        background-color:rgb(82, 82, 82);
+        font-weight:normal;
     }
     QTabBar::tab:selected { 
-        background-color: #393939;
+        color:black;
+        background-color: rgb(242, 242, 242);
         min-width:80px;
         height:18px;
         padding:10px;
         font-weight:bold;
         font-size:16px;
-        color:white;
-        border-bottom:1px solid white;
     }
 """
 
 windowStyleSheet = """
 QWidget {
     background-color: #323232;
+    font-family: "Calibri", Times, serif;
 }
-
 QLabel{
     border:0;
     padding: 10px;
+    font-family: "Calibri", Times, serif;
 }
 """
 

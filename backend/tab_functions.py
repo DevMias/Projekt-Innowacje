@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QLineEdit
     QCheckBox, QGridLayout
 from backend import backend_functions as backend
 from front.styles import buttonStyleSheet, labelStyleSheet, comboBoxStyleSheet, currencies_list, DateEditStyleSheet, \
-    flag_list, labelStyleSheet_big, labelStyleSheet_not_bold, important_icon, close_icon
+    flag_list, labelStyleSheet_big, labelStyleSheet_not_bold, important_icon, close_icon, settingsLayoutStyleSheet
 
 
 def create_graph_tab(close, pack_fun, methods_list, file, important):
@@ -142,9 +142,11 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
     calendar_start = QDateEdit()
     calendar_start.setCalendarPopup(True)
     calendar_start.setStyleSheet(DateEditStyleSheet)
+    calendar_start.setObjectName("settings_element")
     calendar_stop = QDateEdit()
     calendar_stop.setCalendarPopup(True)
     calendar_stop.setStyleSheet(DateEditStyleSheet)
+    calendar_stop.setObjectName("settings_element")
 
     if settings["date_checkbox"] == "False":
         calendar_start.setDate(backend.string_to_date(settings["date_start"]))
@@ -157,20 +159,24 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
     method_label.setStyleSheet(labelStyleSheet)
     methods = QComboBox()
     methods.setStyleSheet(comboBoxStyleSheet)
+    methods.setObjectName("settings_element")
 
     # intervals
     interval_label = QLabel("Interwał")
     interval_label.setStyleSheet(labelStyleSheet)
     intervals = QComboBox()
     intervals.setStyleSheet(comboBoxStyleSheet)
+    intervals.setObjectName("settings_element")
 
     # currencies
     currencies_label = QLabel("Waluty")
     currencies_label.setStyleSheet(labelStyleSheet)
     currencies1 = QComboBox()
     currencies1.setStyleSheet(comboBoxStyleSheet)
+    currencies1.setObjectName("settings_element")
     currencies2 = QComboBox()
     currencies2.setStyleSheet(comboBoxStyleSheet)
+    currencies2.setObjectName("settings_element")
 
     # lists for currencies
     for flag, currency in zip(flag_list, currencies_list):
@@ -203,31 +209,37 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
 
     default_label = QLabel("Ustawienia wartości domyślnych")
     default_label.setStyleSheet(labelStyleSheet)
+    default_label.setObjectName("default_label")
 
     date_checkbox = QCheckBox()
     date_checkbox.setText("Ostatni rok")
     date_checkbox.setChecked(True)
+    date_checkbox.setStyleSheet(buttonStyleSheet)
+    date_checkbox.setObjectName("year_checkbox")
 
     button_save = create_button(style=buttonStyleSheet, text="Zapisz", function=save, min_size=(150, 40))
+    button_save.setObjectName("settings_element")
 
     tab.layout = QGridLayout()
     tab.layout.setSpacing(10)
-    tab.layout.addWidget(default_label, 1, 0)
+    tab.layout.addWidget(default_label, 1, 0,alignment=Qt.AlignHCenter)
     tab.layout.addWidget(button_reset, 1, 1, alignment=Qt.Alignment())
     tab.layout.addWidget(button_close, 1, 2, alignment=Qt.Alignment())
-    tab.layout.addWidget(currencies_label, 2, 0, 1, 3)
-    tab.layout.addWidget(currencies1, 3, 0, 1, 3)
-    tab.layout.addWidget(currencies2, 4, 0, 1, 3)
-    tab.layout.addWidget(calendar_start_label, 5, 0, 1, 3)
-    tab.layout.addWidget(calendar_start, 6, 0, 1, 3)
-    tab.layout.addWidget(calendar_stop_label, 7, 0, 1, 3)
-    tab.layout.addWidget(calendar_stop, 8, 0, 1, 3)
-    tab.layout.addWidget(date_checkbox, 9, 0, 1, 3)
-    tab.layout.addWidget(interval_label, 10, 0, 1, 3)
-    tab.layout.addWidget(intervals, 11, 0, 1, 3)
-    tab.layout.addWidget(method_label, 12, 0, 1, 3)
-    tab.layout.addWidget(methods, 13, 0, 1, 3)
-    tab.layout.addWidget(button_save, 14, 0, 1, 3)
+    # self.tab_main.layout.addWidget(self.button_settings, 0, 2, alignment=Qt.AlignRight)
+
+    tab.layout.addWidget(currencies_label, 2, 0, 1, 3, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(currencies1, 3, 0, 1, 3, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(currencies2, 4, 0, 1, 3, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(calendar_start_label, 5, 0, 1, 3, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(calendar_start, 6, 0, 1, 3, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(calendar_stop_label, 7, 0, 1, 3, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(calendar_stop, 8, 0, 1, 3, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(date_checkbox, 9, 0, 1, 3, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(interval_label, 10, 0, 1, 3, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(intervals, 11, 0, 1, 3, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(method_label, 12, 0, 1, 3, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(methods, 13, 0, 1, 3, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(button_save, 14, 0, 1, 3, alignment=Qt.AlignHCenter)
 
     tab.setLayout(tab.layout)
 

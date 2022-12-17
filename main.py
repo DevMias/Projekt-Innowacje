@@ -48,7 +48,7 @@ class Window(QMainWindow):
         self.tabs.setStyleSheet(mainTabStyleSheet)
         self.tabs.setMovable(True)
         self.tabs.setTabsClosable(True)
-        self.tabs.setTabShape(0) # to mozna zmienic
+        self.tabs.setTabShape(0)  # to mozna zmienic
         self.tabs.tabCloseRequested.connect(lambda index: self.close_tab(index))
         self.tab_main = QWidget()
         self.tabs.addTab(self.tab_main, "Start")
@@ -56,8 +56,8 @@ class Window(QMainWindow):
 
         # generate plot button
         self.button_plot = backend_funcs.create_button(text="Wygeneruj wykres", style=generatePlotButtonStyleSheet,
-                                                    function=self.create_plot)
-        self.button_plot.setFixedWidth(300)                                            
+                                                       function=self.create_plot)
+        self.button_plot.setFixedWidth(300)
 
         # swap currencies button
         self.button_swap = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
@@ -66,12 +66,15 @@ class Window(QMainWindow):
         # calendars for setting dates
         self.calendar_start_label = QLabel("Data początkowa")
         self.calendar_start_label.setStyleSheet(labelStyleSheet)
+        self.calendar_start_label.setObjectName("graph_fields")
         self.calendar_stop_label = QLabel("Data końcowa")
         self.calendar_stop_label.setStyleSheet(labelStyleSheet)
+        self.calendar_stop_label.setObjectName("graph_fields")
 
         self.calendar_start = QtWidgets.QDateEdit()
         self.calendar_start.setCalendarPopup(True)
         self.calendar_start.setStyleSheet(DateEditStyleSheet)
+
         self.calendar_stop = QtWidgets.QDateEdit()
         self.calendar_stop.setCalendarPopup(True)
         self.calendar_stop.setStyleSheet(DateEditStyleSheet)
@@ -81,21 +84,27 @@ class Window(QMainWindow):
                             "Lokalna wartość odstająca", "Autoenkoder", "Większościowa", "Wszystkie"]
         self.method_label = QLabel("Metoda")
         self.method_label.setStyleSheet(labelStyleSheet)
+        self.method_label.setObjectName("graph_fields")
         self.methods = QComboBox()
         self.methods.setStyleSheet(comboBoxStyleSheet)
+        self.methods.setObjectName("graph_fields")
 
         # intervals
         self.interval_label = QLabel("Interwał")
         self.interval_label.setStyleSheet(labelStyleSheet)
+        self.interval_label.setObjectName("graph_fields")
         self.interval = QComboBox()
         self.interval.setStyleSheet(comboBoxStyleSheet)
 
         # currencies
         self.currencies_label = QLabel("Waluty")
+        self.currencies_label.setObjectName("graph_fields")
         self.currencies_label.setStyleSheet(labelStyleSheet)
         self.currencies1 = QComboBox()
         self.currencies1.setStyleSheet(comboBoxStyleSheet)
+        self.currencies1.setObjectName("graph_fields")
         self.currencies2 = QComboBox()
+        self.currencies2.setObjectName("graph_fields")
         self.currencies2.setStyleSheet(comboBoxStyleSheet)
 
         self.title_label = QLabel("Tytuł wykresu")
@@ -111,17 +120,13 @@ class Window(QMainWindow):
         self.resize(1280, 720)
         self.setWindowTitle("Detektor anomalii")
         self.setWindowIcon(QIcon(app_logo))
-        self.setObjectName("JakiesID")  ####
         self.setStyleSheet(windowStyleSheet)
-        font_qt = QFont()
+        # font_qt = QFont() # ustawienie fonta, ale nieuzywane
 
         self.alpha = [0, 0]
 
-        font_qt.setFamily("Times New Roman")
-        font_qt.setPointSize(30)
         self.init_menu()
         self.layout = QGridLayout()  # 1.layout
-        self.layout.setObjectName("testoweid")
         self.init_layout()
         self.show()
 
@@ -188,7 +193,7 @@ class Window(QMainWindow):
         for method in self.method_list:
             self.methods.addItem(method)
 
-        # self.methods.setCurrentText(self.settings_pack["methods"])
+        self.methods.setCurrentText(self.settings_pack["methods"])
         self.methods.setCurrentIndex(int(self.settings_pack["methods"]))
 
         self.plot_variables = {"title": self.title, "currencies": (self.currencies1, self.currencies2),
@@ -206,30 +211,30 @@ class Window(QMainWindow):
         # main tab layout
         self.tab_main.layout = QGridLayout()  # 2. layout
         self.tab_main.layout.setSpacing(10)
+
         self.tab_main.layout.setContentsMargins(0, 0, 0, 0)
 
-        self.tab_main.layout.addWidget(self.title_label, 0, 2, alignment = Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.title_label, 0, 2, alignment=Qt.AlignHCenter)
 
-        #Ustawic to jako tab
-        #self.tab_main.layout.addWidget(self.button_settings, 0, 2, alignment = Qt.AlignRight)
+        # Ustawic to jako tab
+        self.tab_main.layout.addWidget(self.button_settings, 0, 2, alignment = Qt.AlignRight)
 
-        self.tab_main.layout.addWidget(self.title, 1, 2, alignment = Qt.AlignHCenter)
-        self.tab_main.layout.addWidget(self.currencies_label, 3, 0, 1, 2)
-        self.tab_main.layout.addWidget(self.currencies1, 4, 0, 1, 1)
-        self.tab_main.layout.addWidget(self.currencies2, 5, 0, 1, 1)
-        self.tab_main.layout.addWidget(self.button_swap, 4, 1, 2, 1)
-        self.tab_main.layout.addWidget(self.calendar_start_label, 6, 0, 1, 2)
+        self.tab_main.layout.addWidget(self.title, 1, 2, alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.currencies_label, 3, 0, 1, 2, alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.currencies1, 4, 0, 1, 1, alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.currencies2, 5, 0, 1, 1, alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.button_swap, 4, 1, 2, 1, alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.calendar_start_label, 6, 0, 1, 2, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.calendar_start, 7, 0, 1, 2)
-        self.tab_main.layout.addWidget(self.calendar_stop_label, 8, 0, 1, 2)
+        self.tab_main.layout.addWidget(self.calendar_stop_label, 8, 0, 1, 2, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.calendar_stop, 9, 0, 1, 2)
-        self.tab_main.layout.addWidget(self.interval_label, 10, 0, 1, 2)
+        self.tab_main.layout.addWidget(self.interval_label, 10, 0, 1, 2, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.interval, 11, 0, 1, 2)
-        self.tab_main.layout.addWidget(self.method_label, 12, 0, 1, 2)
+        self.tab_main.layout.addWidget(self.method_label, 12, 0, 1, 2, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.methods, 13, 0, 1, 2)
         self.tab_main.layout.addWidget(self.button_plot, 14, 2, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.graph_preview, 2, 2, 12, 1)
 
-        self.tab_main.layout.setObjectName("testoweid")  ###
         self.tab_main.setStyleSheet(mainTabStyleSheet)
 
         self.layout.addWidget(self.tabs)
@@ -237,7 +242,6 @@ class Window(QMainWindow):
 
         ll = QWidget()
         ll.setLayout(self.layout)
-        ll.setObjectName("testoweid")
         self.setCentralWidget(ll)
 
     def graph_preview_change(self):
