@@ -48,7 +48,7 @@ QDateEdit
     background-color: rgb(75, 78, 82);
     padding : 2px;
     font: 15px;
-    color: rgb(0, 0 ,0)
+    color: white;
 }
     
 QDateEdit::down-arrow
@@ -57,15 +57,38 @@ QDateEdit::down-arrow
 }
 """
 
+calendarStyleSheet = """
+QCalendarWidget QWidget{
+    alternate-background-color: #6e6e70;
+    color: #fbfbfb;
+}
+QCalendarWidget QToolButton#qt_calendar_prevmonth{
+    qproperty-icon: url(icons/left_arrow.png);
+}
+QCalendarWidget QToolButton#qt_calendar_nextmonth{
+    qproperty-icon: url(icons/right_arrow.png);
+}
+QCalendarWidget QToolButton:hover{
+    background-color: rgb(28, 185, 199);
+}
+QCalendarWidget QAbstractItemView:enabled{
+    background-color: #212121;
+    color: #fbfbfb;
+    selection-background-color: rgb(28, 185, 199);
+    selection-color: green;
+}
+"""
+
 comboBoxStyleSheet = """
 QComboBox {
     border: 1px solid rgb(24, 26, 25);
     border-radius: 3px;
-    padding: 1px 18px 1px 3px;
+    padding: 1px 5px;
     min-width: 6em;
     font: 15px;
-    color: rgb(0, 0, 0);
+    color: white;
     background-color: rgb(75, 78, 82);
+    combobox-popup: 0;
 }
 
 QComboBox::down-arrow {

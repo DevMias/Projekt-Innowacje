@@ -1,10 +1,10 @@
 from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QLineEdit, QHBoxLayout, QComboBox, QDateEdit, \
-    QCheckBox, QGridLayout
+    QCheckBox, QGridLayout, QCalendarWidget
 from backend import backend_functions as backend
 from front.styles import buttonStyleSheet, labelStyleSheet, comboBoxStyleSheet, currencies_list, DateEditStyleSheet, \
-    flag_list, labelStyleSheet_big, labelStyleSheet_not_bold, important_icon, close_icon
+    flag_list, labelStyleSheet_big, labelStyleSheet_not_bold, important_icon, close_icon, calendarStyleSheet
 
 
 def create_graph_tab(close, pack_fun, methods_list, file, important):
@@ -182,11 +182,8 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
     # currencies2.setCurrentText(settings["currencies2"])
     currencies2.setCurrentIndex(int(settings["currencies2"]))
 
-    # list for intervals
-    interval_image = ["numbers/" + name + ".png" for name in interval_list]
-
-    for image, interval in zip(interval_image, interval_list):
-        intervals.addItem(QIcon(image), interval)
+    for interval in list(interval_list):
+        intervals.addItem(interval)
 
     # intervals.setCurrentText(settings["intervals"])
     intervals.setCurrentIndex(int(settings["intervals"]))
@@ -382,3 +379,13 @@ def create_button(text="", style="", icon=None, function=None, min_size=None, ma
         button.setMaximumSize(max_size[0], max_size[1])
 
     return button
+
+
+def create_calendar():
+    calendar = QCalendarWidget()
+    calendar.setGridVisible(True)
+    calendar.setHorizontalHeaderFormat(2)
+    calendar.setVerticalHeaderFormat(1)
+    calendar.setStyleSheet(calendarStyleSheet)
+
+    return calendar

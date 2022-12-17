@@ -63,17 +63,28 @@ class Window(QMainWindow):
         self.button_swap = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
                                                        function=self.swap_currencies)
 
+        self.button_swap2 = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
+                                                       function=self.swap_currencies)                                               
+
         # calendars for setting dates
         self.calendar_start_label = QLabel("Data początkowa")
         self.calendar_start_label.setStyleSheet(labelStyleSheet)
         self.calendar_stop_label = QLabel("Data końcowa")
         self.calendar_stop_label.setStyleSheet(labelStyleSheet)
 
+        calendar_start = backend_funcs.create_calendar()
+        calendar_stop = backend_funcs.create_calendar()
+
         self.calendar_start = QtWidgets.QDateEdit()
         self.calendar_start.setCalendarPopup(True)
+        self.calendar_start.setDisplayFormat("dd-MM-yyyy")
+        self.calendar_start.setCalendarWidget(calendar_start)
         self.calendar_start.setStyleSheet(DateEditStyleSheet)
+
         self.calendar_stop = QtWidgets.QDateEdit()
         self.calendar_stop.setCalendarPopup(True)
+        self.calendar_stop.setDisplayFormat("dd-MM-yyyy")
+        self.calendar_stop.setCalendarWidget(calendar_stop)
         self.calendar_stop.setStyleSheet(DateEditStyleSheet)
 
         # methods
@@ -95,8 +106,18 @@ class Window(QMainWindow):
         self.currencies_label.setStyleSheet(labelStyleSheet)
         self.currencies1 = QComboBox()
         self.currencies1.setStyleSheet(comboBoxStyleSheet)
+
         self.currencies2 = QComboBox()
         self.currencies2.setStyleSheet(comboBoxStyleSheet)
+
+        # currencies 2
+        self.currencies_label2 = QLabel("Waluty")
+        self.currencies_label2.setStyleSheet(labelStyleSheet)
+        self.currencies12 = QComboBox()
+        self.currencies12.setStyleSheet(comboBoxStyleSheet)
+
+        self.currencies22 = QComboBox()
+        self.currencies22.setStyleSheet(comboBoxStyleSheet)
 
         self.title_label = QLabel("Tytuł wykresu")
         self.title_label.setObjectName("graph_title")
@@ -159,9 +180,8 @@ class Window(QMainWindow):
         for flag, currency in zip(flag_list, currencies_list):
             self.currencies1.addItem(QIcon(flag), currency)
             self.currencies2.addItem(QIcon(flag), currency)
-
-        # self.currencies1.setCurrentText(self.settings_pack["currencies1"])
-        # self.currencies2.setCurrentText(self.settings_pack["currencies2"])
+            self.currencies12.addItem(QIcon(flag), currency)
+            self.currencies22.addItem(QIcon(flag), currency)
 
         self.currencies1.setCurrentIndex(int(self.settings_pack["currencies1"]))
         self.currencies2.setCurrentIndex(int(self.settings_pack["currencies2"]))
@@ -173,10 +193,7 @@ class Window(QMainWindow):
             self.calendar_start.setDate(QDate.currentDate().addYears(-1))
             self.calendar_stop.setDate(QDate.currentDate())
 
-        # list for intervals
-        interval_image = ["numbers/" + name + ".png" for name in self.interval_list]
-
-        for image, interval in zip(interval_image, self.interval_list):
+        for interval in list(self.interval_list):
             self.interval.addItem(interval)
 
         # self.interval.setCurrentText(self.settings_pack["intervals"])
@@ -211,22 +228,33 @@ class Window(QMainWindow):
         self.tab_main.layout.addWidget(self.title_label, 0, 2, alignment = Qt.AlignHCenter)
 
         #Ustawic to jako tab
-        #self.tab_main.layout.addWidget(self.button_settings, 0, 2, alignment = Qt.AlignRight)
+        self.tab_main.layout.addWidget(self.button_settings, 0, 2, alignment = Qt.AlignRight)
 
         self.tab_main.layout.addWidget(self.title, 1, 2, alignment = Qt.AlignHCenter)
+
+        self.tab_main.layout.addWidget(self.currencies_label2, 0, 0, 1, 2)
+        self.tab_main.layout.addWidget(self.currencies12, 1, 0, 1, 1)
+        self.tab_main.layout.addWidget(self.currencies22, 2, 0, 1, 1)
+        self.tab_main.layout.addWidget(self.button_swap2, 1, 1, 2, 1)
+
         self.tab_main.layout.addWidget(self.currencies_label, 3, 0, 1, 2)
         self.tab_main.layout.addWidget(self.currencies1, 4, 0, 1, 1)
         self.tab_main.layout.addWidget(self.currencies2, 5, 0, 1, 1)
         self.tab_main.layout.addWidget(self.button_swap, 4, 1, 2, 1)
+
         self.tab_main.layout.addWidget(self.calendar_start_label, 6, 0, 1, 2)
         self.tab_main.layout.addWidget(self.calendar_start, 7, 0, 1, 2)
         self.tab_main.layout.addWidget(self.calendar_stop_label, 8, 0, 1, 2)
         self.tab_main.layout.addWidget(self.calendar_stop, 9, 0, 1, 2)
+
         self.tab_main.layout.addWidget(self.interval_label, 10, 0, 1, 2)
         self.tab_main.layout.addWidget(self.interval, 11, 0, 1, 2)
+
         self.tab_main.layout.addWidget(self.method_label, 12, 0, 1, 2)
         self.tab_main.layout.addWidget(self.methods, 13, 0, 1, 2)
+
         self.tab_main.layout.addWidget(self.button_plot, 14, 2, alignment=Qt.AlignHCenter)
+
         self.tab_main.layout.addWidget(self.graph_preview, 2, 2, 12, 1)
 
         self.tab_main.layout.setObjectName("testoweid")  ###
@@ -247,6 +275,9 @@ class Window(QMainWindow):
         tmp = self.currencies1.currentText()
         self.currencies1.setCurrentText(self.currencies2.currentText())
         self.currencies2.setCurrentText(tmp)
+        tmp2 = self.currencies12.currentText()
+        self.currencies12.setCurrentText(self.currencies22.currentText())
+        self.currencies22.setCurrentText(tmp2)
 
     def important_add_tab(self):
         tab = self.tabs.currentWidget()
