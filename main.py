@@ -5,16 +5,15 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5.QtWidgets import QAction, qApp, QApplication, QWidget, QPushButton
-
+from PyQt5.QtWidgets import QAction, qApp, QApplication, QWidget, QCalendarWidget
 from backend import backend_functions as backend
 from backend import tab_functions as backend_funcs
 from backend import graph_preview as backend_graph
 from front.styles import *
-
 from front.graph import Graph
 import pyqtgraph.exporters as exporters
 import pyqtgraph as pg
+
 
 methods_with_parameter = ["Grupowanie przestrzenne", "Las izolacji", "Lokalna wartość odstająca"]
 
@@ -24,6 +23,13 @@ def clear_layout(layout):
         child = layout.takeAt(0)
         if child.widget():
             child.widget().deleteLater()
+
+
+class Calendar(QCalendarWidget):
+    def __init__(self, parent=None):
+        super(Calendar, self).__init__(parent)
+        self.setGridVisible(True)  
+        self.setStyleSheet(calendarStyleSheet)
 
 
 class Window(QMainWindow):
@@ -72,20 +78,20 @@ class Window(QMainWindow):
         self.calendar_stop_label = QLabel("Data końcowa")
         self.calendar_stop_label.setStyleSheet(labelStyleSheet)
 
-        calendar_start = backend_funcs.create_calendar()
-        calendar_stop = backend_funcs.create_calendar()
+        calendar_start = backend_funcs.create_calendar(Calendar)
+        calendar_stop = backend_funcs.create_calendar(Calendar)
 
         self.calendar_start = QtWidgets.QDateEdit()
         self.calendar_start.setCalendarPopup(True)
-        self.calendar_start.setDisplayFormat("dd-MM-yyyy")
-        self.calendar_start.setCalendarWidget(calendar_start)
+        self.calendar_start.setDisplayFormat("dd-MM-yyyy")  
         self.calendar_start.setStyleSheet(DateEditStyleSheet)
+        self.calendar_start.setCalendarWidget(calendar_start)
 
         self.calendar_stop = QtWidgets.QDateEdit()
         self.calendar_stop.setCalendarPopup(True)
-        self.calendar_stop.setDisplayFormat("dd-MM-yyyy")
-        self.calendar_stop.setCalendarWidget(calendar_stop)
+        self.calendar_stop.setDisplayFormat("dd-MM-yyyy")  
         self.calendar_stop.setStyleSheet(DateEditStyleSheet)
+        self.calendar_stop.setCalendarWidget(calendar_stop)
 
         # methods
         self.method_list = ["Odchylenie standardowe", "Grupowanie przestrzenne", "Las izolacji",
