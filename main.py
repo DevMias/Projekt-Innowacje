@@ -191,6 +191,8 @@ class Window(QMainWindow):
 
         self.currencies1.setCurrentIndex(int(self.settings_pack["currencies1"]))
         self.currencies2.setCurrentIndex(int(self.settings_pack["currencies2"]))
+        self.currencies12.setCurrentIndex(int(self.settings_pack["currencies1"]))
+        self.currencies22.setCurrentIndex(int(self.settings_pack["currencies2"]))
 
         if self.settings_pack["date_checkbox"] == "False":
             self.calendar_start.setDate(backend.string_to_date(self.settings_pack["date_start"]))
