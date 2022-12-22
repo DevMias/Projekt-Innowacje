@@ -5,12 +5,11 @@ from backend.IsolationForest import isolation_forest
 from backend.LocalOutlierFactor import local_outlier
 from backend.AutoEncoder import auto_encoder
 
-def all_methods_combined(data1: pd.arrays = None, data2: pd.arrays = None, target: str = 'Exchange', date: str = 'Date'):
-    # Run all methods and create DataFrame
-    #data2 = data.copy()
+def all_methods_combined(datas: list = None, target: str = 'Exchange', date: str = 'Date'):
 
-    input = list([data1, data2])  # take both to one list
-    data_list = list([i for i in input if i is not None])  # delete None's from input
+    # Run all methods and create DataFrame
+    if datas is None: return
+    data_list = list([i for i in datas if i is not None])  # delete None's from input
     if not len(data_list): return pd.DataFrame()  # leave if no data
     all_methods = list([data[[date, target]].copy() for data in data_list])  # copy date and target columns
 
@@ -20,7 +19,7 @@ def all_methods_combined(data1: pd.arrays = None, data2: pd.arrays = None, targe
         all_methods[i]['isolation_forest'] = isolation_forest(data_list[i], target, date)['Anomaly']
         all_methods[i]['standard_deviation'] = standard_deviation(data_list[i], target, date)['Anomaly']
         all_methods[i]['db_scan'] = db_scan(data_list[i], target, date)['Anomaly']
-        all_methods[i]['local_outlier'] = local_outlier(data1=data_list[i], target=target, date=date)['Anomaly']
+        all_methods[i]['local_outlier'] = local_outlier(datas=[data_list[i]], target=target, date=date)['Anomaly']
         all_methods[i]['auto_encoder'] = auto_encoder(data_list[i], target, date)['Anomaly']
 
         # create new column to store anomaly values
@@ -49,6 +48,4 @@ def all_methods_combined(data1: pd.arrays = None, data2: pd.arrays = None, targe
 
         results.append(result)
 
-    if len(results) == 1:
-        return results[0]
-    return results
+    return results[0] if len(results) == 1 else results

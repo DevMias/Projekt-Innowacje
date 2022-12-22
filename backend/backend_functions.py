@@ -201,21 +201,21 @@ def download_csv(filepath: str, separator=',', from_file=False) -> pd.arrays:
         return None, ""
 
 
-def run_method(data: pd.arrays, target: str, date: str, method: str, parameter=0):
+def run_method(datas: list, target: str, date: str, method: str, parameter=0):
     if method == "Odchylenie standardowe":
-        return standard_deviation(data, target, date)
+        return standard_deviation(datas[0], target, date)
     if method == "Grupowanie przestrzenne":
-        return db_scan(data, target, date, parameter)
+        return db_scan(datas[0], target, date, parameter)
     if method == "Las izolacji":
-        return isolation_forest(data, target, date, parameter)
+        return isolation_forest(datas[0], target, date, parameter)
     if method == "Lokalna wartość odstająca":
-        return local_outlier(data1=data, target=target, date=date, contamination=parameter)
+        return local_outlier(datas=datas, target=target, date=date, contamination=parameter)
     if method == "Większościowa":
-        return majority(data, target, date)
+        return majority(datas[0], target, date)
     if method == "Autoenkoder":
-        return auto_encoder(data, target, date)
+        return auto_encoder(datas[0], target, date)
     if method == "Wszystkie":
-        return all_methods_combined(data1=data, target=target, date=date)
+        return all_methods_combined(datas=datas, target=target, date=date)
 
 
 def input_errors(currency_list: list = None, start_date: QDate = None, stop_date: QDate = None, generate_popup: bool = True):

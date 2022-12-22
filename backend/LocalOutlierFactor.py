@@ -5,17 +5,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import LocalOutlierFactor
 
 
-def local_outlier(data1: pd.arrays = None, data2: pd.array = None, target: str = 'Exchange', date: str = 'Date', contamination: float = .25, ):
-    #return local_outlier_differential_analysis(data, target, date, contamination=.25)
-
-    # test case: data2 != None
-    #data2 = data1.copy()
-    #data1 = None
+def local_outlier(datas: list = None, target: str = 'Exchange', date: str = 'Date', contamination: float = .25):
 
     # PREPROCESSING: Make a single or double list depends on data2 optional parameter
-    input = list([ data1, data2 ])  # take both to one list
-    data_list = list([ i for i in input if i is not None ])     # delete None's from input
-    if not len(data_list): return pd.DataFrame()    # leave if no data
+    if datas is None: return
+    data_list = list([ i for i in datas if i is not None ])     # delete None's from input
+    if not len(data_list): return    # leave if no data
     features = list([ data[[ date, target ]].copy() for data in data_list ])  # copy date and target columns
 
     # CALCULATION: Iterate by the lists
@@ -39,6 +34,4 @@ def local_outlier(data1: pd.arrays = None, data2: pd.array = None, target: str =
         features[i].rename(columns={date: "Date"}, inplace=True)
         features[i].rename(columns={target: "Exchange"}, inplace=True)
 
-    if len(features) == 1:
-        return features[0]
-    return features
+    return features[0] if len(features) == 1 else features
