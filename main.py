@@ -243,10 +243,17 @@ class Window(QMainWindow):
         self.tab_main.layout.addWidget(self.button_settings, 0, 2, alignment = Qt.AlignRight)
 
         self.tab_main.layout.addWidget(self.title, 1, 2, alignment=Qt.AlignHCenter)
+
         self.tab_main.layout.addWidget(self.currencies_label, 3, 0, 1, 2, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.currencies1, 4, 0, 1, 1, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.currencies2, 5, 0, 1, 1, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.button_swap, 4, 1, 2, 1, alignment=Qt.AlignHCenter)
+
+        self.tab_main.layout.addWidget(self.currencies_label2, 0, 0, 1, 2, alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.currencies12, 1, 0, 1, 1 , alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.currencies22, 2, 0, 1, 1 , alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.button_swap2, 1, 1, 2, 1, alignment=Qt.AlignHCenter)
+
         self.tab_main.layout.addWidget(self.calendar_start_label, 6, 0, 1, 2, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.calendar_start, 7, 0, 1, 2)
         self.tab_main.layout.addWidget(self.calendar_stop_label, 8, 0, 1, 2, alignment=Qt.AlignHCenter)

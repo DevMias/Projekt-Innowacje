@@ -66,10 +66,6 @@ QDateEdit
     text-align:center;
     background-color:rgb(75, 78, 82);
     border: 1px solid rgb(24, 26, 25);
-    background-color: rgb(75, 78, 82);
-    padding : 2px;
-    font: 15px;
-    color: white;
 }
     
 QDateEdit::down-arrow
@@ -113,13 +109,6 @@ QComboBox {
     background-color: rgb(75, 78, 82);
     margin-left: 5px;
     padding:4px;
-    border-radius: 3px;
-    padding: 1px 5px;
-    min-width: 6em;
-    font: 15px;
-    color: white;
-    background-color: rgb(75, 78, 82);
-    combobox-popup: 0;
 }
 
 #settings_element{
@@ -151,7 +140,7 @@ QLabel#graph_title {
 }
 #graph_fields{
     margin: 0 auto;
-    text-align:right;
+    text-align: right;
 }
 QLineEdit {
     color:white;
