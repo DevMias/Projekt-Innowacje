@@ -1,10 +1,12 @@
 from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtGui import QIcon
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QLineEdit, QHBoxLayout, QComboBox, QDateEdit, \
     QCheckBox, QGridLayout
 from backend import backend_functions as backend
 from front.styles import buttonStyleSheet, labelStyleSheet, comboBoxStyleSheet, currencies_list, DateEditStyleSheet, \
     flag_list, labelStyleSheet_big, labelStyleSheet_not_bold, important_icon, close_icon, settingsLayoutStyleSheet
+from main import Calendar 
 
 
 def create_graph_tab(close, pack_fun, methods_list, file, important):
@@ -139,21 +141,29 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
     calendar_stop_label = QLabel("Data końcowa")
     calendar_stop_label.setStyleSheet(labelStyleSheet)
 
-    calendar_start = QDateEdit()
-    calendar_start.setCalendarPopup(True)
-    calendar_start.setStyleSheet(DateEditStyleSheet)
-    calendar_start.setObjectName("settings_element")
-    calendar_stop = QDateEdit()
-    calendar_stop.setCalendarPopup(True)
-    calendar_stop.setStyleSheet(DateEditStyleSheet)
-    calendar_stop.setObjectName("settings_element")
+    calendar_start = create_calendar(Calendar)
+    calendar_stop = create_calendar(Calendar)
+
+    calstart = QDateEdit()
+    calstart.setStyleSheet(DateEditStyleSheet)
+    calstart.setCalendarPopup(True)
+    calstart.setDisplayFormat("dd-MM-yyyy")
+    calstart.setCalendarWidget(calendar_start)
+    calstart.setObjectName("settings_element")
+
+    calstop = QDateEdit()
+    calstop.setStyleSheet(DateEditStyleSheet)
+    calstop.setCalendarPopup(True)
+    calstop.setDisplayFormat("dd-MM-yyyy")
+    calstop.setCalendarWidget(calendar_stop)
+    calstop.setObjectName("settings_element")
 
     if settings["date_checkbox"] == "False":
-        calendar_start.setDate(backend.string_to_date(settings["date_start"]))
-        calendar_stop.setDate(backend.string_to_date(settings["date_stop"]))
+        calstart.setDate(backend.string_to_date(settings["date_start"]))
+        calstop.setDate(backend.string_to_date(settings["date_stop"]))
     else:
-        calendar_start.setDate(QDate.currentDate().addYears(-1))
-        calendar_stop.setDate(QDate.currentDate())
+        calstart.setDate(QDate.currentDate().addYears(-1))
+        calstop.setDate(QDate.currentDate())
 
     method_label = QLabel("Metoda")
     method_label.setStyleSheet(labelStyleSheet)
@@ -188,11 +198,8 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
     # currencies2.setCurrentText(settings["currencies2"])
     currencies2.setCurrentIndex(int(settings["currencies2"]))
 
-    # list for intervals
-    interval_image = ["numbers/" + name + ".png" for name in interval_list]
-
-    for image, interval in zip(interval_image, interval_list):
-        intervals.addItem(QIcon(image), interval)
+    for interval in list(interval_list):
+        intervals.addItem(interval)
 
     # intervals.setCurrentText(settings["intervals"])
     intervals.setCurrentIndex(int(settings["intervals"]))
@@ -231,9 +238,9 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
     tab.layout.addWidget(currencies1, 3, 0, 1, 3, alignment=Qt.AlignHCenter)
     tab.layout.addWidget(currencies2, 4, 0, 1, 3, alignment=Qt.AlignHCenter)
     tab.layout.addWidget(calendar_start_label, 5, 0, 1, 3, alignment=Qt.AlignHCenter)
-    tab.layout.addWidget(calendar_start, 6, 0, 1, 3, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(calstart, 6, 0, 1, 3, alignment=Qt.AlignHCenter)
     tab.layout.addWidget(calendar_stop_label, 7, 0, 1, 3, alignment=Qt.AlignHCenter)
-    tab.layout.addWidget(calendar_stop, 8, 0, 1, 3, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(calstop, 8, 0, 1, 3, alignment=Qt.AlignHCenter)
     tab.layout.addWidget(date_checkbox, 9, 0, 1, 3, alignment=Qt.AlignHCenter)
     tab.layout.addWidget(interval_label, 10, 0, 1, 3, alignment=Qt.AlignHCenter)
     tab.layout.addWidget(intervals, 11, 0, 1, 3, alignment=Qt.AlignHCenter)
@@ -243,8 +250,8 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
 
     tab.setLayout(tab.layout)
 
-    settings_pack = {"methods": methods, "intervals": intervals, "date_start": calendar_start,
-                     "date_stop": calendar_stop, "currencies1": currencies1, "currencies2": currencies2,
+    settings_pack = {"methods": methods, "intervals": intervals, "date_start": calstart,
+                     "date_stop": calstop, "currencies1": currencies1, "currencies2": currencies2,
                      "date_checkbox": date_checkbox}
 
     return tab, settings_pack
@@ -394,3 +401,9 @@ def create_button(text="", style="", icon=None, function=None, min_size=None, ma
         button.setMaximumSize(max_size[0], max_size[1])
 
     return button
+
+
+def create_calendar(widget):
+    calendar = widget()
+
+    return calendar

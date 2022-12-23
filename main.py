@@ -5,16 +5,15 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5.QtWidgets import QAction, qApp, QApplication, QWidget, QPushButton
-
+from PyQt5.QtWidgets import QAction, qApp, QApplication, QWidget, QCalendarWidget
 from backend import backend_functions as backend
 from backend import tab_functions as backend_funcs
 from backend import graph_preview as backend_graph
 from front.styles import *
-
 from front.graph import Graph
 import pyqtgraph.exporters as exporters
 import pyqtgraph as pg
+
 
 methods_with_parameter = ["Grupowanie przestrzenne", "Las izolacji", "Lokalna wartość odstająca"]
 
@@ -24,6 +23,13 @@ def clear_layout(layout):
         child = layout.takeAt(0)
         if child.widget():
             child.widget().deleteLater()
+
+
+class Calendar(QCalendarWidget):
+    def __init__(self, parent=None):
+        super(Calendar, self).__init__(parent)
+        self.setGridVisible(True)  
+        self.setStyleSheet(calendarStyleSheet)
 
 
 class Window(QMainWindow):
@@ -63,6 +69,9 @@ class Window(QMainWindow):
         self.button_swap = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
                                                        function=self.swap_currencies)
 
+        self.button_swap2 = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
+                                                       function=self.swap_currencies)                                               
+
         # calendars for setting dates
         self.calendar_start_label = QLabel("Data początkowa")
         self.calendar_start_label.setStyleSheet(labelStyleSheet)
@@ -71,13 +80,20 @@ class Window(QMainWindow):
         self.calendar_stop_label.setStyleSheet(labelStyleSheet)
         self.calendar_stop_label.setObjectName("graph_fields")
 
+        calendar_start = backend_funcs.create_calendar(Calendar)
+        calendar_stop = backend_funcs.create_calendar(Calendar)
+
         self.calendar_start = QtWidgets.QDateEdit()
         self.calendar_start.setCalendarPopup(True)
+        self.calendar_start.setDisplayFormat("dd-MM-yyyy")  
         self.calendar_start.setStyleSheet(DateEditStyleSheet)
+        self.calendar_start.setCalendarWidget(calendar_start)
 
         self.calendar_stop = QtWidgets.QDateEdit()
         self.calendar_stop.setCalendarPopup(True)
+        self.calendar_stop.setDisplayFormat("dd-MM-yyyy")  
         self.calendar_stop.setStyleSheet(DateEditStyleSheet)
+        self.calendar_stop.setCalendarWidget(calendar_stop)
 
         # methods
         self.method_list = ["Odchylenie standardowe", "Grupowanie przestrzenne", "Las izolacji",
@@ -106,6 +122,15 @@ class Window(QMainWindow):
         self.currencies2 = QComboBox()
         self.currencies2.setObjectName("graph_fields")
         self.currencies2.setStyleSheet(comboBoxStyleSheet)
+
+        # currencies 2
+        self.currencies_label2 = QLabel("Waluty")
+        self.currencies_label2.setStyleSheet(labelStyleSheet)
+        self.currencies12 = QComboBox()
+        self.currencies12.setStyleSheet(comboBoxStyleSheet)
+
+        self.currencies22 = QComboBox()
+        self.currencies22.setStyleSheet(comboBoxStyleSheet)
 
         self.title_label = QLabel("Tytuł wykresu")
         self.title_label.setObjectName("graph_title")
@@ -164,12 +189,13 @@ class Window(QMainWindow):
         for flag, currency in zip(flag_list, currencies_list):
             self.currencies1.addItem(QIcon(flag), currency)
             self.currencies2.addItem(QIcon(flag), currency)
-
-        # self.currencies1.setCurrentText(self.settings_pack["currencies1"])
-        # self.currencies2.setCurrentText(self.settings_pack["currencies2"])
+            self.currencies12.addItem(QIcon(flag), currency)
+            self.currencies22.addItem(QIcon(flag), currency)
 
         self.currencies1.setCurrentIndex(int(self.settings_pack["currencies1"]))
         self.currencies2.setCurrentIndex(int(self.settings_pack["currencies2"]))
+        self.currencies12.setCurrentIndex(int(self.settings_pack["currencies1"]))
+        self.currencies22.setCurrentIndex(int(self.settings_pack["currencies2"]))
 
         if self.settings_pack["date_checkbox"] == "False":
             self.calendar_start.setDate(backend.string_to_date(self.settings_pack["date_start"]))
@@ -178,10 +204,7 @@ class Window(QMainWindow):
             self.calendar_start.setDate(QDate.currentDate().addYears(-1))
             self.calendar_stop.setDate(QDate.currentDate())
 
-        # list for intervals
-        interval_image = ["numbers/" + name + ".png" for name in self.interval_list]
-
-        for image, interval in zip(interval_image, self.interval_list):
+        for interval in list(self.interval_list):
             self.interval.addItem(interval)
 
         # self.interval.setCurrentText(self.settings_pack["intervals"])
@@ -232,7 +255,9 @@ class Window(QMainWindow):
         self.tab_main.layout.addWidget(self.interval, 11, 0, 1, 2)
         self.tab_main.layout.addWidget(self.method_label, 12, 0, 1, 2, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.methods, 13, 0, 1, 2)
+
         self.tab_main.layout.addWidget(self.button_plot, 14, 2, alignment=Qt.AlignHCenter)
+
         self.tab_main.layout.addWidget(self.graph_preview, 2, 2, 12, 1)
 
         self.tab_main.setStyleSheet(mainTabStyleSheet)
@@ -251,6 +276,9 @@ class Window(QMainWindow):
         tmp = self.currencies1.currentText()
         self.currencies1.setCurrentText(self.currencies2.currentText())
         self.currencies2.setCurrentText(tmp)
+        tmp2 = self.currencies12.currentText()
+        self.currencies12.setCurrentText(self.currencies22.currentText())
+        self.currencies22.setCurrentText(tmp2)
 
     def important_add_tab(self):
         tab = self.tabs.currentWidget()
