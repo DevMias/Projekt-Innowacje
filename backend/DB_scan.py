@@ -4,33 +4,39 @@ from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
 
 
-def db_scan(data: pd.arrays, target: str, date: str, multiplayer=0.5) -> pd.arrays:
+# returning list because now we have two series
+
+
+def db_scan(datas: list = None, target: str = None, date: str = None, multiplayer=0.5):
+    if datas is None:
+        return
+
+    ad_datas = list([deepcopy(i) for i in datas if i is not None])
+
+    if not len(ad_datas):
+        return
+
+    target_cols = list([data[[date, target]].copy() for data in ad_datas])
+
     multiplayer = 1 - multiplayer + 0.01
-    epsilon = 16 / data.count().values[0]
+    epsilon = 16 / ad_datas[0].count().values[0]
     epsilon *= multiplayer
-    ad_data = deepcopy(data)
 
-    target_col = ad_data[[target]].copy()
+    # loop to get two series of db_scan
+    for i in range(len(target_cols)):
+        scaler = StandardScaler()
+        np_scaled = scaler.fit_transform(target_cols[i][target].values.reshape(-1, 1))
+        data_scaled = pd.DataFrame(np_scaled)
 
-    scaler = StandardScaler()
-    np_scaled = scaler.fit_transform(target_col.values.reshape(-1, 1))
-    data_scaled = pd.DataFrame(np_scaled)
+        dbscan = DBSCAN(eps=epsilon, min_samples=5)
 
-    dbscan = DBSCAN(eps=epsilon, min_samples=5)
+        dbscan.fit(data_scaled)
+        temp = dict({'Anomaly_after_method': dbscan.fit_predict(data_scaled)})
 
-    dbscan.fit(data_scaled)
-    target_col['Anomaly_after_method'] = dbscan.fit_predict(data_scaled)
+        target_cols[i].loc[temp['Anomaly_after_method'] != -1, 'Anomaly'] = False
+        target_cols[i].loc[temp['Anomaly_after_method'] == -1, 'Anomaly'] = True
 
-    target_col.loc[target_col['Anomaly_after_method'] != -1, 'Anomaly'] = False
-    target_col.loc[target_col['Anomaly_after_method'] == -1, 'Anomaly'] = True
+        target_cols[i].rename(columns={date: "Date"}, inplace=True)
+        target_cols[i].rename(columns={target: "Exchange"}, inplace=True)
 
-    target_col['Date'] = data[date]
-    target_col = target_col.rename(columns={target: "Exchange"})
-
-    target_col = target_col.drop('Anomaly_after_method', axis=1)
-
-    target_col.insert(0, 'Date', target_col.pop('Date'))
-    target_col.insert(1, 'Exchange', target_col.pop('Exchange'))
-    target_col.insert(2, 'Anomaly', target_col.pop('Anomaly'))
-
-    return target_col
+    return target_cols[0] if len(target_cols) == 1 else target_cols
