@@ -18,6 +18,8 @@ from backend.CombinedMethods import all_methods_combined
 
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QIcon
+
+from enums.backend_enums import PopupError
 from front.styles import app_logo
 
 '''
@@ -199,44 +201,47 @@ def download_csv(filepath: str, separator=',', from_file=False) -> pd.arrays:
         return None, ""
 
 
-def run_method(data: pd.arrays, target: str, date: str, method: str, parameter=0):
+def run_method(datas: list, target: str, date: str, method: str, parameter=0):
     if method == "Odchylenie standardowe":
-        return standard_deviation(data, target, date)
+        return standard_deviation(datas[0], target, date)
     if method == "Grupowanie przestrzenne":
-        return db_scan(data, target, date, parameter)
+        return db_scan(datas[0], target, date, parameter)
     if method == "Las izolacji":
-        return isolation_forest(data, target, date, parameter)
+        return isolation_forest(datas[0], target, date, parameter)
     if method == "Lokalna wartość odstająca":
-        return local_outlier(data, target, date, parameter)
+        return local_outlier(datas=datas, target=target, date=date, contamination=parameter)
     if method == "Większościowa":
-        return majority(data, target, date)
+        return majority(datas[0], target, date)
     if method == "Autoenkoder":
-        return auto_encoder(data, target, date)
+        return auto_encoder(datas[0], target, date)
     if method == "Wszystkie":
-        return all_methods_combined(data, target, date)
+        return all_methods_combined(datas=datas, target=target, date=date)
 
 
-def input_errors(currency1, currency2, start_date, stop_date):
+def input_errors(currency_list: list = None, start_date: QDate = None, stop_date: QDate = None, generate_popup: bool = True):
+    ''' This class should always return some kind of error, it is called when csv file is not specified in main.py
+        There is a test class for this function in tests.backend_tests.py (feel free to add more tests) and enum class in enums.backend_enums.py'''
     my_errors = ""
+    if currency_list is None or stop_date is None or stop_date is None:
+        my_errors += PopupError.MISSING_PARAMETERS
+    else:
+        list_len = len(currency_list)
+        if not list_len: my_errors = PopupError.EMPTY_CURRENCY_LIST # check if empty
+        elif list_len % 2: my_errors = PopupError.NO_CURRENCY_PAIR  # check if even
+        for curr_1, curr_2 in zip(currency_list[::2], currency_list[1::2]): # it will take i and i+1 element of currency_list
+            if curr_1 == curr_2: my_errors = PopupError.NOT_UNIQUE_CURRENCIES; break
+        if list_len == 4 and currency_list[0:2] == currency_list[2:4]: my_errors = PopupError.NOT_UNIQUE_CURRENCIES # write universally in future
 
-    if currency1 == currency2:
-        my_errors = "Podane waluty są takie same\n"
+        if start_date.year() > stop_date.year(): my_errors += PopupError.DEND_BEFORE_DSTART
+        elif start_date.year() == stop_date.year():
+            if start_date.month() > stop_date.month(): my_errors += PopupError.DEND_BEFORE_DSTART
+            elif start_date.month() == stop_date.month():
+                if start_date.day() > stop_date.day(): my_errors += PopupError.DEND_BEFORE_DSTART
+                elif start_date.day() == stop_date.day(): my_errors += PopupError.DEND_BEFORE_DSTART
 
-    if start_date.year() > stop_date.year():
-        my_errors += "Data początkowa jest datą pózniejszą niż końcowa\n"
-    elif start_date.year() == stop_date.year():
-        if start_date.month() > stop_date.month():
-            my_errors += "Data początkowa jest datą pózniejszą niż końcowa\n"
-        elif start_date.month() == stop_date.month():
-            if start_date.day() > stop_date.day():
-                my_errors += "Data początkowa jest datą pózniejszą niż końcowa\n"
-            elif start_date.day() == stop_date.day():
-                my_errors += "Data początkowa jest identyczna jak końcowa\n"
+        if start_date.toPyDate() > datetime.date.today(): my_errors += PopupError.NOT_EXIST_DATE
+        elif stop_date.year() < 1970: my_errors += PopupError.NO_DATA_FOR_DATE
 
-    if start_date.toPyDate() > datetime.date.today():
-        my_errors += "Data początkowa jest datą która jeszcze nie nastąpiła\n"
-
-    if my_errors == "" or stop_date.year() < 1970:
-        my_errors += "Brak danych dla wybranej daty\n"
-
-    error("Błedne dane", my_errors)
+    if my_errors == "": my_errors += PopupError.UNEXPECTED_ERROR
+    if generate_popup: error("Błedne dane", my_errors)
+    return my_errors
