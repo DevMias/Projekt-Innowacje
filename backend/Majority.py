@@ -18,26 +18,26 @@ def majority(datas: list = None, target: str = None, date: str = None):
     results = list()
 
     for i in range(len(all_methods)):
-        all_methods[i]['isolation_forest'] = isolation_forest(data_list[i], target, date)['Anomaly']
-        all_methods[i]['standard_deviation'] = standard_deviation(data_list[i], target, date)['Anomaly']
-        all_methods[i]['db_scan'] = db_scan(data_list[i], target, date)['Anomaly']
-        all_methods[i]['local_outlier'] = local_outlier(data_list[i], target, date)['Anomaly']
-        all_methods[i]['auto_encoder'] = auto_encoder(data_list[i], target, date)['Anomaly']
+        all_methods[i]['isolation_forest'] = isolation_forest(datas=[data_list[i]], target=target, date=date)['Anomaly']
+        all_methods[i]['standard_deviation'] = standard_deviation(datas=[data_list[i]], target=target, date=date)['Anomaly']
+        all_methods[i]['db_scan'] = db_scan(datas=[data_list[i]], target=target, date=date)['Anomaly']
+        all_methods[i]['local_outlier'] = local_outlier(datas=[data_list[i]], target=target, date=date)['Anomaly']
+        all_methods[i]['auto_encoder'] = auto_encoder(datas=[data_list[i]], target=target, date=date)['Anomaly']
 
-        all_methods = all_methods.assign(Anomaly=False)
-        for x in range(all_methods.index.min(), all_methods.index.max()):
+        all_methods[i] = all_methods[i].assign(Anomaly=False)
+        for x in range(all_methods[i].index.min(), all_methods[i].index.max()):
             counter = 0
             number_of_methods = 5
 
-            methods_results = [all_methods['isolation_forest'][x], all_methods['standard_deviation'][x],
-                               all_methods['db_scan'][x], all_methods['local_outlier'][x], all_methods['auto_encoder'][x]]
+            methods_results = [all_methods[i]['isolation_forest'][x], all_methods[i]['standard_deviation'][x],
+                               all_methods[i]['db_scan'][x], all_methods[i]['local_outlier'][x], all_methods[i]['auto_encoder'][x]]
 
             for result in methods_results:
                 if result:
                     counter += 1
 
             if counter / number_of_methods >= 0.5:
-                all_methods.loc[x, 'Anomaly'] = True
+                all_methods[i].loc[x, 'Anomaly'] = True
 
         result = pd.DataFrame(data_list[i][date])
         result['Exchange'] = all_methods[i][target].copy()

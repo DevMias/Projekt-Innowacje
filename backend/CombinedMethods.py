@@ -16,11 +16,11 @@ def all_methods_combined(datas: list = None, target: str = 'Exchange', date: str
     results = list()
 
     for i in range(len(all_methods)):
-        all_methods[i]['isolation_forest'] = isolation_forest(data_list[i], target, date)['Anomaly']
-        all_methods[i]['standard_deviation'] = standard_deviation(data_list[i], target, date)['Anomaly']
-        all_methods[i]['db_scan'] = db_scan(data_list[i], target, date)['Anomaly']
+        all_methods[i]['isolation_forest'] = isolation_forest(datas=[data_list[i]], target=target, date=date)['Anomaly']
+        all_methods[i]['standard_deviation'] = standard_deviation(datas=[data_list[i]], target=target, date=date)['Anomaly']
+        all_methods[i]['db_scan'] = db_scan(datas=[data_list[i]], target=target, date=date)['Anomaly']
         all_methods[i]['local_outlier'] = local_outlier(datas=[data_list[i]], target=target, date=date)['Anomaly']
-        all_methods[i]['auto_encoder'] = auto_encoder(data_list[i], target, date)['Anomaly']
+        all_methods[i]['auto_encoder'] = auto_encoder(datas=[data_list[i]], target=target, date=date)['Anomaly']
 
         # create new column to store anomaly values
         anomalies = list(["Anomaly_1", "Anomaly_2", "Anomaly_3", "Anomaly_4", "Anomaly_5"])

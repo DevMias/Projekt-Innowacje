@@ -203,17 +203,17 @@ def download_csv(filepath: str, separator=',', from_file=False) -> pd.arrays:
 
 def run_method(datas: list, target: str, date: str, method: str, parameter=0):
     if method == "Odchylenie standardowe":
-        return standard_deviation(datas[0], target, date)
+        return standard_deviation(datas=datas, target=target, date=date)
     if method == "Grupowanie przestrzenne":
-        return db_scan(datas[0], target, date, parameter)
+        return db_scan(datas=datas, target=target, date=date, multiplayer=parameter)
     if method == "Las izolacji":
-        return isolation_forest(datas[0], target, date, parameter)
+        return isolation_forest(datas=datas, target=target, date=date, contamination=parameter)
     if method == "Lokalna wartość odstająca":
         return local_outlier(datas=datas, target=target, date=date, contamination=parameter)
     if method == "Większościowa":
-        return majority(datas[0], target, date)
+        return majority(datas=datas, target=target, date=date)
     if method == "Autoenkoder":
-        return auto_encoder(datas[0], target, date)
+        return auto_encoder(datas=datas, target=target, date=date)
     if method == "Wszystkie":
         return all_methods_combined(datas=datas, target=target, date=date)
 
