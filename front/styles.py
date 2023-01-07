@@ -160,15 +160,17 @@ QLineEdit {
 labelStyleSheet_red = """
 QLabel {
     padding: 2px;
-    font: bold 15px;
-    color: white;
+    font: bold 22px;
+    text-transform:uppercase;
+    color: red;
 }
 """
 
 labelStyleSheet_orange = """
 QLabel {
     padding: 2px;
-    font: bold 15px;
+    font: bold 22px;
+    text-transform:uppercase;
     color: orange;
 }
 """
@@ -176,7 +178,8 @@ QLabel {
 labelStyleSheet_yellow = """
 QLabel {
     padding: 2px;
-    font: bold 15px;
+    font: bold 22px;
+    text-transform:uppercase;
     color: #FEE227;
 }
 """
@@ -184,7 +187,8 @@ QLabel {
 labelStyleSheet_light_green = """
 QLabel {
     padding: 2px;
-    font: bold 15px;
+    font: bold 22px;
+    text-transform:uppercase;
     color: lightGreen;
 }
 """
@@ -198,7 +202,8 @@ settingsLayoutStyleSheet = """
 labelStyleSheet_green = """
 QLabel {
     padding: 2px;
-    font: bold 15px;
+    font: bold 22px;
+    text-transform:uppercase;
     color: green;
 }
 """
