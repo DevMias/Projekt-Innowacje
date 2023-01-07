@@ -3,27 +3,31 @@ from copy import deepcopy
 import numpy as np
 
 
-def standard_deviation(data: pd.arrays, target: str, date: str) -> pd.arrays:
-    ad_data = deepcopy(data)
-    target_col = ad_data[[target]].copy()
+def standard_deviation(datas: list = None, target: str = None, date: str = None):
+    if datas is None:
+        return
 
-    mean = np.mean(target_col[target])
-    sd = np.std(target_col[target])
+    ad_datas = list([deepcopy(i) for i in datas if i is not None])
 
-    temp_anomalies = []
+    if not len(ad_datas):
+        return
 
-    for idx, x in enumerate(target_col[target]):
-        if x < mean - sd or x > mean + sd:
-            temp_anomalies.append(True)
-        else:
-            temp_anomalies.append(False)
+    target_cols = list([data[[date, target]].copy() for data in ad_datas])
 
-    target_col['Anomaly'] = temp_anomalies
-    target_col['Date'] = data[date]
-    target_col = target_col.rename(columns={target: "Exchange"})
+    for i in range(len(target_cols)):
+        mean = np.mean(target_cols[i][target])
+        sd = np.std(target_cols[i][target])
 
-    target_col.insert(0, 'Date', target_col.pop('Date'))
-    target_col.insert(1, 'Exchange', target_col.pop('Exchange'))
-    target_col.insert(2, 'Anomaly', target_col.pop('Anomaly'))
+        temp_anomalies = []
 
-    return target_col
+        for idx, x in enumerate(target_cols[i][target]):
+            if x < mean - sd or x > mean + sd:
+                temp_anomalies.append(True)
+            else:
+                temp_anomalies.append(False)
+
+        target_cols[i]['Anomaly'] = temp_anomalies
+        target_cols[i].rename(columns={date: "Date"}, inplace=True)
+        target_cols[i].rename(columns={target: "Exchange"}, inplace=True)
+
+    return target_cols[0] if len(target_cols) == 1 else target_cols
