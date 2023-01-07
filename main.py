@@ -561,7 +561,7 @@ class Window(QMainWindow):
             return
 
         if csv is None:
-            backend.input_errors(currency1, currency2, self.calendar_start.date(), self.calendar_stop.date())
+            backend.input_errors(list([ currency1, currency2 ]), self.calendar_start.date(), self.calendar_stop.date())
         else:
             self.create_graph(csv=csv, method=method, date=date, target=target, title=title, currency1=currency1,
                               currency2=currency2)

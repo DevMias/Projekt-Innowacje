@@ -1,83 +1,90 @@
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+from copy import deepcopy
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras import Model, Sequential
 from tensorflow.keras.layers import Dense, Dropout
 from sklearn.model_selection import train_test_split
 
 
-def auto_encoder(data: pd.arrays, target: str, date: str, split_perc=0.5):
-    features = data[[target]].copy()
-    target_data = data[[target]].copy()
+def auto_encoder(datas: list = None, target: str = None, date: str = None, split_perc=0.5):
+    if datas is None:
+        return
 
-    x_train, x_test, y_train, y_test = train_test_split(
-        features, target_data, test_size=split_perc
-    )
+    ad_datas = list([deepcopy(i) for i in datas if i is not None])
 
-    # use case is novelty detection so use only the normal data
-    # for training
-    train_index = y_train[y_train == 1].index
-    train_data = x_train.loc[train_index]
+    if not len(ad_datas):
+        return
 
-    # min max scale the input data
-    min_max_scaler = MinMaxScaler(feature_range=(0, 1))
-    x_train_scaled = min_max_scaler.fit_transform(train_data.copy())
-    x_test_scaled = min_max_scaler.transform(features.copy())
+    target_cols = list([data[[date, target]].copy() for data in ad_datas])
 
-    class AutoEncoder(Model):
+    for i in range(len(target_cols)):
+        features = ad_datas[i][[target]].copy()
+        target_data = ad_datas[i][[target]].copy()
 
-        def __init__(self, output_units, code_size=8):
-            super().__init__()
-            self.encoder = Sequential([
-                Dense(64, activation='relu'),
-                Dropout(0.1),
-                Dense(32, activation='relu'),
-                Dropout(0.1),
-                Dense(16, activation='relu'),
-                Dropout(0.1),
-                Dense(code_size, activation='relu')
-            ])
-            self.decoder = Sequential([
-                Dense(16, activation='relu'),
-                Dropout(0.1),
-                Dense(32, activation='relu'),
-                Dropout(0.1),
-                Dense(64, activation='relu'),
-                Dropout(0.1),
-                Dense(output_units, activation='sigmoid')
-            ])
+        x_train, x_test, y_train, y_test = train_test_split(
+            features, target_data, test_size=split_perc
+        )
 
-        def call(self, inputs):
-            encoded = self.encoder(inputs)
-            decoded = self.decoder(encoded)
-            return decoded
+        # use case is novelty detection so use only the normal data
+        # for training
+        train_index = y_train[y_train == 1].index
+        train_data = x_train.loc[train_index]
 
-    model = AutoEncoder(output_units=x_train_scaled.shape[1])
-    # configurations of model
-    model.compile(loss='msle', metrics=['mse'], optimizer='adam')
+        # min max scale the input data
+        min_max_scaler = MinMaxScaler(feature_range=(0, 1))
+        x_train_scaled = min_max_scaler.fit_transform(train_data.copy())
+        x_test_scaled = min_max_scaler.transform(features.copy())
 
-    threshold = find_threshold(model, x_train_scaled)
-    predictions = get_predictions(model, x_test_scaled, threshold)
+        class AutoEncoder(Model):
 
-    result = data[[date]].copy()
-    result['Exchange'] = data[target]
-    result['Anomaly_after_method'] = predictions.copy()
-    result = result.rename(columns={date: "Date"})
+            def __init__(self, output_units, code_size=8):
+                super().__init__()
+                self.encoder = Sequential([
+                    Dense(64, activation='relu'),
+                    Dropout(0.1),
+                    Dense(32, activation='relu'),
+                    Dropout(0.1),
+                    Dense(16, activation='relu'),
+                    Dropout(0.1),
+                    Dense(code_size, activation='relu')
+                ])
+                self.decoder = Sequential([
+                    Dense(16, activation='relu'),
+                    Dropout(0.1),
+                    Dense(32, activation='relu'),
+                    Dropout(0.1),
+                    Dense(64, activation='relu'),
+                    Dropout(0.1),
+                    Dense(output_units, activation='sigmoid')
+                ])
 
-    result.loc[result['Anomaly_after_method'] != 1, 'Anomaly'] = True
-    result.loc[result['Anomaly_after_method'] == 1, 'Anomaly'] = False
-    result = result.drop('Anomaly_after_method', axis=1)
+            def call(self, inputs):
+                encoded = self.encoder(inputs)
+                decoded = self.decoder(encoded)
+                return decoded
 
-    idx = result.index.min()
+        model = AutoEncoder(output_units=x_train_scaled.shape[1])
+        # configurations of model
+        model.compile(loss='msle', metrics=['mse'], optimizer='adam')
 
-    result.loc[idx, 'Anomaly'] = True
+        threshold = find_threshold(model, x_train_scaled)
+        predictions = get_predictions(model, x_test_scaled, threshold)
 
-    result.insert(0, 'Date', result.pop('Date'))
-    result.insert(1, 'Exchange', result.pop('Exchange'))
-    result.insert(2, 'Anomaly', result.pop('Anomaly'))
+        temp = dict({'Anomaly_after_method': predictions.copy()})
 
-    return result
+        target_cols[i].loc[temp['Anomaly_after_method'] != 1, 'Anomaly'] = True
+        target_cols[i].loc[temp['Anomaly_after_method'] == 1, 'Anomaly'] = False
+
+        target_cols[i].rename(columns={date: "Date"}, inplace=True)
+        target_cols[i].rename(columns={target: "Exchange"}, inplace=True)
+
+        idx = target_cols[i].index.min()
+
+        target_cols[i].loc[idx, 'Anomaly'] = True
+
+    return target_cols[0] if len(target_cols) == 1 else target_cols
 
 
 def find_threshold(model, x_train_scaled):

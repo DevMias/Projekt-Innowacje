@@ -100,7 +100,7 @@ class Graph:
         self.graph.plot(self.csv.index, self.csv[self.target], pen=self.pen)
 
         if not self.with_anomalies:
-            anomaly_detected_data = run_method(self.csv, self.target, self.date, self.method,
+            anomaly_detected_data = run_method([self.csv], self.target, self.date, self.method,
                                                self.slider.value() / 100 / self.multiplayer)
         else:
             anomaly_detected_data = self.csv
@@ -171,7 +171,7 @@ class Graph:
 
             anomaly_detected_data = None
             if self.checkbox.isChecked() or self.refresh:
-                anomaly_detected_data = run_method(self.csv[x1:x2], self.target, self.date, self.method,
+                anomaly_detected_data = run_method([self.csv[x1:x2]], self.target, self.date, self.method,
                                                    self.slider.value() / 100 / self.multiplayer)
 
             if self.method == "Wszystkie":

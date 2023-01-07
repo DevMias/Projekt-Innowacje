@@ -6,35 +6,42 @@ from backend.StandardDeviation import standard_deviation
 from backend.AutoEncoder import auto_encoder
 
 
-def majority(data: pd.arrays, target: str, date: str):
-    all_methods = data.copy()
-    all_methods['isolation_forest'] = isolation_forest(data, target, date)['Anomaly']
-    all_methods['standard_deviation'] = standard_deviation(data, target, date)['Anomaly']
-    all_methods['db_scan'] = db_scan(data, target, date)['Anomaly']
-    all_methods['local_outlier'] = local_outlier(data, target, date)['Anomaly']
-    all_methods['auto_encoder'] = auto_encoder(data, target, date)['Anomaly']
+def majority(datas: list = None, target: str = None, date: str = None):
 
-    all_methods = all_methods.assign(Anomaly=False)
-    for x in range(all_methods.index.min(), all_methods.index.max()):
-        counter = 0
-        number_of_methods = 5
+    if datas is None:
+        return
+    data_list = list([i for i in datas if i is not None])  # delete None's from input
+    if not len(data_list):
+        return pd.DataFrame()  # leave if no data
+    all_methods = list([data[[date, target]].copy() for data in data_list])
 
-        methods_results = [all_methods['isolation_forest'][x], all_methods['standard_deviation'][x],
-                           all_methods['db_scan'][x], all_methods['local_outlier'][x], all_methods['auto_encoder'][x]]
+    results = list()
 
-        for result in methods_results:
-            if result:
-                counter += 1
+    for i in range(len(all_methods)):
+        all_methods[i]['isolation_forest'] = isolation_forest(datas=[data_list[i]], target=target, date=date)['Anomaly']
+        all_methods[i]['standard_deviation'] = standard_deviation(datas=[data_list[i]], target=target, date=date)['Anomaly']
+        all_methods[i]['db_scan'] = db_scan(datas=[data_list[i]], target=target, date=date)['Anomaly']
+        all_methods[i]['local_outlier'] = local_outlier(datas=[data_list[i]], target=target, date=date)['Anomaly']
+        all_methods[i]['auto_encoder'] = auto_encoder(datas=[data_list[i]], target=target, date=date)['Anomaly']
 
-        if counter / number_of_methods >= 0.5:
-            all_methods.loc[x, 'Anomaly'] = True
+        all_methods[i] = all_methods[i].assign(Anomaly=False)
+        for x in range(all_methods[i].index.min(), all_methods[i].index.max()):
+            counter = 0
+            number_of_methods = 5
 
-    result = pd.DataFrame(data[date])
-    result['Exchange'] = all_methods[target].copy()
-    result['Anomaly'] = all_methods['Anomaly'].copy()
+            methods_results = [all_methods[i]['isolation_forest'][x], all_methods[i]['standard_deviation'][x],
+                               all_methods[i]['db_scan'][x], all_methods[i]['local_outlier'][x], all_methods[i]['auto_encoder'][x]]
 
-    result.insert(0, 'Date', result.pop('Date'))
-    result.insert(1, 'Exchange', result.pop('Exchange'))
-    result.insert(2, 'Anomaly', result.pop('Anomaly'))
+            for result in methods_results:
+                if result:
+                    counter += 1
 
-    return result
+            if counter / number_of_methods >= 0.5:
+                all_methods[i].loc[x, 'Anomaly'] = True
+
+        result = pd.DataFrame(data_list[i][date])
+        result['Exchange'] = all_methods[i][target].copy()
+        result['Anomaly'] = all_methods[i]['Anomaly'].copy()
+        results.append(result)
+
+    return results[0] if len(results) == 1 else results

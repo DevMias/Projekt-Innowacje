@@ -3,31 +3,36 @@ from copy import deepcopy
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import IsolationForest
 
+# returning list because now we have two series
 
-def isolation_forest(data: pd.arrays, target: str, date: str, contamination=0.2):
-    ad_data = deepcopy(data)
 
-    target_col = ad_data[[target]].copy()
+def isolation_forest(datas: list, target: str, date: str, contamination=0.2):
+    if datas is None:
+        return
 
-    scaler = StandardScaler()
-    np_scaled = scaler.fit_transform(target_col.values.reshape(-1, 1))
-    data_scaled = pd.DataFrame(np_scaled)
+    ad_datas = list([deepcopy(i) for i in datas if i is not None])
 
-    forest = IsolationForest(n_estimators=100, contamination=contamination)
+    if not len(ad_datas):
+        return
 
-    forest.fit(data_scaled)
-    target_col['Anomaly_after_method'] = forest.fit_predict(data_scaled)
+    target_cols = list([data[[date, target]].copy() for data in ad_datas])
 
-    target_col.loc[target_col['Anomaly_after_method'] != -1, 'Anomaly'] = False
-    target_col.loc[target_col['Anomaly_after_method'] == -1, 'Anomaly'] = True
+    # loop to get two series of isolation forest
+    for i in range(len(target_cols)):
 
-    target_col['Date'] = data[date]
-    target_col = target_col.rename(columns={target: "Exchange"})
+        scaler = StandardScaler()
+        np_scaled = scaler.fit_transform(target_cols[i][target].values.reshape(-1, 1))
+        data_scaled = pd.DataFrame(np_scaled)
 
-    target_col = target_col.drop('Anomaly_after_method', axis=1)
+        forest = IsolationForest(n_estimators=100, contamination=contamination)
 
-    target_col.insert(0, 'Date', target_col.pop('Date'))
-    target_col.insert(1, 'Exchange', target_col.pop('Exchange'))
-    target_col.insert(2, 'Anomaly', target_col.pop('Anomaly'))
+        forest.fit(data_scaled)
+        temp = dict({'Anomaly_after_method': forest.fit_predict(data_scaled)})
 
-    return target_col
+        target_cols[i].loc[temp['Anomaly_after_method'] != -1, 'Anomaly'] = False
+        target_cols[i].loc[temp['Anomaly_after_method'] == -1, 'Anomaly'] = True
+
+        target_cols[i].rename(columns={date: "Date"}, inplace=True)
+        target_cols[i].rename(columns={target: "Exchange"}, inplace=True)
+
+    return target_cols[0] if len(target_cols) == 1 else target_cols
