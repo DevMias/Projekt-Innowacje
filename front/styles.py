@@ -1,16 +1,21 @@
-font_color = 'red'
+font_color = 'white' # kolor czcionki
+background_color = 'rgb(50, 50, 50)' # kolor tła
+main_tab_color = 'rgb(57, 57, 57)' # kolor tła zakładek
+input_border_color = 'rgb(24, 24, 24)' # kolor borderów wokół inputów
+input_bg_color = 'rgb(75, 78, 82)' # kolor tła inputów
 hover_color = 'rgb(28, 185, 199)'
-gray_color = 'rgb(75, 78, 82)'
+font_size_15 = '15px'
 font_size_20 = '20px'
 font_size_30 = '30px'
-font_size_15 = '15px'
+
+
 buttonStyleSheet = f"""
 QPushButton {{ 
-    background-color: rgb(75, 78, 82);
+    background-color: {input_bg_color};
     color: {font_color};
     padding: 2px;
     font: {font_size_20};
-    border: 1px inset rgb(24, 26, 25);
+    border: 1px inset {input_border_color};
     border-radius: 10px;
     width:60px;
 }}
@@ -27,11 +32,11 @@ QPushButton:hover {{
 
 swapButtonStyleSheet = f"""
 QPushButton {{
-    background-color: {gray_color};
+    background-color: {input_bg_color};
     color:{font_color};
     padding: 15px;
     font: {font_size_20};
-    border: 1px inset rgb(24, 26, 25);
+    border: 1px inset {input_border_color};
     border-radius: 10px;
 }}
 QPushButton:hover {{
@@ -41,11 +46,11 @@ QPushButton:hover {{
 
 generatePlotButtonStyleSheet = f"""
 QPushButton {{ 
-    background-color: {gray_color};
+    background-color: {input_bg_color};
     color:{font_color};
     padding: 10px;
     font: bold {font_size_20};
-    border: 1px inset rgb(24, 26, 25);
+    border: 1px inset {input_border_color};
     border-radius: 10px;
 }}
 QPushButton:hover {{
@@ -58,9 +63,9 @@ QDateEdit
 {{
     color:{font_color};
     border-radius: 3px;
-    border: 1px solid rgb(24, 26, 25);
+    border: 1px solid {input_border_color};
     font: {font_size_20};
-    background-color:rgb(75, 78, 82);
+    background-color:{input_bg_color};
     text-align:center;
     margin-left: 5px;
     padding:4px;
@@ -70,8 +75,8 @@ QDateEdit
     max-width:600px;
     min-width:400px;
     text-align:center;
-    background-color:{gray_color};
-    border: 1px solid rgb(24, 26, 25);
+    background-color:{input_bg_color};
+    border: 1px solid {input_border_color};
 }}
 
 QDateEdit::down-arrow
@@ -108,11 +113,11 @@ QCalendarWidget QAbstractItemView:enabled{{
 comboBoxStyleSheet = f"""
 QComboBox {{
     color:{font_color};
-    border: 1px solid rgb(24, 26, 25);
+    border: 1px solid {input_border_color};
     padding: 1px 18px 1px 3px;
     min-width: 6em;
     font: 18px;
-    background-color: rgb(75, 78, 82);
+    background-color: {input_bg_color};
     margin-left: 5px;
     padding:4px;
 }}
@@ -123,8 +128,8 @@ QComboBox QAbstractItemView{{ /* Stylowanie drop-down menu */
     max-width:500px;
     min-width:500px;
     text-align:center;  
-    border: 1px solid rgb(24, 26, 25);
-    background-color:{gray_color};
+    border: 1px solid {input_border_color};
+    background-color:{input_bg_color};
 }}
 QComboBox::down-arrow {{
     image: url(icons/arrow_down.png);
@@ -138,7 +143,7 @@ labelStyleSheet = f"""
 QLabel {{
     border: 0;
     padding: 2px;
-    font: bold {font_color};
+    font: bold {font_size_20};
     text-transform:uppercase;
     color:{font_color};
 }}
@@ -228,7 +233,7 @@ QLabel {{
 
 mainTabStyleSheet = f"""
     QWidget {{
-        background-color: #393939;
+        background-color: {main_tab_color};
     }}
     QTabWidget{{
         border:2px solid #939393;
@@ -260,7 +265,7 @@ mainTabStyleSheet = f"""
 windowStyleSheet = f"""
 QWidget {{
     color:{font_color};
-    background-color: #323232;
+    background-color: {background_color};
     font-family: "Calibri", Times, serif;
 }}
 QWidget:hover{{
