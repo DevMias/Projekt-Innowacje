@@ -13,7 +13,7 @@ QPushButton:hover {
 }
 #year_checkbox{
     font-size:26px;
-    color: red;
+    color: white;
     text-transform: uppercase;
     font-family: "Calibri", Times, serif;
 }
@@ -110,11 +110,13 @@ QComboBox {
     margin-left: 5px;
     padding:4px;
 }
-
+QComboBox QAbstractItemView{ /* Stylowanie drop-down menu */
+    color:white;
+}
 #settings_element{
     max-width:500px;
     min-width:500px;
-    text-align:center;
+    text-align:center;  
     border: 1px solid rgb(24, 26, 25);
     background-color:rgb(75, 78, 82);
 }
@@ -159,7 +161,7 @@ labelStyleSheet_red = """
 QLabel {
     padding: 2px;
     font: bold 15px;
-    color: red;
+    color: white;
 }
 """
 
@@ -203,6 +205,7 @@ QLabel {
 
 labelStyleSheet_big = """
 QLabel {
+    color:white;
     padding: 2px;
     font: bold 30px;
 }
@@ -210,6 +213,7 @@ QLabel {
 
 labelStyleSheet_not_bold = """
 QLabel {
+    color:white;
     padding: 2px;
     font: 15px;
 }
@@ -248,8 +252,12 @@ mainTabStyleSheet = """
 
 windowStyleSheet = """
 QWidget {
+    color:white;
     background-color: #323232;
     font-family: "Calibri", Times, serif;
+}
+QWidget:hover{
+    color:black;
 }
 QLabel{
     border:0;

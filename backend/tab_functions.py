@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QLineEdit
     QCheckBox, QGridLayout
 from backend import backend_functions as backend
 from front.styles import buttonStyleSheet, labelStyleSheet, comboBoxStyleSheet, currencies_list, DateEditStyleSheet, \
-    flag_list, labelStyleSheet_big, labelStyleSheet_not_bold, important_icon, close_icon, settingsLayoutStyleSheet
+    flag_list, labelStyleSheet_big, labelStyleSheet_not_bold, important_icon, close_icon
 from main import Calendar 
 
 

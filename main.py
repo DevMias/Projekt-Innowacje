@@ -35,6 +35,7 @@ class Calendar(QCalendarWidget):
 class Window(QMainWindow):
     def __init__(self, parent=None):
         super(Window, self).__init__(parent, flags=Qt.WindowFlags())
+
         self.graph_preview = pg.PlotWidget()
         self.plot_variables = {}
         self.important_tabs = []
@@ -141,8 +142,8 @@ class Window(QMainWindow):
         self.title.setMaxLength(50)
 
         # window settings
-        self.setMinimumSize(1280, 720)
-        self.resize(1280, 720)
+        self.setMinimumSize(1280, 760)
+        self.resize(1280, 760)
         self.setWindowTitle("Detektor anomalii")
         self.setWindowIcon(QIcon(app_logo))
         self.setStyleSheet(windowStyleSheet)
