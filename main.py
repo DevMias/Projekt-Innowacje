@@ -5,7 +5,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5.QtWidgets import QAction, qApp, QApplication, QWidget, QCalendarWidget
+from PyQt5.QtWidgets import QAction, qApp, QApplication, QWidget, QCalendarWidget, QCheckBox
 from backend import backend_functions as backend
 from backend import tab_functions as backend_funcs
 from backend import graph_preview as backend_graph
@@ -66,12 +66,12 @@ class Window(QMainWindow):
                                                        function=self.create_plot)
         self.button_plot.setFixedWidth(300)
 
-        # swap currencies button
-        self.button_swap = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
+        # swap currencies_bottom button
+        self.swap_currencies_bottom = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
                                                        function=self.swap_currencies)
-
-        self.button_swap2 = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
-                                                       function=self.swap_currencies)                                               
+        # swap currencies_top button
+        self.swap_currencies_top = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
+                                                       function=self.swap_currencies2)                                               
 
         # calendars for setting dates
         self.calendar_start_label = QLabel("Data początkowa")
@@ -113,25 +113,27 @@ class Window(QMainWindow):
         self.interval = QComboBox()
         self.interval.setStyleSheet(comboBoxStyleSheet)
 
-        # currencies
-        self.currencies_label = QLabel("Waluty")
-        self.currencies_label.setObjectName("graph_fields")
-        self.currencies_label.setStyleSheet(labelStyleSheet)
-        self.currencies1 = QComboBox()
-        self.currencies1.setStyleSheet(comboBoxStyleSheet)
-        self.currencies1.setObjectName("graph_fields")
-        self.currencies2 = QComboBox()
-        self.currencies2.setObjectName("graph_fields")
-        self.currencies2.setStyleSheet(comboBoxStyleSheet)
+        # currencies_bottom
+        self.currencies_bottom_label = QLabel("Waluty")
+        self.currencies_bottom_label.setObjectName("graph_fields")
+        self.currencies_bottom_label.setStyleSheet(labelStyleSheet)
+        self.currencies_bottom_list1 = QComboBox()
+        self.currencies_bottom_list1.setStyleSheet(comboBoxStyleSheet)
+        self.currencies_bottom_list1.setObjectName("graph_fields")
+        self.currencies_bottom_list2 = QComboBox()
+        self.currencies_bottom_list2.setObjectName("graph_fields")
+        self.currencies_bottom_list2.setStyleSheet(comboBoxStyleSheet)
 
-        # currencies 2
-        self.currencies_label2 = QLabel("Waluty")
-        self.currencies_label2.setStyleSheet(labelStyleSheet)
-        self.currencies12 = QComboBox()
-        self.currencies12.setStyleSheet(comboBoxStyleSheet)
-
-        self.currencies22 = QComboBox()
-        self.currencies22.setStyleSheet(comboBoxStyleSheet)
+        # currencies top
+        self.currencies_top_label = QLabel("Waluty")
+        self.currencies_top_label.setObjectName("graph_fields")
+        self.currencies_top_label.setStyleSheet(labelStyleSheet)
+        self.currencies_top_list1 = QComboBox()
+        self.currencies_top_list1.setStyleSheet(comboBoxStyleSheet)
+        self.currencies_top_list1.setObjectName("graph_fields")
+        self.currencies_top_list2 = QComboBox()
+        self.currencies_top_list2.setObjectName("graph_fields")
+        self.currencies_top_list2.setStyleSheet(comboBoxStyleSheet)
 
         self.title_label = QLabel("Tytuł wykresu")
         self.title_label.setObjectName("graph_title")
@@ -188,15 +190,15 @@ class Window(QMainWindow):
 
         # lists for currencies
         for flag, currency in zip(flag_list, currencies_list):
-            self.currencies1.addItem(QIcon(flag), currency)
-            self.currencies2.addItem(QIcon(flag), currency)
-            self.currencies12.addItem(QIcon(flag), currency)
-            self.currencies22.addItem(QIcon(flag), currency)
+            self.currencies_bottom_list1.addItem(QIcon(flag), currency)
+            self.currencies_bottom_list2.addItem(QIcon(flag), currency)
+            self.currencies_top_list1.addItem(QIcon(flag), currency)
+            self.currencies_top_list2.addItem(QIcon(flag), currency)
 
-        self.currencies1.setCurrentIndex(int(self.settings_pack["currencies1"]))
-        self.currencies2.setCurrentIndex(int(self.settings_pack["currencies2"]))
-        self.currencies12.setCurrentIndex(int(self.settings_pack["currencies1"]))
-        self.currencies22.setCurrentIndex(int(self.settings_pack["currencies2"]))
+        self.currencies_bottom_list1.setCurrentIndex(int(self.settings_pack["currencies1"]))
+        self.currencies_bottom_list2.setCurrentIndex(int(self.settings_pack["currencies2"]))
+        self.currencies_top_list1.setCurrentIndex(int(self.settings_pack["currencies1"]))
+        self.currencies_top_list2.setCurrentIndex(int(self.settings_pack["currencies2"]))
 
         if self.settings_pack["date_checkbox"] == "False":
             self.calendar_start.setDate(backend.string_to_date(self.settings_pack["date_start"]))
@@ -220,11 +222,16 @@ class Window(QMainWindow):
         self.methods.setCurrentText(self.settings_pack["methods"])
         self.methods.setCurrentIndex(int(self.settings_pack["methods"]))
 
-        self.plot_variables = {"title": self.title, "currencies": (self.currencies1, self.currencies2),
+        self.plot_variables = {"title": self.title, "currencies": (self.currencies_bottom_list1, self.currencies_bottom_list2),
                                "dates": (self.calendar_start, self.calendar_stop), "interval": self.interval}
 
-        self.currencies1.currentIndexChanged.connect(self.graph_preview_change)
-        self.currencies2.currentIndexChanged.connect(self.graph_preview_change)
+        self.currencies_bottom_list1.currentIndexChanged.connect(self.graph_preview_change)
+        self.currencies_bottom_list2.currentIndexChanged.connect(self.graph_preview_change)
+
+
+        #tutaj prawdopodobnie drugi connect dla kolejnego grafu(podłączenie)
+
+
         self.interval.currentIndexChanged.connect(self.graph_preview_change)
         self.title.textChanged.connect(self.graph_preview_change)
         self.calendar_start.dateChanged.connect(self.graph_preview_change)
@@ -245,15 +252,15 @@ class Window(QMainWindow):
 
         self.tab_main.layout.addWidget(self.title, 1, 2, alignment=Qt.AlignHCenter)
 
-        self.tab_main.layout.addWidget(self.currencies_label, 3, 0, 1, 2, alignment=Qt.AlignHCenter)
-        self.tab_main.layout.addWidget(self.currencies1, 4, 0, 1, 1, alignment=Qt.AlignHCenter)
-        self.tab_main.layout.addWidget(self.currencies2, 5, 0, 1, 1, alignment=Qt.AlignHCenter)
-        self.tab_main.layout.addWidget(self.button_swap, 4, 1, 2, 1, alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.currencies_bottom_label, 3, 0, 1, 2, alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.currencies_bottom_list1, 4, 0, 1, 1, alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.currencies_bottom_list2, 5, 0, 1, 1, alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.swap_currencies_bottom, 4, 1, 2, 1, alignment=Qt.AlignHCenter)
 
-        self.tab_main.layout.addWidget(self.currencies_label2, 0, 0, 1, 2, alignment=Qt.AlignHCenter)
-        self.tab_main.layout.addWidget(self.currencies12, 1, 0, 1, 1 , alignment=Qt.AlignHCenter)
-        self.tab_main.layout.addWidget(self.currencies22, 2, 0, 1, 1 , alignment=Qt.AlignHCenter)
-        self.tab_main.layout.addWidget(self.button_swap2, 1, 1, 2, 1, alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.currencies_top_label, 0, 0, 1, 2, alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.currencies_top_list1, 1, 0, 1, 1 , alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.currencies_top_list2, 2, 0, 1, 1 , alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.swap_currencies_top, 1, 1, 2, 1, alignment=Qt.AlignHCenter)
 
         self.tab_main.layout.addWidget(self.calendar_start_label, 6, 0, 1, 2, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.calendar_start, 7, 0, 1, 2)
@@ -281,12 +288,14 @@ class Window(QMainWindow):
         self.graph_preview = backend_graph.create_plot(self.graph_preview, self.plot_variables)
 
     def swap_currencies(self):
-        tmp = self.currencies1.currentText()
-        self.currencies1.setCurrentText(self.currencies2.currentText())
-        self.currencies2.setCurrentText(tmp)
-        tmp2 = self.currencies12.currentText()
-        self.currencies12.setCurrentText(self.currencies22.currentText())
-        self.currencies22.setCurrentText(tmp2)
+        tmp = self.currencies_bottom_list1.currentText()
+        self.currencies_bottom_list1.setCurrentText(self.currencies_bottom_list2.currentText())
+        self.currencies_bottom_list2.setCurrentText(tmp)
+
+    def swap_currencies2(self):
+        tmp = self.currencies_top_list1.currentText()
+        self.currencies_top_list1.setCurrentText(self.currencies_top_list2.currentText())
+        self.currencies_top_list2.setCurrentText(tmp)    
 
     def important_add_tab(self):
         tab = self.tabs.currentWidget()
@@ -373,8 +382,8 @@ class Window(QMainWindow):
         # self.methods.setCurrentText(self.settings_pack["methods"].currentText())
         # self.interval.setCurrentText(self.settings_pack["intervals"].currentText())
 
-        self.currencies1.setCurrentIndex(self.settings_pack["currencies1"].currentIndex())
-        self.currencies2.setCurrentIndex(self.settings_pack["currencies2"].currentIndex())
+        self.currencies_bottom_list1.setCurrentIndex(self.settings_pack["currencies1"].currentIndex())
+        self.currencies_bottom_list2.setCurrentIndex(self.settings_pack["currencies2"].currentIndex())
         self.methods.setCurrentIndex(self.settings_pack["methods"].currentIndex())
         self.interval.setCurrentIndex(self.settings_pack["intervals"].currentIndex())
 
@@ -603,8 +612,8 @@ class Window(QMainWindow):
         date_stop = backend.return_date(self.calendar_stop)
         interval = self.interval.currentText()
         method = self.methods.currentText()
-        currency1 = self.currencies1.currentText()[:3]
-        currency2 = self.currencies2.currentText()[:3]
+        currency1 = self.currencies_bottom_list1.currentText()[:3]
+        currency2 = self.currencies_bottom_list2.currentText()[:3]
         title = self.title.text()
         if title == "":
             title = currency1 + "/" + currency2
