@@ -1,4 +1,5 @@
 font_color = 'white' # kolor czcionki
+font_color_grey = 'grey' # kolor czcionki wyłączonej
 background_color = 'rgb(50, 50, 50)' # kolor tła
 main_tab_color = 'rgb(57, 57, 57)' # kolor tła zakładek
 input_border_color = 'rgb(24, 24, 24)' # kolor borderów wokół inputów
@@ -41,6 +42,20 @@ QPushButton {{
 }}
 QPushButton:hover {{
     background-color: {hover_color};
+}}
+"""
+
+checkboxStyleSheet = f"""
+QCheckBox{{
+    background-color:{main_tab_color};
+    padding-left: 10px;
+    text-transform: uppercase;
+    font-family: "Calibri", Times, serif;
+    color: {font_color};
+    font-size: {font_size_15};
+}}
+QCheckBox:hover{{
+    color: {hover_color};
 }}
 """
 
@@ -139,6 +154,35 @@ QComboBox::drop-down {{
 }}
 """
 
+comboBoxDisabledStyleSheet = f"""
+QComboBox {{
+    color:{font_color_grey};
+    border: 1px solid {input_border_color};
+    padding: 1px 18px 1px 3px;
+    min-width: 6em;
+    font: 18px;
+    background-color: {input_bg_color};
+    margin-left: 5px;
+    padding:4px;
+}}
+QComboBox QAbstractItemView{{ /* Stylowanie drop-down menu */
+    color:{font_color};
+}}
+#settings_element{{
+    max-width:500px;
+    min-width:500px;
+    text-align:center;  
+    border: 1px solid {input_border_color};
+    background-color:{input_bg_color};
+}}
+QComboBox::down-arrow {{
+    image: url(icons/arrow_down_gray.png);
+}}
+QComboBox::drop-down {{
+    width: 28px;
+}}
+"""
+
 labelStyleSheet = f"""
 QLabel {{
     border: 0;
@@ -146,6 +190,36 @@ QLabel {{
     font: bold {font_size_20};
     text-transform:uppercase;
     color:{font_color};
+}}
+QLabel#graph_title {{
+    margin-top: 20px;
+    color:{font_color};
+}}
+#graph_fields{{
+    margin: 0 auto;
+    text-align: right;
+}}
+
+QLineEdit {{
+    color:{font_color};
+    padding: 8px;
+    border: 0;
+    border-bottom: 1px solid rgb(169, 167, 169);
+    background-color:rgb(67, 66, 67);
+    font: {font_size_15}
+}}
+#default_label{{
+    margin-left:200px; /* label z settingsow */
+}}
+"""
+
+labelDisabledStyleSheet = f"""
+QLabel {{
+    border: 0;
+    padding: 2px;
+    font: bold {font_size_20};
+    text-transform:uppercase;
+    color:{font_color_grey};
 }}
 QLabel#graph_title {{
     margin-top: 20px;

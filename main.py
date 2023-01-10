@@ -1,4 +1,5 @@
 import sys
+import cv2
 import webbrowser
 import os
 from PyQt5 import QtWidgets
@@ -71,7 +72,7 @@ class Window(QMainWindow):
                                                        function=self.swap_currencies)
         # swap currencies_top button
         self.swap_currencies_top = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
-                                                       function=self.swap_currencies2)                                               
+                                                       function=self.swap_currencies2)                                                                                                    
 
         # calendars for setting dates
         self.calendar_start_label = QLabel("Data początkowa")
@@ -124,6 +125,13 @@ class Window(QMainWindow):
         self.currencies_bottom_list2.setObjectName("graph_fields")
         self.currencies_bottom_list2.setStyleSheet(comboBoxStyleSheet)
 
+        # checkbox for currency
+        self.checkbox = QCheckBox("Wyłącz", self)
+        self.checkbox.setChecked(True)
+        self.checkbox.setObjectName("checkbox")
+        self.checkbox.setStyleSheet(checkboxStyleSheet)
+        self.checkbox.clicked.connect(self.checkbox_clicked)
+
         # currencies top
         self.currencies_top_label = QLabel("Waluty")
         self.currencies_top_label.setObjectName("graph_fields")
@@ -157,6 +165,26 @@ class Window(QMainWindow):
         self.layout = QGridLayout()  # 1.layout
         self.init_layout()
         self.show()
+
+
+    def checkbox_clicked(self):
+        if self.checkbox.isChecked():
+            self.checkbox.setText("Wyłącz")
+            self.currencies_top_list1.setEnabled(True)
+            self.currencies_top_list2.setEnabled(True)
+            self.swap_currencies_top.setEnabled(True)
+            self.currencies_top_list1.setStyleSheet(comboBoxStyleSheet)
+            self.currencies_top_list2.setStyleSheet(comboBoxStyleSheet)
+            self.currencies_top_label.setStyleSheet(labelStyleSheet)
+        else:   
+            self.checkbox.setText("Włącz")
+            self.currencies_top_list1.setEnabled(False)
+            self.currencies_top_list2.setEnabled(False)
+            self.swap_currencies_top.setEnabled(False)  
+            self.currencies_top_list1.setStyleSheet(comboBoxDisabledStyleSheet)  
+            self.currencies_top_list2.setStyleSheet(comboBoxDisabledStyleSheet)
+            self.currencies_top_label.setStyleSheet(labelDisabledStyleSheet)
+
 
     def init_menu(self):
         exit_action = QAction('&Zamknij', self)
@@ -252,15 +280,20 @@ class Window(QMainWindow):
 
         self.tab_main.layout.addWidget(self.title, 1, 2, alignment=Qt.AlignHCenter)
 
+        # currencies bottom layout
         self.tab_main.layout.addWidget(self.currencies_bottom_label, 3, 0, 1, 2, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.currencies_bottom_list1, 4, 0, 1, 1, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.currencies_bottom_list2, 5, 0, 1, 1, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.swap_currencies_bottom, 4, 1, 2, 1, alignment=Qt.AlignHCenter)
 
+        # currencies top layout
         self.tab_main.layout.addWidget(self.currencies_top_label, 0, 0, 1, 2, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.currencies_top_list1, 1, 0, 1, 1 , alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.currencies_top_list2, 2, 0, 1, 1 , alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.swap_currencies_top, 1, 1, 2, 1, alignment=Qt.AlignHCenter)
+
+        # checkbox layout
+        self.tab_main.layout.addWidget(self.checkbox, 3, 0, 1, 2, alignment=Qt.AlignLeft)
 
         self.tab_main.layout.addWidget(self.calendar_start_label, 6, 0, 1, 2, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.calendar_start, 7, 0, 1, 2)
@@ -730,7 +763,7 @@ def main():
     ex.show()
 
     sys.exit(app.exec_())
-
+    
 
 if __name__ == '__main__':
     main()
