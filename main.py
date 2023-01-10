@@ -37,8 +37,9 @@ class Window(QMainWindow):
     def __init__(self, parent=None):
         super(Window, self).__init__(parent, flags=Qt.WindowFlags())
 
-        self.graph_preview = pg.PlotWidget()
-        self.plot_variables = {}
+        self.graph_preview_top = pg.PlotWidget()
+        self.graph_preview_bottom = pg.PlotWidget()
+        self.top_plot_variables = {}
         self.important_tabs = []
         self.help_tab = None
         self.settings_tab = None
@@ -63,7 +64,7 @@ class Window(QMainWindow):
         self.graphs = {}
 
         # generate plot button
-        self.button_plot = backend_funcs.create_button(text="Wygeneruj wykres", style=generatePlotButtonStyleSheet,
+        self.button_plot = backend_funcs.create_button(text="Wygeneruj wykresy", style=generatePlotButtonStyleSheet,
                                                        function=self.create_plot)
         self.button_plot.setFixedWidth(300)
 
@@ -143,13 +144,17 @@ class Window(QMainWindow):
         self.currencies_top_list2.setObjectName("graph_fields")
         self.currencies_top_list2.setStyleSheet(comboBoxStyleSheet)
 
-        self.title_label = QLabel("Tytuł wykresu")
-        self.title_label.setObjectName("graph_title")
-        self.title_label.setStyleSheet(labelStyleSheet)
-        self.title = QLineEdit()
-        self.title.setFixedWidth(400)
-        self.title.setStyleSheet(labelStyleSheet)
-        self.title.setMaxLength(50)
+        self.title_top = QLineEdit()
+        self.title_top.setFixedWidth(400)
+        self.title_top.setStyleSheet(labelStyleSheet)
+        self.title_top.setMaxLength(50)
+        self.title_top.setPlaceholderText('Tytuł wyresu górnego')
+
+        self.title_bottom = QLineEdit()
+        self.title_bottom.setFixedWidth(400)
+        self.title_bottom.setStyleSheet(labelStyleSheet)
+        self.title_bottom.setMaxLength(50)
+        self.title_bottom.setPlaceholderText('Tytuł wyresu dolnego')
 
         # window settings
         self.setMinimumSize(1280, 760)
@@ -176,6 +181,7 @@ class Window(QMainWindow):
             self.currencies_top_list1.setStyleSheet(comboBoxStyleSheet)
             self.currencies_top_list2.setStyleSheet(comboBoxStyleSheet)
             self.currencies_top_label.setStyleSheet(labelStyleSheet)
+            self.button_plot.setText("Wygeneruj wykresy")
         else:   
             self.checkbox.setText("Włącz")
             self.currencies_top_list1.setEnabled(False)
@@ -184,6 +190,7 @@ class Window(QMainWindow):
             self.currencies_top_list1.setStyleSheet(comboBoxDisabledStyleSheet)  
             self.currencies_top_list2.setStyleSheet(comboBoxDisabledStyleSheet)
             self.currencies_top_label.setStyleSheet(labelDisabledStyleSheet)
+            self.button_plot.setText("Wygeneruj wykres")
 
 
     def init_menu(self):
@@ -250,22 +257,30 @@ class Window(QMainWindow):
         self.methods.setCurrentText(self.settings_pack["methods"])
         self.methods.setCurrentIndex(int(self.settings_pack["methods"]))
 
-        self.plot_variables = {"title": self.title, "currencies": (self.currencies_bottom_list1, self.currencies_bottom_list2),
+        self.top_plot_variables = {"title": self.title_top, "currencies": (self.currencies_top_list1, self.currencies_top_list2),
                                "dates": (self.calendar_start, self.calendar_stop), "interval": self.interval}
 
-        self.currencies_bottom_list1.currentIndexChanged.connect(self.graph_preview_change)
-        self.currencies_bottom_list2.currentIndexChanged.connect(self.graph_preview_change)
+        self.bottom_plot_variables = {"title": self.title_bottom, "currencies": (self.currencies_bottom_list1, self.currencies_bottom_list2),
+                               "dates": (self.calendar_start, self.calendar_stop), "interval": self.interval}                      
 
+        self.currencies_bottom_list1.currentIndexChanged.connect(self.graph_preview_bottom_change)
+        self.currencies_bottom_list2.currentIndexChanged.connect(self.graph_preview_bottom_change)
 
-        #tutaj prawdopodobnie drugi connect dla kolejnego grafu(podłączenie)
+        self.currencies_top_list1.currentIndexChanged.connect(self.graph_preview_top_change)
+        self.currencies_top_list2.currentIndexChanged.connect(self.graph_preview_top_change)
 
+        self.interval.currentIndexChanged.connect(self.graph_preview_top_change)
+        self.title_top.textChanged.connect(self.graph_preview_top_change)
+        self.calendar_start.dateChanged.connect(self.graph_preview_top_change)
+        self.calendar_stop.dateChanged.connect(self.graph_preview_top_change)
 
-        self.interval.currentIndexChanged.connect(self.graph_preview_change)
-        self.title.textChanged.connect(self.graph_preview_change)
-        self.calendar_start.dateChanged.connect(self.graph_preview_change)
-        self.calendar_stop.dateChanged.connect(self.graph_preview_change)
+        self.interval.currentIndexChanged.connect(self.graph_preview_bottom_change)
+        self.title_top.textChanged.connect(self.graph_preview_bottom_change)
+        self.calendar_start.dateChanged.connect(self.graph_preview_bottom_change)
+        self.calendar_stop.dateChanged.connect(self.graph_preview_bottom_change)
 
-        self.graph_preview = backend_graph.create_plot(self.graph_preview, self.plot_variables)
+        self.graph_preview_top = backend_graph.create_plot(self.graph_preview_top, self.top_plot_variables)
+        self.graph_preview_bottom = backend_graph.create_plot(self.graph_preview_bottom, self.bottom_plot_variables)
 
         # main tab layout
         self.tab_main.layout = QGridLayout()  # 2. layout
@@ -273,12 +288,11 @@ class Window(QMainWindow):
 
         self.tab_main.layout.setContentsMargins(0, 0, 0, 0)
 
-        self.tab_main.layout.addWidget(self.title_label, 0, 2, alignment=Qt.AlignHCenter)
-
         # Ustawic to jako tab
         self.tab_main.layout.addWidget(self.button_settings, 0, 2, alignment = Qt.AlignRight)
 
-        self.tab_main.layout.addWidget(self.title, 1, 2, alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.title_top, 1, 2, alignment=Qt.AlignLeft)
+        self.tab_main.layout.addWidget(self.title_bottom, 1, 2, alignment=Qt.AlignRight)
 
         # currencies bottom layout
         self.tab_main.layout.addWidget(self.currencies_bottom_label, 3, 0, 1, 2, alignment=Qt.AlignHCenter)
@@ -304,9 +318,10 @@ class Window(QMainWindow):
         self.tab_main.layout.addWidget(self.method_label, 12, 0, 1, 2, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.methods, 13, 0, 1, 2)
 
-        self.tab_main.layout.addWidget(self.button_plot, 14, 2, alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.button_plot, 14, 0, 1, 2, alignment=Qt.AlignHCenter)
 
-        self.tab_main.layout.addWidget(self.graph_preview, 2, 2, 12, 1)
+        self.tab_main.layout.addWidget(self.graph_preview_top, 2, 2, 6, 1)
+        self.tab_main.layout.addWidget(self.graph_preview_bottom, 8, 2, 7, 1)
 
         self.tab_main.setStyleSheet(mainTabStyleSheet)
 
@@ -317,8 +332,11 @@ class Window(QMainWindow):
         ll.setLayout(self.layout)
         self.setCentralWidget(ll)
 
-    def graph_preview_change(self):
-        self.graph_preview = backend_graph.create_plot(self.graph_preview, self.plot_variables)
+    def graph_preview_top_change(self):
+        self.graph_preview_top = backend_graph.create_plot(self.graph_preview_top, self.top_plot_variables)
+
+    def graph_preview_bottom_change(self):
+        self.graph_preview_bottom = backend_graph.create_plot(self.graph_preview_bottom, self.bottom_plot_variables)    
 
     def swap_currencies(self):
         tmp = self.currencies_bottom_list1.currentText()
@@ -647,7 +665,7 @@ class Window(QMainWindow):
         method = self.methods.currentText()
         currency1 = self.currencies_bottom_list1.currentText()[:3]
         currency2 = self.currencies_bottom_list2.currentText()[:3]
-        title = self.title.text()
+        title = self.title_top.text()
         if title == "":
             title = currency1 + "/" + currency2
 
