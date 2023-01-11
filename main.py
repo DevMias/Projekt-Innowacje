@@ -75,8 +75,8 @@ class Window(QMainWindow):
         self.swap_currencies_top = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
                                                        function=self.swap_currencies2)      
 
-        self.swap_currencies_bottom.clicked.connect(self.swap_clicked_top)  
-        self.swap_currencies_top.clicked.connect(self.swap_clicked_bottom)                                                                                                                                           
+        self.swap_currencies_bottom.clicked.connect(self.swap_clicked_bottom)  
+        self.swap_currencies_top.clicked.connect(self.swap_clicked_top)                                                                                                                                           
 
         # calendars for setting dates
         self.calendar_start_label = QLabel("Data początkowa")
@@ -125,9 +125,11 @@ class Window(QMainWindow):
         self.currencies_bottom_list1 = QComboBox()
         self.currencies_bottom_list1.setStyleSheet(comboBoxStyleSheet)
         self.currencies_bottom_list1.setObjectName("graph_fields")
+        self.currencies_bottom_list1.currentIndexChanged.connect(self.change_label_bottom)
         self.currencies_bottom_list2 = QComboBox()
         self.currencies_bottom_list2.setObjectName("graph_fields")
         self.currencies_bottom_list2.setStyleSheet(comboBoxStyleSheet)
+        self.currencies_bottom_list2.currentIndexChanged.connect(self.change_label_bottom)
 
         # checkbox for currency
         self.checkbox = QCheckBox("Wyłącz", self)
@@ -143,9 +145,11 @@ class Window(QMainWindow):
         self.currencies_top_list1 = QComboBox()
         self.currencies_top_list1.setStyleSheet(comboBoxStyleSheet)
         self.currencies_top_list1.setObjectName("graph_fields")
+        self.currencies_top_list1.currentIndexChanged.connect(self.change_label_top)
         self.currencies_top_list2 = QComboBox()
         self.currencies_top_list2.setObjectName("graph_fields")
         self.currencies_top_list2.setStyleSheet(comboBoxStyleSheet)
+        self.currencies_bottom_list2.currentIndexChanged.connect(self.change_label_top)
 
         self.title_top = QLineEdit()
         self.title_top.setFixedWidth(400)
@@ -175,20 +179,41 @@ class Window(QMainWindow):
         self.show()
 
 
+    def change_label_top(self): # zmienic funkcje bo nie dziala gdy klikam 
+        self.title_top.setPlaceholderText(self.currencies_top_list1.currentText()[:3]
+        + '/' + self.currencies_top_list2.currentText()[:3])
+
+
+    def change_label_bottom(self): # zmienic funkcje bo nie dziala gdy klikam
+        self.title_top.setPlaceholderText(self.currencies_bottom_list1.currentText()[:3]
+        + '/' + self.currencies_bottom_list2.currentText()[:3]) 
+
+
     def swap_clicked_top(self):
-        tmp = self.title_top.placeholderText()
-        self.title_top.setPlaceholderText(self.title_bottom.placeholderText())
-        self.title_bottom.setPlaceholderText(tmp)
+        if self.title_top.placeholderText() == self.currencies_top_list1.currentText()[:3] + '/' + self.currencies_top_list2.currentText()[:3]:
+            self.title_top.setPlaceholderText(
+                self.currencies_top_list2.currentText()[:3] + '/' + self.currencies_top_list1.currentText()[:3]
+            )
+        else:
+             self.title_top.setPlaceholderText(
+                self.currencies_top_list1.currentText()[:3] + '/' + self.currencies_top_list2.currentText()[:3]
+            )  
 
 
     def swap_clicked_bottom(self):
-        tmp = self.title_bottom.placeholderText()
-        self.title_bottom.setPlaceholderText(self.title_top.placeholderText())
-        self.title_top.setPlaceholderText(tmp)
+        if self.title_bottom.placeholderText() == self.currencies_bottom_list1.currentText()[:3] + '/' + self.currencies_bottom_list2.currentText()[:3]:
+            self.title_bottom.setPlaceholderText(
+                self.currencies_bottom_list2.currentText()[:3] + '/' + self.currencies_bottom_list1.currentText()[:3]
+            )
+        else:
+             self.title_bottom.setPlaceholderText(
+                self.currencies_bottom_list1.currentText()[:3] + '/' + self.currencies_bottom_list2.currentText()[:3]
+            )          
 
 
     def checkbox_clicked(self):
         if self.checkbox.isChecked():
+            self.graph_preview_top.hide()
             self.checkbox.setText("Wyłącz")
             self.currencies_top_list1.setEnabled(True)
             self.currencies_top_list2.setEnabled(True)
@@ -197,6 +222,9 @@ class Window(QMainWindow):
             self.currencies_top_list2.setStyleSheet(comboBoxStyleSheet)
             self.currencies_top_label.setStyleSheet(labelStyleSheet)
             self.button_plot.setText("Wygeneruj wykresy")
+            self.tab_main.layout.addWidget(self.graph_preview_top, 2, 2, 6, 1)
+            self.graph_preview_bottom.show()
+            self.graph_preview_top.show()
         else:   
             self.checkbox.setText("Włącz")
             self.currencies_top_list1.setEnabled(False)
@@ -206,6 +234,10 @@ class Window(QMainWindow):
             self.currencies_top_list2.setStyleSheet(comboBoxDisabledStyleSheet)
             self.currencies_top_label.setStyleSheet(labelDisabledStyleSheet)
             self.button_plot.setText("Wygeneruj wykres")
+            self.graph_preview_bottom.hide()
+            self.graph_preview_top.hide()
+            self.tab_main.layout.addWidget(self.graph_preview_top, 2, 2, 14, 1)
+            self.graph_preview_top.show()
 
 
     def init_menu(self):
@@ -342,7 +374,7 @@ class Window(QMainWindow):
         self.tab_main.layout.addWidget(self.button_plot, 14, 0, 1, 2, alignment=Qt.AlignHCenter)
 
         self.tab_main.layout.addWidget(self.graph_preview_top, 2, 2, 6, 1)
-        self.tab_main.layout.addWidget(self.graph_preview_bottom, 8, 2, 7, 1)
+        self.tab_main.layout.addWidget(self.graph_preview_bottom, 8, 2, 7, 1)    
 
         self.tab_main.setStyleSheet(mainTabStyleSheet)
 
