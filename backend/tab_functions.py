@@ -179,24 +179,36 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
     intervals.setObjectName("settings_element")
 
     # currencies
-    currencies_label = QLabel("Waluty")
-    currencies_label.setStyleSheet(labelStyleSheet)
-    currencies1 = QComboBox()
-    currencies1.setStyleSheet(comboBoxStyleSheet)
-    currencies1.setObjectName("settings_element")
-    currencies2 = QComboBox()
-    currencies2.setStyleSheet(comboBoxStyleSheet)
-    currencies2.setObjectName("settings_element")
+    currencies_top = QLabel("Waluty")
+    currencies_top.setStyleSheet(labelStyleSheet)
+    currencies_top_list1 = QComboBox()
+    currencies_top_list1.setStyleSheet(comboBoxStyleSheet)
+    currencies_top_list1.setObjectName("settings_element")
+    currencies_top_list2 = QComboBox()
+    currencies_top_list2.setStyleSheet(comboBoxStyleSheet)
+    currencies_top_list2.setObjectName("settings_element")
+
+    currencies_bottom_list1 = QComboBox()
+    currencies_bottom_list1.setStyleSheet(comboBoxStyleSheet)
+    currencies_bottom_list1.setObjectName("settings_element")
+    currencies_bottom_list2 = QComboBox()
+    currencies_bottom_list2.setStyleSheet(comboBoxStyleSheet)
+    currencies_bottom_list2.setObjectName("settings_element")
 
     # lists for currencies
     for flag, currency in zip(flag_list, currencies_list):
-        currencies1.addItem(QIcon(flag), currency)
-        currencies2.addItem(QIcon(flag), currency)
+        currencies_top_list1.addItem(QIcon(flag), currency)
+        currencies_top_list2.addItem(QIcon(flag), currency)
+        currencies_bottom_list1.addItem(QIcon(flag), currency)
+        currencies_bottom_list2.addItem(QIcon(flag), currency)
 
     # currencies1.setCurrentText(settings["currencies1"])
-    currencies1.setCurrentIndex(int(settings["currencies1"]))
+    currencies_top_list1.setCurrentIndex(int(settings["currencies1"]))
     # currencies2.setCurrentText(settings["currencies2"])
-    currencies2.setCurrentIndex(int(settings["currencies2"]))
+    currencies_top_list2.setCurrentIndex(int(settings["currencies2"]))
+
+    currencies_bottom_list1.setCurrentIndex(int(settings["currencies12"]))
+    currencies_bottom_list2.setCurrentIndex(int(settings["currencies21"]))
 
     for interval in list(interval_list):
         intervals.addItem(interval)
@@ -210,7 +222,7 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
     # methods.setCurrentText(settings["methods"])
     methods.setCurrentIndex(int(settings["methods"]))
 
-    button_reset = create_button(style=buttonStyleSheet, text="Resetuj", function=reset, max_size=(150, 40))
+    button_reset = create_button(style=buttonStyleSheet, text="Resetuj", function=reset, min_size=(150, 40))
 
     button_close = create_button(style=buttonStyleSheet, icon=QIcon(close_icon), function=close, max_size=(40, 40))
 
@@ -229,30 +241,37 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
 
     tab.layout = QGridLayout()
     tab.layout.setSpacing(10)
-    tab.layout.addWidget(default_label, 1, 0,alignment=Qt.AlignHCenter)
-    tab.layout.addWidget(button_reset, 1, 1, alignment=Qt.Alignment())
-    tab.layout.addWidget(button_close, 1, 2, alignment=Qt.Alignment())
+    tab.layout.addWidget(default_label, 0, 1, 1, 2, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(button_close, 0, 2, 1, 2, alignment=Qt.AlignRight)
     # self.tab_main.layout.addWidget(self.button_settings, 0, 2, alignment=Qt.AlignRight)
 
-    tab.layout.addWidget(currencies_label, 2, 0, 1, 3, alignment=Qt.AlignHCenter)
-    tab.layout.addWidget(currencies1, 3, 0, 1, 3, alignment=Qt.AlignHCenter)
-    tab.layout.addWidget(currencies2, 4, 0, 1, 3, alignment=Qt.AlignHCenter)
-    tab.layout.addWidget(calendar_start_label, 5, 0, 1, 3, alignment=Qt.AlignHCenter)
-    tab.layout.addWidget(calstart, 6, 0, 1, 3, alignment=Qt.AlignHCenter)
-    tab.layout.addWidget(calendar_stop_label, 7, 0, 1, 3, alignment=Qt.AlignHCenter)
-    tab.layout.addWidget(calstop, 8, 0, 1, 3, alignment=Qt.AlignHCenter)
-    tab.layout.addWidget(date_checkbox, 9, 0, 1, 3, alignment=Qt.AlignHCenter)
-    tab.layout.addWidget(interval_label, 10, 0, 1, 3, alignment=Qt.AlignHCenter)
-    tab.layout.addWidget(intervals, 11, 0, 1, 3, alignment=Qt.AlignHCenter)
-    tab.layout.addWidget(method_label, 12, 0, 1, 3, alignment=Qt.AlignHCenter)
-    tab.layout.addWidget(methods, 13, 0, 1, 3, alignment=Qt.AlignHCenter)
-    tab.layout.addWidget(button_save, 14, 0, 1, 3, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(currencies_top, 2, 1, 1, 2, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(currencies_top_list1, 3, 0, 1, 2, alignment=Qt.AlignLeft)
+    tab.layout.addWidget(currencies_top_list2, 4, 0, 1, 2, alignment=Qt.AlignLeft)
+    tab.layout.addWidget(currencies_bottom_list1, 3, 2, 1, 2, alignment=Qt.AlignRight)
+    tab.layout.addWidget(currencies_bottom_list2, 4, 2, 1, 2, alignment=Qt.AlignRight)
+
+    tab.layout.addWidget(calendar_start_label, 5, 1, 1, 2, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(calstart, 6, 1, 1, 2, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(calendar_stop_label, 7, 1, 1, 2, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(calstop, 8, 1, 1, 2, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(date_checkbox, 9, 1, 1, 2, alignment=Qt.AlignHCenter)
+
+    tab.layout.addWidget(interval_label, 10, 1, 1, 2, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(intervals, 11, 1, 1, 2, alignment=Qt.AlignHCenter)
+
+    tab.layout.addWidget(method_label, 12, 1, 1, 2, alignment=Qt.AlignHCenter)
+    tab.layout.addWidget(methods, 13, 1, 1, 2, alignment=Qt.AlignHCenter)
+
+    tab.layout.addWidget(button_save, 14, 1, 1, 2, alignment=Qt.AlignLeft)
+    tab.layout.addWidget(button_reset, 14, 1, 1, 2, alignment=Qt.AlignRight) #WYPOZYZJONOWAC
 
     tab.setLayout(tab.layout)
 
     settings_pack = {"methods": methods, "intervals": intervals, "date_start": calstart,
-                     "date_stop": calstop, "currencies1": currencies1, "currencies2": currencies2,
-                     "date_checkbox": date_checkbox}
+                     "date_stop": calstop, "currencies1": currencies_top_list1, "currencies2": currencies_top_list2,
+                     "date_checkbox": date_checkbox, "currencies12": currencies_bottom_list1, 
+                     "currencies21": currencies_bottom_list2} #tutaj dodac currencies bottom
 
     return tab, settings_pack
 
@@ -385,7 +404,8 @@ def read_settings_from_file():
         settings.append(line.split(':')[1][:-1])
 
     return {"currencies1": settings[0], "currencies2": settings[1], "methods": settings[2],
-            "intervals": settings[3], "date_start": settings[4], "date_stop": settings[5], "date_checkbox": settings[6]}
+            "intervals": settings[3], "date_start": settings[4], "date_stop": settings[5], "date_checkbox": settings[6], 
+            "currencies12": settings[7], "currencies21": settings[8]}
 
 
 def create_button(text="", style="", icon=None, function=None, min_size=None, max_size=None):

@@ -200,6 +200,11 @@ QLabel#graph_title {{
     text-align: right;
 }}
 
+QLabel#default_label{{
+    padding: 0 auto;
+    margin: 0 auto;
+}}
+
 QLineEdit {{
     color:{font_color};
     padding: 8px;
@@ -210,6 +215,9 @@ QLineEdit {{
 }}
 #default_label{{
     margin-left:200px; /* label z settingsow */
+}}
+QLineEdit#title_top, #title_bottom{{
+    color: {font_color_grey}
 }}
 """
 

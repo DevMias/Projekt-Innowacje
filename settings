@@ -1,7 +1,9 @@
-currency1:29
-currency2:12
+currency1:7
+currency2:27
 method:5
 interval:0
-date_start:20210915
-date_stop:20220915
+date_start:20220111
+date_stop:20230111
 checkbox:True
+currency12:22
+currency21:14

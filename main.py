@@ -73,7 +73,10 @@ class Window(QMainWindow):
                                                        function=self.swap_currencies)
         # swap currencies_top button
         self.swap_currencies_top = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
-                                                       function=self.swap_currencies2)                                                                                                    
+                                                       function=self.swap_currencies2)      
+
+        self.swap_currencies_bottom.clicked.connect(self.swap_clicked_top)  
+        self.swap_currencies_top.clicked.connect(self.swap_clicked_bottom)                                                                                                                                           
 
         # calendars for setting dates
         self.calendar_start_label = QLabel("Data początkowa")
@@ -148,13 +151,13 @@ class Window(QMainWindow):
         self.title_top.setFixedWidth(400)
         self.title_top.setStyleSheet(labelStyleSheet)
         self.title_top.setMaxLength(50)
-        self.title_top.setPlaceholderText('Tytuł wyresu górnego')
+        self.title_top.setObjectName("title_top")
 
         self.title_bottom = QLineEdit()
         self.title_bottom.setFixedWidth(400)
         self.title_bottom.setStyleSheet(labelStyleSheet)
         self.title_bottom.setMaxLength(50)
-        self.title_bottom.setPlaceholderText('Tytuł wyresu dolnego')
+        self.title_bottom.setObjectName("title_bottom")
 
         # window settings
         self.setMinimumSize(1280, 760)
@@ -170,6 +173,18 @@ class Window(QMainWindow):
         self.layout = QGridLayout()  # 1.layout
         self.init_layout()
         self.show()
+
+
+    def swap_clicked_top(self):
+        tmp = self.title_top.placeholderText()
+        self.title_top.setPlaceholderText(self.title_bottom.placeholderText())
+        self.title_bottom.setPlaceholderText(tmp)
+
+
+    def swap_clicked_bottom(self):
+        tmp = self.title_bottom.placeholderText()
+        self.title_bottom.setPlaceholderText(self.title_top.placeholderText())
+        self.title_top.setPlaceholderText(tmp)
 
 
     def checkbox_clicked(self):
@@ -230,8 +245,8 @@ class Window(QMainWindow):
             self.currencies_top_list1.addItem(QIcon(flag), currency)
             self.currencies_top_list2.addItem(QIcon(flag), currency)
 
-        self.currencies_bottom_list1.setCurrentIndex(int(self.settings_pack["currencies1"]))
-        self.currencies_bottom_list2.setCurrentIndex(int(self.settings_pack["currencies2"]))
+        self.currencies_bottom_list1.setCurrentIndex(int(self.settings_pack["currencies12"]))
+        self.currencies_bottom_list2.setCurrentIndex(int(self.settings_pack["currencies21"]))
         self.currencies_top_list1.setCurrentIndex(int(self.settings_pack["currencies1"]))
         self.currencies_top_list2.setCurrentIndex(int(self.settings_pack["currencies2"]))
 
@@ -275,12 +290,18 @@ class Window(QMainWindow):
         self.calendar_stop.dateChanged.connect(self.graph_preview_top_change)
 
         self.interval.currentIndexChanged.connect(self.graph_preview_bottom_change)
-        self.title_top.textChanged.connect(self.graph_preview_bottom_change)
+        self.title_bottom.textChanged.connect(self.graph_preview_bottom_change) 
         self.calendar_start.dateChanged.connect(self.graph_preview_bottom_change)
         self.calendar_stop.dateChanged.connect(self.graph_preview_bottom_change)
 
         self.graph_preview_top = backend_graph.create_plot(self.graph_preview_top, self.top_plot_variables)
         self.graph_preview_bottom = backend_graph.create_plot(self.graph_preview_bottom, self.bottom_plot_variables)
+
+        self.title_top.setPlaceholderText(self.currencies_top_list1.currentText()[:3]
+        + '/' + self.currencies_top_list2.currentText()[:3])
+
+        self.title_bottom.setPlaceholderText(self.currencies_bottom_list1.currentText()[:3]
+        + '/' + self.currencies_bottom_list2.currentText()[:3])
 
         # main tab layout
         self.tab_main.layout = QGridLayout()  # 2. layout
@@ -433,8 +454,10 @@ class Window(QMainWindow):
         # self.methods.setCurrentText(self.settings_pack["methods"].currentText())
         # self.interval.setCurrentText(self.settings_pack["intervals"].currentText())
 
-        self.currencies_bottom_list1.setCurrentIndex(self.settings_pack["currencies1"].currentIndex())
-        self.currencies_bottom_list2.setCurrentIndex(self.settings_pack["currencies2"].currentIndex())
+        self.currencies_bottom_list1.setCurrentIndex(self.settings_pack["currencies12"].currentIndex())
+        self.currencies_bottom_list2.setCurrentIndex(self.settings_pack["currencies21"].currentIndex())
+        self.currencies_top_list1.setCurrentIndex(self.settings_pack["currencies1"].currentIndex())
+        self.currencies_top_list2.setCurrentIndex(self.settings_pack["currencies2"].currentIndex())
         self.methods.setCurrentIndex(self.settings_pack["methods"].currentIndex())
         self.interval.setCurrentIndex(self.settings_pack["intervals"].currentIndex())
 
@@ -454,13 +477,16 @@ class Window(QMainWindow):
 
         currency1 = "currency1:" + str(self.settings_pack["currencies1"].currentIndex()) + '\n'
         currency2 = "currency2:" + str(self.settings_pack["currencies2"].currentIndex()) + '\n'
+        currency12 = "currency12:" + str(self.settings_pack["currencies12"].currentIndex()) + '\n'
+        currency21 = "currency21:" + str(self.settings_pack["currencies21"].currentIndex()) + '\n'
         method = "method:" + str(self.settings_pack["methods"].currentIndex()) + '\n'
         interval = "interval:" + str(self.settings_pack["intervals"].currentIndex()) + '\n'
 
         date_start = "date_start:" + backend.return_date(self.settings_pack["date_start"]) + '\n'
         date_stop = "date_stop:" + backend.return_date(self.settings_pack["date_stop"]) + '\n'
         checkbox = "checkbox:" + str(self.settings_pack["date_checkbox"].isChecked()) + '\n'
-        settings = [currency1, currency2, method, interval, date_start, date_stop, checkbox]
+        settings = [currency1, currency2, method, interval, date_start, date_stop, checkbox,
+         currency12, currency21]
         open('settings', 'w').writelines(settings)
 
     def read_settings_from_file(self):
@@ -471,7 +497,8 @@ class Window(QMainWindow):
 
         self.settings_pack = {"currencies1": settings[0], "currencies2": settings[1],
                               "methods": settings[2], "intervals": settings[3], "date_start": settings[4],
-                              "date_stop": settings[5], "date_checkbox": settings[6]}
+                              "date_stop": settings[5], "date_checkbox": settings[6],
+                              "currencies12": settings[7], "currencies21": settings[8]}
 
     def reset_settings(self):
         f = open('default_settings', "r").readlines()
@@ -481,16 +508,20 @@ class Window(QMainWindow):
 
         self.settings_pack = {"currencies1": settings[0], "currencies2": settings[1],
                               "methods": settings[2], "intervals": settings[3], "date_start": settings[4],
-                              "date_stop": settings[5], "date_checkbox": settings[6]}
+                              "date_stop": settings[5], "date_checkbox": settings[6],
+                              "currencies12": settings[7], "currencies21": settings[8]}
 
         currency1 = "currency1:" + self.settings_pack["currencies1"] + '\n'
         currency2 = "currency2:" + self.settings_pack["currencies2"] + '\n'
+        currency12 = "currency12:" + self.settings_pack["currencies12"] + '\n'
+        currency21 = "currency21:" + self.settings_pack["currencies21"] + '\n'
         method = "method:" + self.settings_pack["methods"] + '\n'
         interval = "interval:" + self.settings_pack["intervals"] + '\n'
         date_start = "date_start:" + self.settings_pack["date_start"] + '\n'
         date_stop = "date_stop:" + self.settings_pack["date_stop"] + '\n'
         checkbox = "checkbox:" + self.settings_pack["date_checkbox"] + '\n'
-        settings_new = [currency1, currency2, method, interval, date_start, date_stop, checkbox]
+        settings_new = [currency1, currency2, method, interval, date_start, date_stop, checkbox,
+        currency12, currency21]
         open('settings', 'w').writelines(settings_new)
 
         self.close_tab(False)
