@@ -40,6 +40,7 @@ class Window(QMainWindow):
         self.graph_preview_top = pg.PlotWidget()
         self.graph_preview_bottom = pg.PlotWidget()
         self.top_plot_variables = {}
+        self.bottom_plot_variables = {}
         self.important_tabs = []
         self.help_tab = None
         self.settings_tab = None
@@ -125,11 +126,11 @@ class Window(QMainWindow):
         self.currencies_bottom_list1 = QComboBox()
         self.currencies_bottom_list1.setStyleSheet(comboBoxStyleSheet)
         self.currencies_bottom_list1.setObjectName("graph_fields")
-        self.currencies_bottom_list1.currentIndexChanged.connect(self.change_label_bottom)
+        # self.currencies_bottom_list1.currentIndexChanged.connect(self.change_label_bottom)
         self.currencies_bottom_list2 = QComboBox()
         self.currencies_bottom_list2.setObjectName("graph_fields")
         self.currencies_bottom_list2.setStyleSheet(comboBoxStyleSheet)
-        self.currencies_bottom_list2.currentIndexChanged.connect(self.change_label_bottom)
+        # self.currencies_bottom_list2.currentIndexChanged.connect(self.change_label_bottom)
 
         # checkbox for currency
         self.checkbox = QCheckBox("Wyłącz", self)
@@ -145,11 +146,11 @@ class Window(QMainWindow):
         self.currencies_top_list1 = QComboBox()
         self.currencies_top_list1.setStyleSheet(comboBoxStyleSheet)
         self.currencies_top_list1.setObjectName("graph_fields")
-        self.currencies_top_list1.currentIndexChanged.connect(self.change_label_top)
+        # self.currencies_top_list1.currentIndexChanged.connect(self.change_label_top)
         self.currencies_top_list2 = QComboBox()
         self.currencies_top_list2.setObjectName("graph_fields")
         self.currencies_top_list2.setStyleSheet(comboBoxStyleSheet)
-        self.currencies_bottom_list2.currentIndexChanged.connect(self.change_label_top)
+        # self.currencies_bottom_list2.currentIndexChanged.connect(self.change_label_top)
 
         self.title_top = QLineEdit()
         self.title_top.setFixedWidth(400)
@@ -179,14 +180,18 @@ class Window(QMainWindow):
         self.show()
 
 
-    def change_label_top(self): # zmienic funkcje bo nie dziala gdy klikam 
-        self.title_top.setPlaceholderText(self.currencies_top_list1.currentText()[:3]
-        + '/' + self.currencies_top_list2.currentText()[:3])
+    def change_label_top(self): # zmienic funkcje nie dziala w kazdym przypadku
+        self.title_top.setPlaceholderText(
+            #self.graph_preview_top.text() #to moze dobrze
+        )
 
 
-    def change_label_bottom(self): # zmienic funkcje bo nie dziala gdy klikam
-        self.title_top.setPlaceholderText(self.currencies_bottom_list1.currentText()[:3]
-        + '/' + self.currencies_bottom_list2.currentText()[:3]) 
+    def change_label_bottom(self): # zmienic funkcje nie dziala w kazdym przypadku
+        self.title_bottom.setPlaceholderText(
+            # self.bottom_plot_variables["currencies"][0].currentText()[:3] + '/' +
+            # self.bottom_plot_variables["currencies"][1].currentText()[:3]
+            #self.graph_preview_bottom.text() #to moze dobrze
+        ) 
 
 
     def swap_clicked_top(self):
@@ -213,7 +218,7 @@ class Window(QMainWindow):
 
     def checkbox_clicked(self):
         if self.checkbox.isChecked():
-            self.graph_preview_top.hide()
+            self.graph_preview_bottom.hide()
             self.checkbox.setText("Wyłącz")
             self.currencies_top_list1.setEnabled(True)
             self.currencies_top_list2.setEnabled(True)
@@ -222,9 +227,10 @@ class Window(QMainWindow):
             self.currencies_top_list2.setStyleSheet(comboBoxStyleSheet)
             self.currencies_top_label.setStyleSheet(labelStyleSheet)
             self.button_plot.setText("Wygeneruj wykresy")
-            self.tab_main.layout.addWidget(self.graph_preview_top, 2, 2, 6, 1)
-            self.graph_preview_bottom.show()
+            self.tab_main.layout.addWidget(self.graph_preview_top, 2, 2, 7, 1)
+            self.tab_main.layout.addWidget(self.graph_preview_bottom, 9, 2, 6, 1) 
             self.graph_preview_top.show()
+            self.graph_preview_bottom.show()
         else:   
             self.checkbox.setText("Włącz")
             self.currencies_top_list1.setEnabled(False)
@@ -236,8 +242,8 @@ class Window(QMainWindow):
             self.button_plot.setText("Wygeneruj wykres")
             self.graph_preview_bottom.hide()
             self.graph_preview_top.hide()
-            self.tab_main.layout.addWidget(self.graph_preview_top, 2, 2, 14, 1)
-            self.graph_preview_top.show()
+            self.tab_main.layout.addWidget(self.graph_preview_bottom, 2, 2, 14, 1)
+            self.graph_preview_bottom.show()
 
 
     def init_menu(self):
@@ -445,7 +451,7 @@ class Window(QMainWindow):
             return
 
         tab, p = backend_funcs.create_settings_tab(self.method_list, self.interval_list, self.close_tab,
-                                                   self.save_settings_to_file, self.reset_settings)
+                                                   self.save_settings_to_file, self.reset_settings, self.checkbox)
         self.settings_pack = p
 
         self.tabs.addTab(tab, "Ustawienia")

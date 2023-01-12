@@ -5,8 +5,8 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QLineEdit
     QCheckBox, QGridLayout
 from backend import backend_functions as backend
 from front.styles import buttonStyleSheet, labelStyleSheet, comboBoxStyleSheet, currencies_list, DateEditStyleSheet, \
-    flag_list, labelStyleSheet_big, labelStyleSheet_not_bold, important_icon, close_icon
-from main import Calendar 
+    flag_list, labelStyleSheet_big, labelStyleSheet_not_bold, important_icon, close_icon, comboBoxDisabledStyleSheet
+from main import Calendar
 
 
 def create_graph_tab(close, pack_fun, methods_list, file, important):
@@ -129,7 +129,7 @@ def create_graph_tab(close, pack_fun, methods_list, file, important):
     return tab, pack
 
 
-def create_settings_tab(method_list, interval_list, close, save, reset):
+def create_settings_tab(method_list, interval_list, close, save, reset, checkbox):
     settings = read_settings_from_file()
 
     tab = QWidget()
@@ -238,6 +238,17 @@ def create_settings_tab(method_list, interval_list, close, save, reset):
 
     button_save = create_button(style=buttonStyleSheet, text="Zapisz", function=save, min_size=(150, 40))
     button_save.setObjectName("settings_element")
+
+    if checkbox.isChecked():
+        currencies_top_list1.setEnabled(True)
+        currencies_top_list2.setEnabled(True)
+        currencies_top_list1.setStyleSheet(comboBoxStyleSheet)
+        currencies_top_list2.setStyleSheet(comboBoxStyleSheet)
+    else:
+        currencies_top_list1.setEnabled(False)
+        currencies_top_list2.setEnabled(False)
+        currencies_top_list1.setStyleSheet(comboBoxDisabledStyleSheet)
+        currencies_top_list2.setStyleSheet(comboBoxDisabledStyleSheet)
 
     tab.layout = QGridLayout()
     tab.layout.setSpacing(10)
