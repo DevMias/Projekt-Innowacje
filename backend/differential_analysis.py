@@ -4,9 +4,6 @@ from sklearn.preprocessing import MinMaxScaler
 from backend.backend_functions import run_method
 
 
-# differential analysis (to check)
-
-
 def differential_analysis(datas: list, target: str = None, method: str = None, date: str = None, parameter=0):
     if datas is None:
         return
@@ -29,3 +26,21 @@ def differential_analysis(datas: list, target: str = None, method: str = None, d
     difference = run_method([differ], target, date, method, parameter)
 
     return difference
+
+
+def get_anomalies(datas: list, target: str = None, method: str = None, date: str = None, parameter=0):
+    ad_datas = list([deepcopy(i) for i in datas if i is not None])
+
+    if len(ad_datas) < 2:
+        return
+
+    targets_cols = list([data[[date, target]].copy() for data in ad_datas])
+
+    analysis = differential_analysis(ad_datas, target, method, date, parameter)
+
+    for i in range(len(targets_cols)):
+        targets_cols[i]['Anomaly'] = analysis.Anomaly
+        targets_cols[i].rename(columns={date: "Date"}, inplace=True)
+        targets_cols[i].rename(columns={target: "Exchange"}, inplace=True)
+
+    return targets_cols
