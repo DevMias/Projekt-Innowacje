@@ -58,7 +58,7 @@ def string_to_date(date):
     return QDate(int(date[:4]), int(date[4:6]), int(date[6:8]))
 
 
-def create_link(currency1: str, currency2: str, date_start: str, date_stop: str, interval: str) -> str:
+def create_link(currencies: list, date_start: str, date_stop: str, interval: str) -> list:
     if interval == "Dzienny":
         interval = 'd'
     if interval == "Tygodniowy":
@@ -70,10 +70,15 @@ def create_link(currency1: str, currency2: str, date_start: str, date_stop: str,
     if interval == "Roczny":
         interval = 'y'
 
-    link = "https://stooq.pl/q/d/l/?s=" + currency1 + currency2 + "&d1=" + date_start + "&d2=" + date_stop + "&i=" + \
+    link1 = "https://stooq.pl/q/d/l/?s=" + currencies[0] + currencies[1] + "&d1=" + date_start + "&d2=" + date_stop + "&i=" + \
            interval
 
-    return link
+    link2 = ""
+    if len(currencies) > 2:
+        link2 = "https://stooq.pl/q/d/l/?s=" + currencies[2] + currencies[3] + "&d1=" + date_start + "&d2=" + date_stop + "&i=" + \
+                interval
+
+    return [link1, link2] if len(currencies) > 2 else [link1]
 
 
 def error(text, inform_text="", title="Błąd", icon=QMessageBox.Critical, buttons=QMessageBox.Ok):
@@ -164,25 +169,28 @@ def download_csv_without_errors(link):
         return None
 
 
-def download_csv(filepath: str, separator=',', from_file=False) -> pd.arrays:
+def download_csv(filepaths: list, separator=',', from_file=False) -> pd.arrays:
     try:
-        if from_file:
-            f = open(filepath, "r").read()
-            sniffer = csv.Sniffer()
-            dialect = sniffer.sniff(f)
-            separator = dialect.delimiter
+        dfs = list()
+        for i in range(len(filepaths)):
+            if from_file:
+                f = open(filepaths[i], "r").read()
+                sniffer = csv.Sniffer()
+                dialect = sniffer.sniff(f)
+                separator = dialect.delimiter
 
-        dataframe = pd.read_csv(filepath, sep=separator)
+            dataframe = pd.read_csv(filepaths[i], sep=separator)
 
-        if len(dataframe) <= 1 or dataframe.index.empty:
-            return None, "empty"
+            if len(dataframe) <= 1 or dataframe.index.empty:
+                return None, "empty"
 
-        if separator != ',':
-            error("Wykryto separator '" + str(separator) + "'", "Pliki wyjściowe będą zawierać separator ','."
-                                                                " Uważaj na nadpisywanie plików.",
-                  title="Separator w pliku", icon=QMessageBox.Information)
+            if separator != ',':
+                error("Wykryto separator '" + str(separator) + "'", "Pliki wyjściowe będą zawierać separator ','."
+                                                                    " Uważaj na nadpisywanie plików.",
+                      title="Separator w pliku", icon=QMessageBox.Information)
+            dfs.append(dataframe)
 
-        return dataframe, ""
+        return dfs, ""
 
     except URLError:
         error("Błąd połączenia z serwerem", "Sprawdź swoje połączenie internetowe")

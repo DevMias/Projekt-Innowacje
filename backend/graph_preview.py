@@ -14,12 +14,12 @@ def create_plot(graph, plot_info):
     else:
         graph.setTitle(plot_info["title"].text())
 
-    link = backend_functions.create_link(plot_info["currencies"][0].currentText()[:3],
-                                         plot_info["currencies"][1].currentText()[:3],
+    link = backend_functions.create_link([plot_info["currencies"][0].currentText()[:3],
+                                         plot_info["currencies"][1].currentText()[:3]],
                                          backend_functions.return_date(plot_info["dates"][0]),
                                          backend_functions.return_date(plot_info["dates"][1]),
                                          plot_info["interval"].currentText())
-    csv = backend_functions.download_csv_without_errors(link)
+    csv = backend_functions.download_csv_without_errors(link[0])
 
     graph.clear()
 

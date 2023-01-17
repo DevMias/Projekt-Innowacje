@@ -1,5 +1,4 @@
 import sys
-import cv2
 import webbrowser
 import os
 from PyQt5 import QtWidgets
@@ -732,25 +731,27 @@ class Window(QMainWindow):
         date_stop = backend.return_date(self.calendar_stop)
         interval = self.interval.currentText()
         method = self.methods.currentText()
-        currency1 = self.currencies_bottom_list1.currentText()[:3]
-        currency2 = self.currencies_bottom_list2.currentText()[:3]
+        currencies = list()
+        currencies.append(self.currencies_bottom_list1.currentText()[:3])
+        currencies.append(self.currencies_bottom_list2.currentText()[:3])
+        currencies.append(self.currencies_top_list1.currentText()[:3])
+        currencies.append(self.currencies_top_list2.currentText()[:3])
         title = self.title_top.text()
         if title == "":
-            title = currency1 + "/" + currency2
+            title = currencies[0] + "/" + currencies[1] # temporary
 
-        link = backend.create_link(currency1, currency2, date_start, date_stop, interval)
-        csv, error = backend.download_csv(link)
+        links = backend.create_link(currencies, date_start, date_stop, interval)
+        csv_list, error = backend.download_csv(links)
 
         if error == "connection error":
             return
 
-        if csv is None:
-            backend.input_errors(list([ currency1, currency2 ]), self.calendar_start.date(), self.calendar_stop.date())
+        if csv_list is None:
+            backend.input_errors(currencies, self.calendar_start.date(), self.calendar_stop.date())
         else:
-            self.create_graph(csv=csv, method=method, date=date, target=target, title=title, currency1=currency1,
-                              currency2=currency2)
+            self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=title, currencies=currencies)
 
-    def create_graph(self, csv, method, date, target, title="", currency1="", currency2="", with_anomalies=False):
+    def create_graph(self, csv_list, method, date, target, title="", currencies=None, with_anomalies=False):
         tab = QWidget()
         tab.layout = QVBoxLayout()
         horizontal_layout = QHBoxLayout()
@@ -810,12 +811,27 @@ class Window(QMainWindow):
         else:
             self.tabs.addTab(tab, method + " " + title)
 
-        new_graph = Graph(method=method, csv=csv, date=date, target=target, currency1=currency1,
-                          currency2=currency2, label=label, slider=slider, slider_label=slider_label,
+        '''new_graph = Graph(method=method, csv_list=csv_list, date=date, target=target, currencies=currencies,
+                          label=label, slider=slider, slider_label=slider_label,
                           checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
-                          with_anomalies=with_anomalies)
+                          with_anomalies=with_anomalies, currency_checkbox=self.checkbox.isChecked())'''
 
-        tab.layout.addWidget(new_graph.graph, alignment=Qt.Alignment())
+        new_graphs = list()
+        new_graphs.append(Graph(method=method, csv=csv_list[0], date=date, target=target, currency1=currencies[0], currency2=currencies[1],
+                          label=label, slider=slider, slider_label=slider_label,
+                          checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
+                          with_anomalies=with_anomalies))
+        tab.layout.addWidget(new_graphs[0].graph, alignment=Qt.Alignment())
+
+        if self.checkbox.isChecked():
+            new_graphs.append(Graph(method=method, csv=csv_list[1], date=date, target=target, currency1=currencies[2],
+                               currency2=currencies[3],
+                               label=label, slider=slider, slider_label=slider_label,
+                               checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
+                               with_anomalies=with_anomalies))
+            tab.layout.addWidget(new_graphs[1].graph, alignment=Qt.Alignment())
+
+
         if not with_anomalies:
             tab.layout.addWidget(refresh_checkbox, alignment=Qt.Alignment())
             graph_settings_layout.addWidget(button_flip, alignment=Qt.Alignment())
@@ -831,16 +847,17 @@ class Window(QMainWindow):
                 slider_layout.addWidget(slider_label, alignment=Qt.Alignment())
                 slider_layout.addWidget(slider, alignment=Qt.Alignment())
                 slider_layout.addWidget(button_reset, alignment=Qt.Alignment())
-                button_reset.clicked.connect(new_graph.reset_slider)
+                button_reset.clicked.connect(new_graphs[0].reset_slider)
                 tab.layout.addLayout(slider_layout)
 
-        button_flip.clicked.connect(new_graph.flip)
-        slider.valueChanged.connect(new_graph.update_graph)
-        button_refresh.clicked.connect(new_graph.refresh_graph)
-        button_reset_graph.clicked.connect(new_graph.reset_graph)
+        for i in  range(len(new_graphs)):
+            button_flip.clicked.connect(new_graphs[i].flip)
+            slider.valueChanged.connect(new_graphs[i].update_graph)
+            button_refresh.clicked.connect(new_graphs[i].refresh_graph)
+            button_reset_graph.clicked.connect(new_graphs[i].reset_graph)
         tab.setLayout(tab.layout)
 
-        self.graphs[tab] = new_graph
+        self.graphs[tab] = new_graphs[0] if len(new_graphs) < 2 else new_graphs
         self.tabs.setCurrentIndex(self.tabs.indexOf(tab))
 
 
