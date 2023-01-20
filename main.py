@@ -14,8 +14,7 @@ from front.graph import Graph
 import pyqtgraph.exporters as exporters
 import pyqtgraph as pg
 
-
-methods_with_parameter = ["Grupowanie przestrzenne", "Las izolacji", "Lokalna wartość odstająca"]
+methods_with_parameter = ["Grupowanie przestrzenne", "Las izolacji", "Lokalna wartość odstająca", "Analiza roznicowa"]
 
 
 def clear_layout(layout):
@@ -28,7 +27,7 @@ def clear_layout(layout):
 class Calendar(QCalendarWidget):
     def __init__(self, parent=None):
         super(Calendar, self).__init__(parent)
-        self.setGridVisible(True)  
+        self.setGridVisible(True)
         self.setStyleSheet(calendarStyleSheet)
 
 
@@ -65,18 +64,18 @@ class Window(QMainWindow):
 
         # generate plot button
         self.button_plot = backend_funcs.create_button(text="Wygeneruj wykresy", style=generatePlotButtonStyleSheet,
-                                                       function=self.create_plot)
+                                                       function=self.create_graph_container)
         self.button_plot.setFixedWidth(300)
 
         # swap currencies_bottom button
         self.swap_currencies_bottom = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
-                                                       function=self.swap_currencies)
+                                                                  function=self.swap_currencies)
         # swap currencies_top button
         self.swap_currencies_top = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
-                                                       function=self.swap_currencies2)      
+                                                               function=self.swap_currencies2)
 
-        self.swap_currencies_bottom.clicked.connect(self.swap_clicked_bottom)  
-        self.swap_currencies_top.clicked.connect(self.swap_clicked_top)                                                                                                                                           
+        self.swap_currencies_bottom.clicked.connect(self.swap_clicked_bottom)
+        self.swap_currencies_top.clicked.connect(self.swap_clicked_top)
 
         # calendars for setting dates
         self.calendar_start_label = QLabel("Data początkowa")
@@ -91,13 +90,13 @@ class Window(QMainWindow):
 
         self.calendar_start = QtWidgets.QDateEdit()
         self.calendar_start.setCalendarPopup(True)
-        self.calendar_start.setDisplayFormat("dd-MM-yyyy")  
+        self.calendar_start.setDisplayFormat("dd-MM-yyyy")
         self.calendar_start.setStyleSheet(DateEditStyleSheet)
         self.calendar_start.setCalendarWidget(calendar_start)
 
         self.calendar_stop = QtWidgets.QDateEdit()
         self.calendar_stop.setCalendarPopup(True)
-        self.calendar_stop.setDisplayFormat("dd-MM-yyyy")  
+        self.calendar_stop.setDisplayFormat("dd-MM-yyyy")
         self.calendar_stop.setStyleSheet(DateEditStyleSheet)
         self.calendar_stop.setCalendarWidget(calendar_stop)
 
@@ -178,42 +177,39 @@ class Window(QMainWindow):
         self.init_layout()
         self.show()
 
-
-    def change_label_top(self): # zmienic funkcje nie dziala w kazdym przypadku
+    def change_label_top(self):  # zmienic funkcje nie dziala w kazdym przypadku
         self.title_top.setPlaceholderText(
-            #self.graph_preview_top.text() #to moze dobrze
+            # self.graph_preview_top.text() #to moze dobrze
         )
 
-
-    def change_label_bottom(self): # zmienic funkcje nie dziala w kazdym przypadku
+    def change_label_bottom(self):  # zmienic funkcje nie dziala w kazdym przypadku
         self.title_bottom.setPlaceholderText(
             # self.bottom_plot_variables["currencies"][0].currentText()[:3] + '/' +
             # self.bottom_plot_variables["currencies"][1].currentText()[:3]
-            #self.graph_preview_bottom.text() #to moze dobrze
-        ) 
-
+            # self.graph_preview_bottom.text() #to moze dobrze
+        )
 
     def swap_clicked_top(self):
-        if self.title_top.placeholderText() == self.currencies_top_list1.currentText()[:3] + '/' + self.currencies_top_list2.currentText()[:3]:
+        if self.title_top.placeholderText() == self.currencies_top_list1.currentText()[
+                                               :3] + '/' + self.currencies_top_list2.currentText()[:3]:
             self.title_top.setPlaceholderText(
                 self.currencies_top_list2.currentText()[:3] + '/' + self.currencies_top_list1.currentText()[:3]
             )
         else:
-             self.title_top.setPlaceholderText(
+            self.title_top.setPlaceholderText(
                 self.currencies_top_list1.currentText()[:3] + '/' + self.currencies_top_list2.currentText()[:3]
-            )  
-
+            )
 
     def swap_clicked_bottom(self):
-        if self.title_bottom.placeholderText() == self.currencies_bottom_list1.currentText()[:3] + '/' + self.currencies_bottom_list2.currentText()[:3]:
+        if self.title_bottom.placeholderText() == self.currencies_bottom_list1.currentText()[
+                                                  :3] + '/' + self.currencies_bottom_list2.currentText()[:3]:
             self.title_bottom.setPlaceholderText(
                 self.currencies_bottom_list2.currentText()[:3] + '/' + self.currencies_bottom_list1.currentText()[:3]
             )
         else:
-             self.title_bottom.setPlaceholderText(
+            self.title_bottom.setPlaceholderText(
                 self.currencies_bottom_list1.currentText()[:3] + '/' + self.currencies_bottom_list2.currentText()[:3]
-            )          
-
+            )
 
     def checkbox_clicked(self):
         if self.checkbox.isChecked():
@@ -227,15 +223,15 @@ class Window(QMainWindow):
             self.currencies_top_label.setStyleSheet(labelStyleSheet)
             self.button_plot.setText("Wygeneruj wykresy")
             self.tab_main.layout.addWidget(self.graph_preview_top, 2, 2, 7, 1)
-            self.tab_main.layout.addWidget(self.graph_preview_bottom, 9, 2, 6, 1) 
+            self.tab_main.layout.addWidget(self.graph_preview_bottom, 9, 2, 6, 1)
             self.graph_preview_top.show()
             self.graph_preview_bottom.show()
-        else:   
+        else:
             self.checkbox.setText("Włącz")
             self.currencies_top_list1.setEnabled(False)
             self.currencies_top_list2.setEnabled(False)
-            self.swap_currencies_top.setEnabled(False)  
-            self.currencies_top_list1.setStyleSheet(comboBoxDisabledStyleSheet)  
+            self.swap_currencies_top.setEnabled(False)
+            self.currencies_top_list1.setStyleSheet(comboBoxDisabledStyleSheet)
             self.currencies_top_list2.setStyleSheet(comboBoxDisabledStyleSheet)
             self.currencies_top_label.setStyleSheet(labelDisabledStyleSheet)
             self.button_plot.setText("Wygeneruj wykres")
@@ -243,7 +239,6 @@ class Window(QMainWindow):
             self.graph_preview_top.hide()
             self.tab_main.layout.addWidget(self.graph_preview_bottom, 2, 2, 14, 1)
             self.graph_preview_bottom.show()
-
 
     def init_menu(self):
         exit_action = QAction('&Zamknij', self)
@@ -309,11 +304,13 @@ class Window(QMainWindow):
         self.methods.setCurrentText(self.settings_pack["methods"])
         self.methods.setCurrentIndex(int(self.settings_pack["methods"]))
 
-        self.top_plot_variables = {"title": self.title_top, "currencies": (self.currencies_top_list1, self.currencies_top_list2),
-                               "dates": (self.calendar_start, self.calendar_stop), "interval": self.interval}
+        self.top_plot_variables = {"title": self.title_top,
+                                   "currencies": (self.currencies_top_list1, self.currencies_top_list2),
+                                   "dates": (self.calendar_start, self.calendar_stop), "interval": self.interval}
 
-        self.bottom_plot_variables = {"title": self.title_bottom, "currencies": (self.currencies_bottom_list1, self.currencies_bottom_list2),
-                               "dates": (self.calendar_start, self.calendar_stop), "interval": self.interval}                      
+        self.bottom_plot_variables = {"title": self.title_bottom,
+                                      "currencies": (self.currencies_bottom_list1, self.currencies_bottom_list2),
+                                      "dates": (self.calendar_start, self.calendar_stop), "interval": self.interval}
 
         self.currencies_bottom_list1.currentIndexChanged.connect(self.graph_preview_bottom_change)
         self.currencies_bottom_list2.currentIndexChanged.connect(self.graph_preview_bottom_change)
@@ -327,7 +324,7 @@ class Window(QMainWindow):
         self.calendar_stop.dateChanged.connect(self.graph_preview_top_change)
 
         self.interval.currentIndexChanged.connect(self.graph_preview_bottom_change)
-        self.title_bottom.textChanged.connect(self.graph_preview_bottom_change) 
+        self.title_bottom.textChanged.connect(self.graph_preview_bottom_change)
         self.calendar_start.dateChanged.connect(self.graph_preview_bottom_change)
         self.calendar_stop.dateChanged.connect(self.graph_preview_bottom_change)
 
@@ -335,10 +332,10 @@ class Window(QMainWindow):
         self.graph_preview_bottom = backend_graph.create_plot(self.graph_preview_bottom, self.bottom_plot_variables)
 
         self.title_top.setPlaceholderText(self.currencies_top_list1.currentText()[:3]
-        + '/' + self.currencies_top_list2.currentText()[:3])
+                                          + '/' + self.currencies_top_list2.currentText()[:3])
 
         self.title_bottom.setPlaceholderText(self.currencies_bottom_list1.currentText()[:3]
-        + '/' + self.currencies_bottom_list2.currentText()[:3])
+                                             + '/' + self.currencies_bottom_list2.currentText()[:3])
 
         # main tab layout
         self.tab_main.layout = QGridLayout()  # 2. layout
@@ -347,7 +344,7 @@ class Window(QMainWindow):
         self.tab_main.layout.setContentsMargins(0, 0, 0, 0)
 
         # Ustawic to jako tab
-        self.tab_main.layout.addWidget(self.button_settings, 0, 2, alignment = Qt.AlignRight)
+        self.tab_main.layout.addWidget(self.button_settings, 0, 2, alignment=Qt.AlignRight)
 
         self.tab_main.layout.addWidget(self.title_top, 1, 2, alignment=Qt.AlignLeft)
         self.tab_main.layout.addWidget(self.title_bottom, 1, 2, alignment=Qt.AlignRight)
@@ -360,8 +357,8 @@ class Window(QMainWindow):
 
         # currencies top layout
         self.tab_main.layout.addWidget(self.currencies_top_label, 0, 0, 1, 2, alignment=Qt.AlignHCenter)
-        self.tab_main.layout.addWidget(self.currencies_top_list1, 1, 0, 1, 1 , alignment=Qt.AlignHCenter)
-        self.tab_main.layout.addWidget(self.currencies_top_list2, 2, 0, 1, 1 , alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.currencies_top_list1, 1, 0, 1, 1, alignment=Qt.AlignHCenter)
+        self.tab_main.layout.addWidget(self.currencies_top_list2, 2, 0, 1, 1, alignment=Qt.AlignHCenter)
         self.tab_main.layout.addWidget(self.swap_currencies_top, 1, 1, 2, 1, alignment=Qt.AlignHCenter)
 
         # checkbox layout
@@ -379,7 +376,7 @@ class Window(QMainWindow):
         self.tab_main.layout.addWidget(self.button_plot, 14, 0, 1, 2, alignment=Qt.AlignHCenter)
 
         self.tab_main.layout.addWidget(self.graph_preview_top, 2, 2, 6, 1)
-        self.tab_main.layout.addWidget(self.graph_preview_bottom, 8, 2, 7, 1)    
+        self.tab_main.layout.addWidget(self.graph_preview_bottom, 8, 2, 7, 1)
 
         self.tab_main.setStyleSheet(mainTabStyleSheet)
 
@@ -394,7 +391,7 @@ class Window(QMainWindow):
         self.graph_preview_top = backend_graph.create_plot(self.graph_preview_top, self.top_plot_variables)
 
     def graph_preview_bottom_change(self):
-        self.graph_preview_bottom = backend_graph.create_plot(self.graph_preview_bottom, self.bottom_plot_variables)    
+        self.graph_preview_bottom = backend_graph.create_plot(self.graph_preview_bottom, self.bottom_plot_variables)
 
     def swap_currencies(self):
         tmp = self.currencies_bottom_list1.currentText()
@@ -404,7 +401,7 @@ class Window(QMainWindow):
     def swap_currencies2(self):
         tmp = self.currencies_top_list1.currentText()
         self.currencies_top_list1.setCurrentText(self.currencies_top_list2.currentText())
-        self.currencies_top_list2.setCurrentText(tmp)    
+        self.currencies_top_list2.setCurrentText(tmp)
 
     def important_add_tab(self):
         tab = self.tabs.currentWidget()
@@ -523,7 +520,7 @@ class Window(QMainWindow):
         date_stop = "date_stop:" + backend.return_date(self.settings_pack["date_stop"]) + '\n'
         checkbox = "checkbox:" + str(self.settings_pack["date_checkbox"].isChecked()) + '\n'
         settings = [currency1, currency2, method, interval, date_start, date_stop, checkbox,
-         currency12, currency21]
+                    currency12, currency21]
         open('settings', 'w').writelines(settings)
 
     def read_settings_from_file(self):
@@ -558,7 +555,7 @@ class Window(QMainWindow):
         date_stop = "date_stop:" + self.settings_pack["date_stop"] + '\n'
         checkbox = "checkbox:" + self.settings_pack["date_checkbox"] + '\n'
         settings_new = [currency1, currency2, method, interval, date_start, date_stop, checkbox,
-        currency12, currency21]
+                        currency12, currency21]
         open('settings', 'w').writelines(settings_new)
 
         self.close_tab(False)
@@ -723,7 +720,7 @@ class Window(QMainWindow):
         except PermissionError:
             backend.error("Brak dostępu do lokalizacji pliku", "Sprawdź czy plik jest zamknięty jeśli istnieje.")
 
-    def create_plot(self):
+    def create_graph_container(self):
         date = "Data"
         target = "Zamkniecie"
 
@@ -736,9 +733,9 @@ class Window(QMainWindow):
         currencies.append(self.currencies_bottom_list2.currentText()[:3])
         currencies.append(self.currencies_top_list1.currentText()[:3])
         currencies.append(self.currencies_top_list2.currentText()[:3])
-        title = self.title_top.text()
-        if title == "":
-            title = currencies[0] + "/" + currencies[1] # temporary
+        graph_title = self.title_top.text()
+        if graph_title == "":
+            graph_title = currencies[0] + "/" + currencies[1]  # tymczasowo, wrzuca tytuł wykresu
 
         links = backend.create_link(currencies, date_start, date_stop, interval)
         csv_list, error = backend.download_csv(links)
@@ -749,7 +746,13 @@ class Window(QMainWindow):
         if csv_list is None:
             backend.input_errors(currencies, self.calendar_start.date(), self.calendar_stop.date())
         else:
-            self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=title, currencies=currencies)
+            self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=graph_title,
+                              currencies=currencies)
+            if self.checkbox.isChecked():
+                self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=graph_title,
+                                  currencies=currencies)
+
+            # create_graph csv list
 
     def create_graph(self, csv_list, method, date, target, title="", currencies=None, with_anomalies=False):
         tab = QWidget()
@@ -816,21 +819,24 @@ class Window(QMainWindow):
                           checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
                           with_anomalies=with_anomalies, currency_checkbox=self.checkbox.isChecked())'''
 
-        new_graphs = list()
-        new_graphs.append(Graph(method=method, csv=csv_list[0], date=date, target=target, currency1=currencies[0], currency2=currencies[1],
-                          label=label, slider=slider, slider_label=slider_label,
-                          checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
-                          with_anomalies=with_anomalies))
-        tab.layout.addWidget(new_graphs[0].graph, alignment=Qt.Alignment())
+        graph_list = list()
+        first_graph = Graph(method=method, csv=csv_list[0], date=date, target=target, currency1=currencies[0],
+                            currency2=currencies[1],
+                            label=label, slider=slider, slider_label=slider_label,
+                            checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
+                            with_anomalies=with_anomalies)
+
+        graph_list.append(first_graph)
+        tab.layout.addWidget(graph_list[0].graph, alignment=Qt.Alignment())
 
         if self.checkbox.isChecked():
-            new_graphs.append(Graph(method=method, csv=csv_list[1], date=date, target=target, currency1=currencies[2],
-                               currency2=currencies[3],
-                               label=label, slider=slider, slider_label=slider_label,
-                               checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
-                               with_anomalies=with_anomalies))
-            tab.layout.addWidget(new_graphs[1].graph, alignment=Qt.Alignment())
-
+            second_graph = Graph(method=method, csv=csv_list[1], date=date, target=target, currency1=currencies[2],
+                                 currency2=currencies[3],
+                                 label=label, slider=slider, slider_label=slider_label,
+                                 checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
+                                 with_anomalies=with_anomalies)
+            graph_list.append(second_graph)
+            tab.layout.addWidget(graph_list[1].graph, alignment=Qt.Alignment())
 
         if not with_anomalies:
             tab.layout.addWidget(refresh_checkbox, alignment=Qt.Alignment())
@@ -847,17 +853,18 @@ class Window(QMainWindow):
                 slider_layout.addWidget(slider_label, alignment=Qt.Alignment())
                 slider_layout.addWidget(slider, alignment=Qt.Alignment())
                 slider_layout.addWidget(button_reset, alignment=Qt.Alignment())
-                button_reset.clicked.connect(new_graphs[0].reset_slider)
+                button_reset.clicked.connect(graph_list[0].reset_slider)
                 tab.layout.addLayout(slider_layout)
 
-        for i in  range(len(new_graphs)):
-            button_flip.clicked.connect(new_graphs[i].flip)
-            slider.valueChanged.connect(new_graphs[i].update_graph)
-            button_refresh.clicked.connect(new_graphs[i].refresh_graph)
-            button_reset_graph.clicked.connect(new_graphs[i].reset_graph)
+        for new_graph in graph_list:
+            button_flip.clicked.connect(new_graph.flip)
+            slider.valueChanged.connect(new_graph.update_graph)
+            button_refresh.clicked.connect(new_graph.refresh_graph)
+            button_reset_graph.clicked.connect(new_graph.reset_graph)
+
         tab.setLayout(tab.layout)
 
-        self.graphs[tab] = new_graphs[0] if len(new_graphs) < 2 else new_graphs
+        self.graphs[tab] = graph_list[0] if len(graph_list) < 2 else graph_list
         self.tabs.setCurrentIndex(self.tabs.indexOf(tab))
 
 
@@ -867,7 +874,7 @@ def main():
     ex.show()
 
     sys.exit(app.exec_())
-    
+
 
 if __name__ == '__main__':
     main()

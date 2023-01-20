@@ -71,6 +71,9 @@ class Graph:
         if self.method == "Lokalna wartość odstająca":
             self.slider.setValue(25)
             self.multiplayer = 2
+        if self.method=="Metoda roznicowa":
+            pass
+
 
         self.slider_label.setText("Czułość metody: " + str(self.slider.value()) + "%")
 
@@ -106,6 +109,9 @@ class Graph:
             anomaly_detected_data = self.csv
 
         self.anomalies_to_download = anomaly_detected_data
+
+
+        # Tutaj wszystkie metody
 
         if self.method == "Wszystkie":
             if anomaly_detected_data is not None:

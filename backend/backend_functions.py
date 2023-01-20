@@ -16,6 +16,7 @@ from backend.LocalOutlierFactor import local_outlier
 from backend.Majority import majority
 from backend.CombinedMethods import all_methods_combined
 
+
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QIcon
 
@@ -70,12 +71,14 @@ def create_link(currencies: list, date_start: str, date_stop: str, interval: str
     if interval == "Roczny":
         interval = 'y'
 
-    link1 = "https://stooq.pl/q/d/l/?s=" + currencies[0] + currencies[1] + "&d1=" + date_start + "&d2=" + date_stop + "&i=" + \
-           interval
+    link1 = "https://stooq.pl/q/d/l/?s=" + currencies[0] + currencies[
+        1] + "&d1=" + date_start + "&d2=" + date_stop + "&i=" + \
+            interval
 
     link2 = ""
     if len(currencies) > 2:
-        link2 = "https://stooq.pl/q/d/l/?s=" + currencies[2] + currencies[3] + "&d1=" + date_start + "&d2=" + date_stop + "&i=" + \
+        link2 = "https://stooq.pl/q/d/l/?s=" + currencies[2] + currencies[
+            3] + "&d1=" + date_start + "&d2=" + date_stop + "&i=" + \
                 interval
 
     return [link1, link2] if len(currencies) > 2 else [link1]
@@ -222,11 +225,14 @@ def run_method(datas: list, target: str, date: str, method: str, parameter=0):
         return majority(datas=datas, target=target, date=date)
     if method == "Autoenkoder":
         return auto_encoder(datas=datas, target=target, date=date)
+    if method == "Analiza roznicowa":
+        return differential_analysis(datas=datas, target=target, date=date) #???
     if method == "Wszystkie":
         return all_methods_combined(datas=datas, target=target, date=date)
 
 
-def input_errors(currency_list: list = None, start_date: QDate = None, stop_date: QDate = None, generate_popup: bool = True):
+def input_errors(currency_list: list = None, start_date: QDate = None, stop_date: QDate = None,
+                 generate_popup: bool = True):
     ''' This class should always return some kind of error, it is called when csv file is not specified in main.py
         There is a test class for this function in tests.backend_tests.py (feel free to add more tests) and enum class in enums.backend_enums.py'''
     my_errors = ""
@@ -234,21 +240,31 @@ def input_errors(currency_list: list = None, start_date: QDate = None, stop_date
         my_errors += PopupError.MISSING_PARAMETERS
     else:
         list_len = len(currency_list)
-        if not list_len: my_errors = PopupError.EMPTY_CURRENCY_LIST # check if empty
-        elif list_len % 2: my_errors = PopupError.NO_CURRENCY_PAIR  # check if even
-        for curr_1, curr_2 in zip(currency_list[::2], currency_list[1::2]): # it will take i and i+1 element of currency_list
+        if not list_len:
+            my_errors = PopupError.EMPTY_CURRENCY_LIST  # check if empty
+        elif list_len % 2:
+            my_errors = PopupError.NO_CURRENCY_PAIR  # check if even
+        for curr_1, curr_2 in zip(currency_list[::2],
+                                  currency_list[1::2]):  # it will take i and i+1 element of currency_list
             if curr_1 == curr_2: my_errors = PopupError.NOT_UNIQUE_CURRENCIES; break
-        if list_len == 4 and currency_list[0:2] == currency_list[2:4]: my_errors = PopupError.NOT_UNIQUE_CURRENCIES # write universally in future
+        if list_len == 4 and currency_list[0:2] == currency_list[
+                                                   2:4]: my_errors = PopupError.NOT_UNIQUE_CURRENCIES  # write universally in future
 
-        if start_date.year() > stop_date.year(): my_errors += PopupError.DEND_BEFORE_DSTART
+        if start_date.year() > stop_date.year():
+            my_errors += PopupError.DEND_BEFORE_DSTART
         elif start_date.year() == stop_date.year():
-            if start_date.month() > stop_date.month(): my_errors += PopupError.DEND_BEFORE_DSTART
+            if start_date.month() > stop_date.month():
+                my_errors += PopupError.DEND_BEFORE_DSTART
             elif start_date.month() == stop_date.month():
-                if start_date.day() > stop_date.day(): my_errors += PopupError.DEND_BEFORE_DSTART
-                elif start_date.day() == stop_date.day(): my_errors += PopupError.DEND_BEFORE_DSTART
+                if start_date.day() > stop_date.day():
+                    my_errors += PopupError.DEND_BEFORE_DSTART
+                elif start_date.day() == stop_date.day():
+                    my_errors += PopupError.DEND_BEFORE_DSTART
 
-        if start_date.toPyDate() > datetime.date.today(): my_errors += PopupError.NOT_EXIST_DATE
-        elif stop_date.year() < 1970: my_errors += PopupError.NO_DATA_FOR_DATE
+        if start_date.toPyDate() > datetime.date.today():
+            my_errors += PopupError.NOT_EXIST_DATE
+        elif stop_date.year() < 1970:
+            my_errors += PopupError.NO_DATA_FOR_DATE
 
     if my_errors == "": my_errors += PopupError.UNEXPECTED_ERROR
     if generate_popup: error("Błedne dane", my_errors)
