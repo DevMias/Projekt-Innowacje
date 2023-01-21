@@ -9,12 +9,14 @@ from PyQt5.QtWidgets import QAction, qApp, QApplication, QWidget, QCalendarWidge
 from backend import backend_functions as backend
 from backend import tab_functions as backend_funcs
 from backend import graph_preview as backend_graph
+from backend.differential_anomalies import differential_analysis
 from front.styles import *
 from front.graph import Graph
 import pyqtgraph.exporters as exporters
 import pyqtgraph as pg
 
-methods_with_parameter = ["Grupowanie przestrzenne", "Las izolacji", "Lokalna wartość odstająca", "Analiza roznicowa"]
+methods_with_parameter = ["Grupowanie przestrzenne", "Las izolacji", "Lokalna wartość odstająca", "Analiza roznicowa",
+                          "Differential"]
 
 
 def clear_layout(layout):
@@ -742,19 +744,22 @@ class Window(QMainWindow):
 
         if error == "connection error":
             return
+        #### Tworzenie containerow na wykresy
+        differential = True if self.checkbox.isChecked() else False
 
         if csv_list is None:
             backend.input_errors(currencies, self.calendar_start.date(), self.calendar_stop.date())
         else:
             self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=graph_title,
-                              currencies=currencies)
+                              currencies=currencies, differential=differential)
             if self.checkbox.isChecked():
                 self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=graph_title,
-                                  currencies=currencies)
+                                  currencies=currencies, differential=differential)
 
             # create_graph csv list
 
-    def create_graph(self, csv_list, method, date, target, title="", currencies=None, with_anomalies=False):
+    def create_graph(self, csv_list, method, date, target, differential, title="", currencies=None,
+                     with_anomalies=False):
         tab = QWidget()
         tab.layout = QVBoxLayout()
         horizontal_layout = QHBoxLayout()
@@ -820,6 +825,9 @@ class Window(QMainWindow):
                           with_anomalies=with_anomalies, currency_checkbox=self.checkbox.isChecked())'''
 
         graph_list = list()
+
+        # Tworzenie wykresów
+
         first_graph = Graph(method=method, csv=csv_list[0], date=date, target=target, currency1=currencies[0],
                             currency2=currencies[1],
                             label=label, slider=slider, slider_label=slider_label,

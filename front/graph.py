@@ -1,8 +1,9 @@
 import pyqtgraph as pg
 
-from front.styles import labelStyleSheet_red, labelStyleSheet, labelStyleSheet_yellow, labelStyleSheet_orange,\
+from front.styles import labelStyleSheet_red, labelStyleSheet, labelStyleSheet_yellow, labelStyleSheet_orange, \
     labelStyleSheet_green, labelStyleSheet_light_green
 from backend.backend_functions import run_method
+from backend.differential_anomalies import get_anomalies
 import pandas as pd
 
 list_of_colors = [(255, 0, 0), (255, 167, 0), (255, 244, 0), (163, 255, 0), (44, 186, 0)]
@@ -12,7 +13,7 @@ list_legend = ["1 metoda", "2 metody", "3 metody", "4 metody", "5 metod"]
 
 class Graph:
     def __init__(self, method, csv, date, target, label, slider, slider_label, checkbox, date_label, value_label,
-                 currency1="", currency2="", title="", with_anomalies=False):
+                 currency1="", currency2="", title="", with_anomalies=False, differential=False):
         self.proxy = None
         self.flipped = False
         self.multiplayer = 1
@@ -41,6 +42,7 @@ class Graph:
         self.slider_label = slider_label
         self.date_label = date_label
         self.value_label = value_label
+        self.differential = differential
 
         self.checkbox.stateChanged.connect(self.update_graph)
 
@@ -71,9 +73,9 @@ class Graph:
         if self.method == "Lokalna wartość odstająca":
             self.slider.setValue(25)
             self.multiplayer = 2
-        if self.method=="Metoda roznicowa":
-            pass
-
+        # if self.method == 'Differential':
+        #     self.slider.setValue(25)
+        #     self.multiplayer = 2
 
         self.slider_label.setText("Czułość metody: " + str(self.slider.value()) + "%")
 
@@ -83,6 +85,8 @@ class Graph:
             if self.method == "Wszystkie":
                 self.csv = self.csv[[self.date, self.target, 'Anomaly_1', 'Anomaly_2', 'Anomaly_3', 'Anomaly_4',
                                      'Anomaly_5']]
+            elif self.method != 'Differential':
+                self.csv = self.csv[[self.date, self.target, 'Anomaly']]
             else:
                 self.csv = self.csv[[self.date, self.target, 'Anomaly']]
         self.csv = self.csv.rename(columns={self.target: "Exchange", self.date: "Date"})
@@ -103,16 +107,16 @@ class Graph:
         self.graph.plot(self.csv.index, self.csv[self.target], pen=self.pen)
 
         if not self.with_anomalies:
-            anomaly_detected_data = run_method([self.csv], self.target, self.date, self.method,
-                                               self.slider.value() / 100 / self.multiplayer)
+            if self.differential:
+                anomaly_detected_data = get_anomalies([self.csv], self.target, self.method, self.date)
+            else:
+                anomaly_detected_data = run_method([self.csv], self.target, self.date, self.method,
+                                                   self.slider.value() / 100 / self.multiplayer)
         else:
             anomaly_detected_data = self.csv
 
         self.anomalies_to_download = anomaly_detected_data
-
-
-        # Tutaj wszystkie metody
-
+        print(anomaly_detected_data)
         if self.method == "Wszystkie":
             if anomaly_detected_data is not None:
                 self.graph.addLegend()
@@ -292,4 +296,5 @@ class Graph:
                         self.value_label.setStyleSheet(labelStyleSheet)
 
                 self.date_label.setText("Data: " + str(self.csv[self.date][int(round(mouse_point.x()))]))
-                self.value_label.setText("Wartość: " + str(round(self.csv[self.target][int(round(mouse_point.x()))], 7)))
+                self.value_label.setText(
+                    "Wartość: " + str(round(self.csv[self.target][int(round(mouse_point.x()))], 7)))

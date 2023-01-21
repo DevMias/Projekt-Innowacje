@@ -14,6 +14,7 @@ from backend.StandardDeviation import standard_deviation
 from backend.IsolationForest import isolation_forest
 from backend.LocalOutlierFactor import local_outlier
 from backend.Majority import majority
+#from backend.differential_analysis import differential_analysis
 from backend.CombinedMethods import all_methods_combined
 
 
@@ -225,8 +226,8 @@ def run_method(datas: list, target: str, date: str, method: str, parameter=0):
         return majority(datas=datas, target=target, date=date)
     if method == "Autoenkoder":
         return auto_encoder(datas=datas, target=target, date=date)
-    if method == "Analiza roznicowa":
-        return differential_analysis(datas=datas, target=target, date=date) #???
+    #if method == "Analiza roznicowa":
+    #    return differential_analysis(datas=datas, target=target, date=date)
     if method == "Wszystkie":
         return all_methods_combined(datas=datas, target=target, date=date)
 

@@ -8,7 +8,7 @@ hover_color = 'rgb(168, 63, 51)'
 font_size_15 = '15px'
 font_size_20 = '20px'
 font_size_30 = '30px'
-
+min_tab_width = '220px'
 
 buttonStyleSheet = f"""
 QPushButton {{ 
@@ -331,12 +331,14 @@ mainTabStyleSheet = f"""
     QTabBar::tab{{
         color:{font_color};
         background-color:rgb(82, 82, 82);
+        min-width:{min_tab_width};
+        padding:10px;
         font-weight:normal;
     }}
     QTabBar::tab:selected {{ 
         color:black;
         background-color: rgb(242, 242, 242);
-        min-width:80px;
+        min-width:{min_tab_width};
         height:18px;
         padding:10px;
         font-weight:bold;
