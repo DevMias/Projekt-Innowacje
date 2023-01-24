@@ -566,7 +566,7 @@ class Window(QMainWindow):
         self.close_tab(False)
         self.settings()
 
-    # load csv
+    # load csv (with anomaly column)
     def graph_from_file(self):
         file, _ = QFileDialog.getOpenFileName(self, "Detektor anomalii", "", "CSV Files (*.csv *.txt)",
                                               options=QFileDialog.Options())
@@ -586,7 +586,7 @@ class Window(QMainWindow):
 
         self.pack_data(pack)
 
-    # load img
+    # load csv (without anomaly column)
     def file_open(self):
         file, _ = QFileDialog.getOpenFileName(self, "Detektor anomalii", "", "CSV Files (*.csv *.txt)",
                                               options=QFileDialog.Options())
@@ -702,12 +702,20 @@ class Window(QMainWindow):
                                                   "CSV Files (*.csv);;Text Files(*.txt)", options=QFileDialog.Options())
             if file == "" or any(data is None for data in datas): return
 
-            merged = pd.DataFrame()
-            for i in range(len(datas)): # go through list of dataframes and add index to every column name
-                col_list = datas[i].columns.values.tolist() # get list of column names
-                for j in range(len(col_list)):
-                    datas[i].rename(columns={col_list[j] : col_list[j] + '_' + str(i+1)}, inplace=True) # add index to column name
-                merged = pd.concat([merged, datas[i]], axis=1)  # append single dataframe to merged dataframe
+            # TODO: consider if we should trust that checbocx is clicked ?, imagine situation that tab is generated for 2 plots and then
+            # we unclicked the checkbox, then we want to download data, and data will download only for the first plot
+            # alternative: if len(datas) > 1
+            if self.checkbox.isChecked():
+                merged = pd.DataFrame()
+                for i in range(len(datas)): # go through list of dataframes and add index to every column name
+                    col_list = datas[i].columns.values.tolist() # get list of column names
+                    for j in range(len(col_list)):
+                        datas[i].rename(columns={col_list[j] : col_list[j] + '_' + str(i+1)}, inplace=True) # add index to column name
+                    merged = pd.concat([merged, datas[i]], axis=1)  # append single dataframe to merged dataframe
+                # TODO: Should we store 2x the same Data column? if yes, just delete this 2 line of code below
+                merged = merged.drop('Date_2', axis=1)
+                merged.rename(columns={'Date_1' : 'Date'}, inplace=True)
+            else: merged = datas[0]
 
             try:
                 merged.to_csv(file, index=False)
@@ -717,20 +725,26 @@ class Window(QMainWindow):
 
     # download img
     def download_graph(self):
-        graph = self.graphs[self.tabs.currentWidget()]
-        plt = graph.graph
+        # TODO: think, how to connect 2 images into one in case of 2 plots
+        graphs = self.graphs[self.tabs.currentWidget()]
 
-        exporter = exporters.ImageExporter(plt.plotItem)
-        exporter.parameters()['width'] = 1920
+        exporter_list = []
+        for i in range(len(graphs)):
+            plt = graphs[i].graph
+            exporter_list.append(exporters.ImageExporter(plt.plotItem))
+            exporter_list[i].parameters()['width'] = 1920
 
         file, _ = QFileDialog.getSaveFileName(self, "Detektor anomalii", "anomaly detection plot",
                                               "PNG Files (*.png);;JPEG Files(*.jpg)", options=QFileDialog.Options())
 
-        if file == "":
-            return
+        if file == "": return
+        filepath, extension = file.split(".")   # will carsh if file path will contain more dots
 
         try:
-            exporter.export(file)
+            # TODO: same consider like in download_data()
+            if self.checkbox.isChecked():
+                for i in range(len(exporter_list)): exporter_list[i].export(filepath + '_' + str(i+1) + '.' + extension)
+            else: exporter_list[0].export(file)
         except PermissionError:
             backend.error("Brak dostępu do lokalizacji pliku", "Sprawdź czy plik jest zamknięty jeśli istnieje.")
 
