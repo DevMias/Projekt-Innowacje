@@ -1,6 +1,8 @@
 import sys
 import webbrowser
 import os
+
+import pandas as pd
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtGui import *
@@ -564,6 +566,7 @@ class Window(QMainWindow):
         self.close_tab(False)
         self.settings()
 
+    # load csv
     def graph_from_file(self):
         file, _ = QFileDialog.getOpenFileName(self, "Detektor anomalii", "", "CSV Files (*.csv *.txt)",
                                               options=QFileDialog.Options())
@@ -583,6 +586,7 @@ class Window(QMainWindow):
 
         self.pack_data(pack)
 
+    # load img
     def file_open(self):
         file, _ = QFileDialog.getOpenFileName(self, "Detektor anomalii", "", "CSV Files (*.csv *.txt)",
                                               options=QFileDialog.Options())
@@ -599,6 +603,7 @@ class Window(QMainWindow):
         self.tabs.addTab(tab, file.split('/')[-1])
         self.tabs.setCurrentIndex(self.tabs.indexOf(tab))
 
+    # load csv cd
     def pack_data(self, pack):
         from_file = True
 
@@ -657,7 +662,7 @@ class Window(QMainWindow):
                     else:
                         make_graph = False
             if make_graph:
-                self.create_graph(csv=csv, method=method, date=date, target=target, title=title,
+                self.create_graph(csv_list=csv, method=method, date=date, target=target, title=title,
                                   with_anomalies=from_file)
                 return
 
@@ -677,34 +682,40 @@ class Window(QMainWindow):
 
         backend.error("Błędne nazwy kolumn", errors)
 
+    # download csv
     def download_data(self):
-        pressed = backend.error("Czy chcesz pobrać dane o anomaliach?", icon=QMessageBox.Question,
+        pressed = backend.error("Czy chcesz również pobrać dane o anomaliach?", icon=QMessageBox.Question,
                                 buttons=QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, title="Dane")
 
-        graph = self.graphs[self.tabs.currentWidget()]
+        if pressed != QMessageBox.Cancel:
+            graphs = self.graphs[self.tabs.currentWidget()] # get graphs from current tab
+            datas = [graph.anomalies_to_download[graph.data_indexes[0]:graph.data_indexes[1]] for graph in graphs]  # get datas
 
-        data = graph.anomalies_to_download[graph.data_indexes[0]:graph.data_indexes[1]]
+            if pressed == QMessageBox.No:   # if we want to download only data (without anomaly)
+                for i in range(len(datas)):
+                    if graphs[i].method == "Wszystkie":
+                        for anomalies in graphs[i].anomalies_list:
+                            datas[i] = datas[i].drop(anomalies, axis=1)     # dropping columns with anomaly
+                    else: datas[i] = datas[i].drop("Anomaly", axis=1)
 
-        if pressed == QMessageBox.No:
-            if graph.method == "Wszystkie":
-                for anomalies in graph.anomalies_list:
-                    data = data.drop(anomalies, axis=1)
-            else:
-                data = data.drop("Anomaly", axis=1)
-        elif pressed == QMessageBox.Cancel:
-            return
+            file, _ = QFileDialog.getSaveFileName(self, "Detektor anomalii", "anomaly detection data",
+                                                  "CSV Files (*.csv);;Text Files(*.txt)", options=QFileDialog.Options())
+            if file == "" or any(data is None for data in datas): return
 
-        file, _ = QFileDialog.getSaveFileName(self, "Detektor anomalii", "anomaly detection data",
-                                              "CSV Files (*.csv);;Text Files(*.txt)", options=QFileDialog.Options())
+            merged = pd.DataFrame()
+            for i in range(len(datas)): # go through list of dataframes and add index to every column name
+                col_list = datas[i].columns.values.tolist() # get list of column names
+                for j in range(len(col_list)):
+                    datas[i].rename(columns={col_list[j] : col_list[j] + '_' + str(i+1)}, inplace=True) # add index to column name
+                merged = pd.concat([merged, datas[i]], axis=1)  # append single dataframe to merged dataframe
 
-        if file == "" or data is None:
-            return
+            try:
+                merged.to_csv(file, index=False)
+            except PermissionError:
+                backend.error("Brak dostępu do lokalizacji pliku", "Sprawdź czy plik jest zamknięty jeśli istnieje.")
+        else: return
 
-        try:
-            data.to_csv(file, index=False)
-        except PermissionError:
-            backend.error("Brak dostępu do lokalizacji pliku", "Sprawdź czy plik jest zamknięty jeśli istnieje.")
-
+    # download img
     def download_graph(self):
         graph = self.graphs[self.tabs.currentWidget()]
         plt = graph.graph
@@ -850,14 +861,14 @@ class Window(QMainWindow):
                 button_reset.clicked.connect(new_graphs[0].reset_slider)
                 tab.layout.addLayout(slider_layout)
 
-        for i in  range(len(new_graphs)):
+        for i in range(len(new_graphs)):
             button_flip.clicked.connect(new_graphs[i].flip)
             slider.valueChanged.connect(new_graphs[i].update_graph)
             button_refresh.clicked.connect(new_graphs[i].refresh_graph)
             button_reset_graph.clicked.connect(new_graphs[i].reset_graph)
         tab.setLayout(tab.layout)
 
-        self.graphs[tab] = new_graphs[0] if len(new_graphs) < 2 else new_graphs
+        self.graphs[tab] = new_graphs #new_graphs[0] if len(new_graphs) < 2 else new_graphs
         self.tabs.setCurrentIndex(self.tabs.indexOf(tab))
 
 
