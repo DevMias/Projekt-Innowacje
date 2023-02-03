@@ -19,6 +19,16 @@ import pyqtgraph as pg
 
 methods_with_parameter = ["Grupowanie przestrzenne", "Las izolacji", "Lokalna wartość odstająca"]
 
+# needed for csv handling
+expected_columns = {
+            'single_without_anomaly': ['Date', 'Exchange'],
+            'single_with_anomaly': ['Date', 'Exchange', 'Anomaly'],
+            'single_with_anomaly_all': ['Date', 'Exchange', 'Anomaly_1', 'Anomaly_2', 'Anomaly_3', 'Anomaly_4', 'Anomaly_5'],
+            'multiple_without_anomaly': ['Date', 'Exchange_1', 'Exchange_2'],
+            'multiple_with_anomaly': ['Date', 'Exchange_1', 'Anomaly_1', 'Exchange_2', 'Anomaly_2'],
+            'multiple_with_anomaly_all': ['Date', 'Exchange_1', 'Anomaly_1_1', 'Anomaly_2_1', 'Anomaly_3_1', 'Anomaly_4_1', 'Anomaly_5_1', 'Exchange_2', 'Anomaly_1_2', 'Anomaly_2_2', 'Anomaly_3_2', 'Anomaly_4_2', 'Anomaly_5_2']
+        }
+
 
 def clear_layout(layout):
     while layout.count():
@@ -30,7 +40,7 @@ def clear_layout(layout):
 class Calendar(QCalendarWidget):
     def __init__(self, parent=None):
         super(Calendar, self).__init__(parent)
-        self.setGridVisible(True)  
+        self.setGridVisible(True)
         self.setStyleSheet(calendarStyleSheet)
 
 
@@ -75,10 +85,10 @@ class Window(QMainWindow):
                                                        function=self.swap_currencies)
         # swap currencies_top button
         self.swap_currencies_top = backend_funcs.create_button(style=swapButtonStyleSheet, icon=QIcon(swap_icon),
-                                                       function=self.swap_currencies2)      
+                                                       function=self.swap_currencies2)
 
-        self.swap_currencies_bottom.clicked.connect(self.swap_clicked_bottom)  
-        self.swap_currencies_top.clicked.connect(self.swap_clicked_top)                                                                                                                                           
+        self.swap_currencies_bottom.clicked.connect(self.swap_clicked_bottom)
+        self.swap_currencies_top.clicked.connect(self.swap_clicked_top)
 
         # calendars for setting dates
         self.calendar_start_label = QLabel("Data początkowa")
@@ -93,13 +103,13 @@ class Window(QMainWindow):
 
         self.calendar_start = QtWidgets.QDateEdit()
         self.calendar_start.setCalendarPopup(True)
-        self.calendar_start.setDisplayFormat("dd-MM-yyyy")  
+        self.calendar_start.setDisplayFormat("dd-MM-yyyy")
         self.calendar_start.setStyleSheet(DateEditStyleSheet)
         self.calendar_start.setCalendarWidget(calendar_start)
 
         self.calendar_stop = QtWidgets.QDateEdit()
         self.calendar_stop.setCalendarPopup(True)
-        self.calendar_stop.setDisplayFormat("dd-MM-yyyy")  
+        self.calendar_stop.setDisplayFormat("dd-MM-yyyy")
         self.calendar_stop.setStyleSheet(DateEditStyleSheet)
         self.calendar_stop.setCalendarWidget(calendar_stop)
 
@@ -192,7 +202,7 @@ class Window(QMainWindow):
             # self.bottom_plot_variables["currencies"][0].currentText()[:3] + '/' +
             # self.bottom_plot_variables["currencies"][1].currentText()[:3]
             #self.graph_preview_bottom.text() #to moze dobrze
-        ) 
+        )
 
 
     def swap_clicked_top(self):
@@ -203,7 +213,7 @@ class Window(QMainWindow):
         else:
              self.title_top.setPlaceholderText(
                 self.currencies_top_list1.currentText()[:3] + '/' + self.currencies_top_list2.currentText()[:3]
-            )  
+            )
 
 
     def swap_clicked_bottom(self):
@@ -214,7 +224,7 @@ class Window(QMainWindow):
         else:
              self.title_bottom.setPlaceholderText(
                 self.currencies_bottom_list1.currentText()[:3] + '/' + self.currencies_bottom_list2.currentText()[:3]
-            )          
+            )
 
 
     def checkbox_clicked(self):
@@ -229,15 +239,15 @@ class Window(QMainWindow):
             self.currencies_top_label.setStyleSheet(labelStyleSheet)
             self.button_plot.setText("Wygeneruj wykresy")
             self.tab_main.layout.addWidget(self.graph_preview_top, 2, 2, 7, 1)
-            self.tab_main.layout.addWidget(self.graph_preview_bottom, 9, 2, 6, 1) 
+            self.tab_main.layout.addWidget(self.graph_preview_bottom, 9, 2, 6, 1)
             self.graph_preview_top.show()
             self.graph_preview_bottom.show()
-        else:   
+        else:
             self.checkbox.setText("Włącz")
             self.currencies_top_list1.setEnabled(False)
             self.currencies_top_list2.setEnabled(False)
-            self.swap_currencies_top.setEnabled(False)  
-            self.currencies_top_list1.setStyleSheet(comboBoxDisabledStyleSheet)  
+            self.swap_currencies_top.setEnabled(False)
+            self.currencies_top_list1.setStyleSheet(comboBoxDisabledStyleSheet)
             self.currencies_top_list2.setStyleSheet(comboBoxDisabledStyleSheet)
             self.currencies_top_label.setStyleSheet(labelDisabledStyleSheet)
             self.button_plot.setText("Wygeneruj wykres")
@@ -315,7 +325,7 @@ class Window(QMainWindow):
                                "dates": (self.calendar_start, self.calendar_stop), "interval": self.interval}
 
         self.bottom_plot_variables = {"title": self.title_bottom, "currencies": (self.currencies_bottom_list1, self.currencies_bottom_list2),
-                               "dates": (self.calendar_start, self.calendar_stop), "interval": self.interval}                      
+                               "dates": (self.calendar_start, self.calendar_stop), "interval": self.interval}
 
         self.currencies_bottom_list1.currentIndexChanged.connect(self.graph_preview_bottom_change)
         self.currencies_bottom_list2.currentIndexChanged.connect(self.graph_preview_bottom_change)
@@ -329,7 +339,7 @@ class Window(QMainWindow):
         self.calendar_stop.dateChanged.connect(self.graph_preview_top_change)
 
         self.interval.currentIndexChanged.connect(self.graph_preview_bottom_change)
-        self.title_bottom.textChanged.connect(self.graph_preview_bottom_change) 
+        self.title_bottom.textChanged.connect(self.graph_preview_bottom_change)
         self.calendar_start.dateChanged.connect(self.graph_preview_bottom_change)
         self.calendar_stop.dateChanged.connect(self.graph_preview_bottom_change)
 
@@ -381,7 +391,7 @@ class Window(QMainWindow):
         self.tab_main.layout.addWidget(self.button_plot, 14, 0, 1, 2, alignment=Qt.AlignHCenter)
 
         self.tab_main.layout.addWidget(self.graph_preview_top, 2, 2, 6, 1)
-        self.tab_main.layout.addWidget(self.graph_preview_bottom, 8, 2, 7, 1)    
+        self.tab_main.layout.addWidget(self.graph_preview_bottom, 8, 2, 7, 1)
 
         self.tab_main.setStyleSheet(mainTabStyleSheet)
 
@@ -396,7 +406,7 @@ class Window(QMainWindow):
         self.graph_preview_top = backend_graph.create_plot(self.graph_preview_top, self.top_plot_variables)
 
     def graph_preview_bottom_change(self):
-        self.graph_preview_bottom = backend_graph.create_plot(self.graph_preview_bottom, self.bottom_plot_variables)    
+        self.graph_preview_bottom = backend_graph.create_plot(self.graph_preview_bottom, self.bottom_plot_variables)
 
     def swap_currencies(self):
         tmp = self.currencies_bottom_list1.currentText()
@@ -406,7 +416,7 @@ class Window(QMainWindow):
     def swap_currencies2(self):
         tmp = self.currencies_top_list1.currentText()
         self.currencies_top_list1.setCurrentText(self.currencies_top_list2.currentText())
-        self.currencies_top_list2.setCurrentText(tmp)    
+        self.currencies_top_list2.setCurrentText(tmp)
 
     def important_add_tab(self):
         tab = self.tabs.currentWidget()
@@ -573,15 +583,15 @@ class Window(QMainWindow):
         if file is None or file == "":
             return
 
-        csv, error = backend.download_csv(file)
+        csv_list, error = backend.download_csv([file])
 
         if error == "empty":
             backend.error("Błedny plik", "Wprowadzony plik jest pusty lub posiada zbyt mało danych")
 
-        if csv is None:
+        if csv_list is None or any(csv is None for csv in csv_list):
             return
 
-        pack = {"method": "", "csv": csv, "title": "Wykres " + file.split('/')[-1], "date": "Date",
+        pack = {"method": "", "csv": csv_list[0], "title": "Wykres " + file.split('/')[-1], "date": "Date",
                 "target": "Exchange"}
 
         self.pack_data(pack)
@@ -603,7 +613,7 @@ class Window(QMainWindow):
         self.tabs.addTab(tab, file.split('/')[-1])
         self.tabs.setCurrentIndex(self.tabs.indexOf(tab))
 
-    # load csv cd
+    # load csv (used while loading data without anomaly as an trigger to button named "Wygeneruj wykres")
     def pack_data(self, pack):
         from_file = True
 
@@ -629,59 +639,40 @@ class Window(QMainWindow):
             csv = pack["csv"]
 
         columns = csv.columns.tolist()
+
+        if from_file and not len([name for name in columns if 'Anomaly' in name]):  # for graph_from_file() Anomaly is mandatory
+            backend.error("Nie znaleziono informacji o anomaliach :(")
+            return
+
+        current_columns_names = None
         errors = ""
-        make_graph = True
+        for key, value in expected_columns.items():
+            if columns == value:
+                current_columns_names = key
+                break
 
-        if date in columns and target in columns:
-            for number in csv[target]:
-                if not isinstance(number, (float, int)) or isinstance(number, bool):
-                    backend.error("Błędne dane", "Dane w kolumnie " + target + " muszą być liczbą rzeczywistą")
-                    return
-            for date1 in csv[date]:
-                if not isinstance(date1, str) or isinstance(date1, bool):
-                    backend.error("Błędne dane", "Dane w kolumnie " + date + " muszą być w formie tekstowej")
-                    return
-            if from_file and 'Anomaly' in columns:
-                method = "other"
-                for boolean in csv['Anomaly']:
-                    if not isinstance(boolean, bool):
-                        backend.error("Błędne dane", "Dane w kolumnie Anomaly muszą być wartościami True lub False")
-                        return
-            if from_file:
-                for i in range(1, 6):
-                    if method == "other":
-                        break
-                    name = 'Anomaly_' + str(i)
-                    if from_file and name in columns:
-                        method = "Wszystkie"
-                        for boolean in csv[name]:
-                            if not isinstance(boolean, bool):
-                                backend.error("Błędne dane", "Dane w kolumnie " + name +
-                                              " muszą być wartościami True lub False")
-                                return
-                    else:
-                        make_graph = False
-            if make_graph:
-                self.create_graph(csv_list=csv, method=method, date=date, target=target, title=title,
-                                  with_anomalies=from_file)
-                return
+        if current_columns_names in ['single_with_anomaly_all', 'multiple_with_anomaly_all']:
+            method = 'Wszystkie'    # needed in graph_init, no info about that from csv
 
-        if date not in columns:
-            errors += "Kolumna " + date + " nie istnieje w podanych danych.\n"
-        if target not in columns:
-            errors += "Kolumna " + target + " nie istnieje w podanych danych.\n"
-
-        if method != "Wszystkie":
-            if from_file and 'Anomaly' not in columns:
-                errors += "Kolumna Anomaly nie istnieje w podanych danych.\n"
+        if current_columns_names is not None:
+            for col in columns:
+                if 'Date' in col and not pd.to_datetime(csv[col], format='%Y-%m-%d', errors='coerce').notnull().all():  # additional check if date not ascending
+                    errors += "Błędne dane w kolumnie " + col + ", dane muszą być w formie daty: %Y-%m-%d" + "\n"
+                elif 'Exchange' in col and not pd.to_numeric(csv[col], errors='coerce').notnull().all():
+                    errors += "Błędne dane w kolumnie " + col + ", dane muszą być liczbą rzeczywistą" + "\n"
+                elif 'Anomaly' in col and len([row for row in csv[col] if row != True and row != False]) > 0:
+                    errors += "Błędne dane w kolumnie " + col + ", dane muszą być wartościami True lub False" + "\n"
+            if errors != "": backend.error(errors); return
         else:
-            for i in range(1, 6):
-                name = 'Anomaly_' + str(i)
-                if from_file and name not in columns:
-                    errors += "Kolumna " + name + " nie istnieje w podanych danych.\n"
+            for key, value in expected_columns.items(): errors += str(key) + " -> " + str(value) + "\n"
+            backend.error("Niepoprawne nazwy kolumn, możliwe formaty: \n" + errors)
+            return
 
-        backend.error("Błędne nazwy kolumn", errors)
+        self.create_graph(csv_list=[csv], method=method, date=date, target=target, title=title,
+                          with_anomalies=from_file)
 
+
+    # TODO: delete Exchenge_1 and _2 form list when data is loaded from file(2 plots data) using 'Otwórz' option
     # download csv
     def download_data(self):
         pressed = backend.error("Czy chcesz również pobrać dane o anomaliach?", icon=QMessageBox.Question,
@@ -759,8 +750,9 @@ class Window(QMainWindow):
         currencies = list()
         currencies.append(self.currencies_bottom_list1.currentText()[:3])
         currencies.append(self.currencies_bottom_list2.currentText()[:3])
-        currencies.append(self.currencies_top_list1.currentText()[:3])
-        currencies.append(self.currencies_top_list2.currentText()[:3])
+        if self.checkbox.isChecked():
+            currencies.append(self.currencies_top_list1.currentText()[:3])
+            currencies.append(self.currencies_top_list2.currentText()[:3])
         title = self.title_top.text()
         if title == "":
             title = currencies[0] + "/" + currencies[1] # temporary
@@ -777,6 +769,7 @@ class Window(QMainWindow):
             self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=title, currencies=currencies)
 
     def create_graph(self, csv_list, method, date, target, title="", currencies=None, with_anomalies=False):
+        if currencies is None: currencies = [None for i in range(4)] # legacy
         tab = QWidget()
         tab.layout = QVBoxLayout()
         horizontal_layout = QHBoxLayout()
@@ -836,11 +829,6 @@ class Window(QMainWindow):
         else:
             self.tabs.addTab(tab, method + " " + title)
 
-        '''new_graph = Graph(method=method, csv_list=csv_list, date=date, target=target, currencies=currencies,
-                          label=label, slider=slider, slider_label=slider_label,
-                          checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
-                          with_anomalies=with_anomalies, currency_checkbox=self.checkbox.isChecked())'''
-
         new_graphs = list()
         new_graphs.append(Graph(method=method, csv=csv_list[0], date=date, target=target, currency1=currencies[0], currency2=currencies[1],
                           label=label, slider=slider, slider_label=slider_label,
@@ -848,6 +836,9 @@ class Window(QMainWindow):
                           with_anomalies=with_anomalies))
         tab.layout.addWidget(new_graphs[0].graph, alignment=Qt.Alignment())
 
+        # 1. if we have 2 csv files(download) or 2. if there is one csv file, but with 2x columns(upload)
+        # if len(csv_list) > 1 or len(csv_list[0].columns) > 3:
+        # TODO: go into if statement if checkbox is clicked and when we generate plot from button but not if from file
         if self.checkbox.isChecked():
             new_graphs.append(Graph(method=method, csv=csv_list[1], date=date, target=target, currency1=currencies[2],
                                currency2=currencies[3],
@@ -892,7 +883,7 @@ def main():
     ex.show()
 
     sys.exit(app.exec_())
-    
+
 
 if __name__ == '__main__':
     main()
