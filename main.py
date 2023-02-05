@@ -3,6 +3,8 @@ import webbrowser
 import os
 
 import pandas as pd
+pd.options.mode.chained_assignment = None  # default='warn'
+import numpy as np
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtGui import *
@@ -24,9 +26,9 @@ expected_columns = {
             'single_without_anomaly': ['Date', 'Exchange'],
             'single_with_anomaly': ['Date', 'Exchange', 'Anomaly'],
             'single_with_anomaly_all': ['Date', 'Exchange', 'Anomaly_1', 'Anomaly_2', 'Anomaly_3', 'Anomaly_4', 'Anomaly_5'],
-            'multiple_without_anomaly': ['Date', 'Exchange_1', 'Exchange_2'],
-            'multiple_with_anomaly': ['Date', 'Exchange_1', 'Anomaly_1', 'Exchange_2', 'Anomaly_2'],
-            'multiple_with_anomaly_all': ['Date', 'Exchange_1', 'Anomaly_1_1', 'Anomaly_2_1', 'Anomaly_3_1', 'Anomaly_4_1', 'Anomaly_5_1', 'Exchange_2', 'Anomaly_1_2', 'Anomaly_2_2', 'Anomaly_3_2', 'Anomaly_4_2', 'Anomaly_5_2']
+            'multiple_without_anomaly': ['Date', 'Exchange-1', 'Exchange-2'],
+            'multiple_with_anomaly': ['Date', 'Exchange-1', 'Anomaly-1', 'Exchange-2', 'Anomaly-2'],
+            'multiple_with_anomaly_all': ['Date', 'Exchange-1', 'Anomaly_1-1', 'Anomaly_2-1', 'Anomaly_3-1', 'Anomaly_4-1', 'Anomaly_5-1', 'Exchange-2', 'Anomaly_1-2', 'Anomaly_2-2', 'Anomaly_3-2', 'Anomaly_4-2', 'Anomaly_5-2']
         }
 
 
@@ -638,7 +640,7 @@ class Window(QMainWindow):
             target = pack["target"]
             csv = pack["csv"]
 
-        columns = csv.columns.tolist()
+        columns = csv.columns.tolist()  # get list of columns in csv file
 
         if from_file and not len([name for name in columns if 'Anomaly' in name]):  # for graph_from_file() Anomaly is mandatory
             backend.error("Nie znaleziono informacji o anomaliach :(")
@@ -648,7 +650,7 @@ class Window(QMainWindow):
         errors = ""
         for key, value in expected_columns.items():
             if columns == value:
-                current_columns_names = key
+                current_columns_names = key     # get suit key, based on values
                 break
 
         if current_columns_names in ['single_with_anomaly_all', 'multiple_with_anomaly_all']:
@@ -693,19 +695,17 @@ class Window(QMainWindow):
                                                   "CSV Files (*.csv);;Text Files(*.txt)", options=QFileDialog.Options())
             if file == "" or any(data is None for data in datas): return
 
-            # TODO: consider if we should trust that checbocx is clicked ?, imagine situation that tab is generated for 2 plots and then
-            # we unclicked the checkbox, then we want to download data, and data will download only for the first plot
-            # alternative: if len(datas) > 1
-            if self.checkbox.isChecked():
+            # decide what kind of data should we download, based on number of graphs from currentWidget (not by checkbox.isClicked)
+            if len(self.graphs[self.tabs.currentWidget()]) > 1:
                 merged = pd.DataFrame()
                 for i in range(len(datas)): # go through list of dataframes and add index to every column name
                     col_list = datas[i].columns.values.tolist() # get list of column names
                     for j in range(len(col_list)):
-                        datas[i].rename(columns={col_list[j] : col_list[j] + '_' + str(i+1)}, inplace=True) # add index to column name
+                        datas[i].rename(columns={col_list[j] : col_list[j] + '-' + str(i+1)}, inplace=True) # add index to column name
                     merged = pd.concat([merged, datas[i]], axis=1)  # append single dataframe to merged dataframe
-                # TODO: Should we store 2x the same Data column? if yes, just delete this 2 line of code below
-                merged = merged.drop('Date_2', axis=1)
-                merged.rename(columns={'Date_1' : 'Date'}, inplace=True)
+                # delete one of Date columns (same data, so can be deleted)
+                merged = merged.drop('Date-2', axis=1)
+                merged.rename(columns={'Date-1' : 'Date'}, inplace=True)
             else: merged = datas[0]
 
             try:
@@ -732,8 +732,8 @@ class Window(QMainWindow):
         filepath, extension = file.split(".")   # will carsh if file path will contain more dots
 
         try:
-            # TODO: same consider like in download_data()
-            if self.checkbox.isChecked():
+            # decide what kind of data should we download, based on number of graphs from currentWidget (not by checkbox.isClicked)
+            if len(self.graphs[self.tabs.currentWidget()]) > 1:
                 for i in range(len(exporter_list)): exporter_list[i].export(filepath + '_' + str(i+1) + '.' + extension)
             else: exporter_list[0].export(file)
         except PermissionError:
@@ -830,16 +830,17 @@ class Window(QMainWindow):
             self.tabs.addTab(tab, method + " " + title)
 
         new_graphs = list()
+
+        new_csv_list = split_csv(csv_list[0])   # try to split csv
+        if new_csv_list: csv_list = new_csv_list    # if splitting was success, override cev_list
+
         new_graphs.append(Graph(method=method, csv=csv_list[0], date=date, target=target, currency1=currencies[0], currency2=currencies[1],
                           label=label, slider=slider, slider_label=slider_label,
                           checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
                           with_anomalies=with_anomalies))
         tab.layout.addWidget(new_graphs[0].graph, alignment=Qt.Alignment())
 
-        # 1. if we have 2 csv files(download) or 2. if there is one csv file, but with 2x columns(upload)
-        # if len(csv_list) > 1 or len(csv_list[0].columns) > 3:
-        # TODO: go into if statement if checkbox is clicked and when we generate plot from button but not if from file
-        if self.checkbox.isChecked():
+        if len(csv_list) > 1:
             new_graphs.append(Graph(method=method, csv=csv_list[1], date=date, target=target, currency1=currencies[2],
                                currency2=currencies[3],
                                label=label, slider=slider, slider_label=slider_label,
@@ -876,6 +877,20 @@ class Window(QMainWindow):
         self.graphs[tab] = new_graphs #new_graphs[0] if len(new_graphs) < 2 else new_graphs
         self.tabs.setCurrentIndex(self.tabs.indexOf(tab))
 
+def split_csv(csv_to_split: pd.DataFrame) -> list:
+    ''' Function that splits csv file on 2 dataframes
+    if csv columns are one of the expected_columns containing word multiply (last 3 values) '''
+    columns = csv_to_split.columns.tolist() # get columns names
+    if columns in list(expected_columns.values())[3:]:  # only in case of 2 plots in one csv (last 3 values)
+        cols_no = len(columns)
+        splitted = list()
+        splitted.append(csv_to_split.iloc[:, 0:cols_no // 2 + 1])   # split on a half
+        splitted.append(csv_to_split.iloc[:, [0] + list(np.arange(cols_no // 2 + 1, cols_no, dtype=int))])  # get second half with Date column as first
+        for sp in splitted:
+            for col in sp.columns.tolist():
+                sp.rename(columns={col: col.split('-')[0]}, inplace=True)   # rename all columns by splitting by '-' (easiest way to connect with existing API)
+        return splitted
+    else: return []
 
 def main():
     app = QApplication(sys.argv)
