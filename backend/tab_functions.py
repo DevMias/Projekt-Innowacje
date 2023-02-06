@@ -95,14 +95,19 @@ def create_graph_tab(close, pack_fun, methods_list, file, important):
     target_column_label.setStyleSheet(labelStyleSheet)
     tab.layout.addWidget(target_column_label, alignment=Qt.Alignment())
 
-    target_column = QComboBox()
-    target_column.setStyleSheet(comboBoxStyleSheet)
+    target_column_1, target_column_2 = QComboBox(), QComboBox()
+    target_column_1.setStyleSheet(comboBoxStyleSheet)
+    target_column_2.setStyleSheet(comboBoxStyleSheet)
 
+    target_column_2.addItem('Nie wybrano')
     for column in columns:
-        target_column.addItem(column)
+        target_column_1.addItem(column)
+        target_column_2.addItem(column)
 
-    target_column.setCurrentText("Exchange")
-    tab.layout.addWidget(target_column, alignment=Qt.Alignment())
+    target_column_1.setCurrentText("Exchange")
+    target_column_2.setCurrentText("Exchange")
+    tab.layout.addWidget(target_column_1, alignment=Qt.Alignment())
+    tab.layout.addWidget(target_column_2, alignment=Qt.Alignment())
 
     method_label = QLabel("Metoda")
     method_label.setStyleSheet(labelStyleSheet)
@@ -124,7 +129,7 @@ def create_graph_tab(close, pack_fun, methods_list, file, important):
     tab.setLayout(tab.layout)
 
     # pass first element of csv_data_list
-    pack = {"method": methods, "csv": csv_data[0], "title": title, "date": date_column, "target": target_column,
+    pack = {"method": methods, "csv": csv_data[0], "title": title, "date": date_column, "target": [target_column_1, target_column_2],
             "format1": date_format_box1, "format2": date_format_box2, "format3": date_format_box3}
 
     return tab, pack

@@ -5,6 +5,7 @@ import os
 import pandas as pd
 pd.options.mode.chained_assignment = None  # default='warn'
 import numpy as np
+import datetime
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtGui import *
@@ -618,57 +619,64 @@ class Window(QMainWindow):
     # load csv (used while loading data without anomaly as an trigger to button named "Wygeneruj wykres")
     def pack_data(self, pack):
         from_file = True
+        errors = ""
 
-        if pack is False:
+        if pack is False:   # load without anomaly ("Otwórz")
             pack = self.pack[self.tabs.currentWidget()]
             from_file = False
             method = pack["method"].currentText()
             title = pack["title"].text()
             date = pack["date"].currentText()
-            target = pack["target"].currentText()
+            target = [elem.currentText() for elem in pack["target"]]
+            if 'Nie wybrano' in target: target.pop()
             csv = pack["csv"]
             date_format = pack["format1"].currentText() + '-' + pack["format2"].currentText() + '-' + pack[
                 "format3"].currentText()
-            csv = backend.check_date(csv, date, date_format)
 
-            if csv is None:
-                return
-        else:
+            for row in csv[date]:
+                if not isinstance(row, str): errors += "Błędne dane w kolumnie " + date + ", dane muszą być w formie textu" + "\n"; break
+            for t in target:
+                for row in csv[t]:
+                    if not isinstance(row, float): errors += "Błędne dane w kolumnie " + t + ", dane muszą być liczbą rzeczywistą" + "\n"; break
+            if errors != "": backend.error(errors); return
+            elif backend.check_date(csv, date, date_format) is None: return
+
+        else:   # load with anomaly ("Otwórz graf")
             method = pack["method"]
             title = pack["title"]
             date = pack["date"]
             target = pack["target"]
             csv = pack["csv"]
 
-        columns = csv.columns.tolist()  # get list of columns in csv file
+            columns = csv.columns.tolist()  # get list of columns in csv file
 
-        if from_file and not len([name for name in columns if 'Anomaly' in name]):  # for graph_from_file() Anomaly is mandatory
-            backend.error("Nie znaleziono informacji o anomaliach :(")
-            return
+            if from_file and not len([name for name in columns if 'Anomaly' in name]):  # for graph_from_file() Anomaly is mandatory
+                backend.error("Nie znaleziono informacji o anomaliach :(")
+                return
 
-        current_columns_names = None
-        errors = ""
-        for key, value in expected_columns.items():
-            if columns == value:
-                current_columns_names = key     # get suit key, based on values
-                break
+            current_columns_names = None
+            for key, value in expected_columns.items():
+                if columns == value:
+                    current_columns_names = key     # get suit key, based on values
+                    break
 
-        if current_columns_names in ['single_with_anomaly_all', 'multiple_with_anomaly_all']:
-            method = 'Wszystkie'    # needed in graph_init, no info about that from csv
+            if current_columns_names in ['single_with_anomaly_all', 'multiple_with_anomaly_all']:
+                method = 'Wszystkie'    # needed in graph_init, no info about that from csv
 
-        if current_columns_names is not None:
-            for col in columns:
-                if 'Date' in col and not pd.to_datetime(csv[col], format='%Y-%m-%d', errors='coerce').notnull().all():  # additional check if date not ascending
-                    errors += "Błędne dane w kolumnie " + col + ", dane muszą być w formie daty: %Y-%m-%d" + "\n"
-                elif 'Exchange' in col and not pd.to_numeric(csv[col], errors='coerce').notnull().all():
-                    errors += "Błędne dane w kolumnie " + col + ", dane muszą być liczbą rzeczywistą" + "\n"
-                elif 'Anomaly' in col and len([row for row in csv[col] if row != True and row != False]) > 0:
-                    errors += "Błędne dane w kolumnie " + col + ", dane muszą być wartościami True lub False" + "\n"
-            if errors != "": backend.error(errors); return
-        else:
-            for key, value in expected_columns.items(): errors += str(key) + " -> " + str(value) + "\n"
-            backend.error("Niepoprawne nazwy kolumn, możliwe formaty: \n" + errors)
-            return
+            # TODO: check if works fine
+            if current_columns_names is not None:
+                for col in columns:
+                    if 'Date' in col and not pd.to_datetime(csv[col], format='%Y-%m-%d', errors='coerce').notnull().all():  # additional check if date not ascending
+                        errors += "Błędne dane w kolumnie " + col + ", dane muszą być w formie daty: %Y-%m-%d" + "\n"
+                    elif 'Exchange' in col and not pd.to_numeric(csv[col], errors='coerce').notnull().all():
+                        errors += "Błędne dane w kolumnie " + col + ", dane muszą być liczbą rzeczywistą" + "\n"
+                    elif 'Anomaly' in col and len([row for row in csv[col] if row != True and row != False]) > 0:
+                        errors += "Błędne dane w kolumnie " + col + ", dane muszą być wartościami True lub False" + "\n"
+                if errors != "": backend.error(errors); return
+            else:
+                for key, value in expected_columns.items(): errors += str(key) + " -> " + str(value) + "\n"
+                backend.error("Niepoprawne nazwy kolumn, możliwe formaty: \n" + errors)
+                return
 
         self.create_graph(csv_list=[csv], method=method, date=date, target=target, title=title,
                           with_anomalies=from_file)
@@ -769,7 +777,7 @@ class Window(QMainWindow):
             self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=title, currencies=currencies)
 
     def create_graph(self, csv_list, method, date, target, title="", currencies=None, with_anomalies=False):
-        if currencies is None: currencies = [None for i in range(4)] # legacy
+        if currencies is None: currencies = [None for _ in range(4)] # legacy
         tab = QWidget()
         tab.layout = QVBoxLayout()
         horizontal_layout = QHBoxLayout()
@@ -831,17 +839,33 @@ class Window(QMainWindow):
 
         new_graphs = list()
 
-        new_csv_list = split_csv(csv_list[0])   # try to split csv
+        new_csv_list = split_csv(csv_list[0], rename=with_anomalies)   # try to split csv
         if new_csv_list: csv_list = new_csv_list    # if splitting was success, override cev_list
 
-        new_graphs.append(Graph(method=method, csv=csv_list[0], date=date, target=target, currency1=currencies[0], currency2=currencies[1],
+        # if Exchange_2 and _1 are taken, but split_csv() always split in order, so might happened _2 != _1 and _1 != _2
+        if isinstance(target, list) and target[0] not in csv_list[0].columns.tolist():
+            csv_list.reverse()  # reorder
+
+        # in case if user want to generate 1 plot from csv that can generate 2 plots
+        if isinstance(target, list) and len(target) == 1 and len(csv_list) > 1:
+            if target[0] not in csv_list[0].columns.tolist():
+                csv_list.pop(0)
+            elif target[0] not in csv_list[1].columns.tolist():
+                csv_list.pop(1)
+
+        # TODO: block opportunity to click 2 the same columns or deal with it
+        # TODO: check all cases
+
+        #target = 'Exchange-1' if target == 'Exchange-2' else target
+        new_graphs.append(Graph(method=method, csv=csv_list[0], date=date, target=target if not isinstance(target, list) else target[0], currency1=currencies[0], currency2=currencies[1],
                           label=label, slider=slider, slider_label=slider_label,
                           checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
                           with_anomalies=with_anomalies))
         tab.layout.addWidget(new_graphs[0].graph, alignment=Qt.Alignment())
 
         if len(csv_list) > 1:
-            new_graphs.append(Graph(method=method, csv=csv_list[1], date=date, target=target, currency1=currencies[2],
+            #target = 'Exchange-2' if target == 'Exchange-1' else target
+            new_graphs.append(Graph(method=method, csv=csv_list[1], date=date, target=target if not isinstance(target, list) else target[1], currency1=currencies[2],
                                currency2=currencies[3],
                                label=label, slider=slider, slider_label=slider_label,
                                checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
@@ -877,7 +901,7 @@ class Window(QMainWindow):
         self.graphs[tab] = new_graphs #new_graphs[0] if len(new_graphs) < 2 else new_graphs
         self.tabs.setCurrentIndex(self.tabs.indexOf(tab))
 
-def split_csv(csv_to_split: pd.DataFrame) -> list:
+def split_csv(csv_to_split: pd.DataFrame, rename: bool) -> list:
     ''' Function that splits csv file on 2 dataframes
     if csv columns are one of the expected_columns containing word multiply (last 3 values) '''
     columns = csv_to_split.columns.tolist() # get columns names
@@ -886,9 +910,10 @@ def split_csv(csv_to_split: pd.DataFrame) -> list:
         splitted = list()
         splitted.append(csv_to_split.iloc[:, 0:cols_no // 2 + 1])   # split on a half
         splitted.append(csv_to_split.iloc[:, [0] + list(np.arange(cols_no // 2 + 1, cols_no, dtype=int))])  # get second half with Date column as first
-        for sp in splitted:
-            for col in sp.columns.tolist():
-                sp.rename(columns={col: col.split('-')[0]}, inplace=True)   # rename all columns by splitting by '-' (easiest way to connect with existing API)
+        if rename:
+            for sp in splitted:
+                for col in sp.columns.tolist():
+                    sp.rename(columns={col: col.split('-')[0]}, inplace=True)   # rename all columns by splitting by '-' (easiest way to connect with existing API)
         return splitted
     else: return []
 
