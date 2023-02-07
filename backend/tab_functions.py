@@ -3,6 +3,8 @@ from PyQt5.QtGui import QIcon
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QLineEdit, QHBoxLayout, QComboBox, QDateEdit, \
     QCheckBox, QGridLayout
+
+import main
 from backend import backend_functions as backend
 from front.styles import buttonStyleSheet, labelStyleSheet, comboBoxStyleSheet, currencies_list, DateEditStyleSheet, \
     flag_list, labelStyleSheet_big, labelStyleSheet_not_bold, important_icon, close_icon, comboBoxDisabledStyleSheet
@@ -104,8 +106,8 @@ def create_graph_tab(close, pack_fun, methods_list, file, important):
         target_column_1.addItem(column)
         target_column_2.addItem(column)
 
-    target_column_1.setCurrentText("Exchange")
-    target_column_2.setCurrentText("Exchange")
+    target_column_1.setCurrentText(columns[1])
+    target_column_2.setCurrentText(columns[len(columns) // 2 + 1] if columns in list(main.expected_columns.values())[3:] else 'Nie wybrano')
     tab.layout.addWidget(target_column_1, alignment=Qt.Alignment())
     tab.layout.addWidget(target_column_2, alignment=Qt.Alignment())
 

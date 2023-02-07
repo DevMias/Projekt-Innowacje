@@ -5,7 +5,6 @@ import os
 import pandas as pd
 pd.options.mode.chained_assignment = None  # default='warn'
 import numpy as np
-import datetime
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtGui import *
@@ -629,6 +628,7 @@ class Window(QMainWindow):
             date = pack["date"].currentText()
             target = [elem.currentText() for elem in pack["target"]]
             if 'Nie wybrano' in target: target.pop()
+            elif target[0] == target[1]: backend.error("Wybrano te same kolumny"); return
             csv = pack["csv"]
             date_format = pack["format1"].currentText() + '-' + pack["format2"].currentText() + '-' + pack[
                 "format3"].currentText()
@@ -681,8 +681,6 @@ class Window(QMainWindow):
         self.create_graph(csv_list=[csv], method=method, date=date, target=target, title=title,
                           with_anomalies=from_file)
 
-
-    # TODO: delete Exchenge_1 and _2 form list when data is loaded from file(2 plots data) using 'Otwórz' option
     # download csv
     def download_data(self):
         pressed = backend.error("Czy chcesz również pobrać dane o anomaliach?", icon=QMessageBox.Question,
@@ -853,10 +851,8 @@ class Window(QMainWindow):
             elif target[0] not in csv_list[1].columns.tolist():
                 csv_list.pop(1)
 
-        # TODO: block opportunity to click 2 the same columns or deal with it
         # TODO: check all cases
 
-        #target = 'Exchange-1' if target == 'Exchange-2' else target
         new_graphs.append(Graph(method=method, csv=csv_list[0], date=date, target=target if not isinstance(target, list) else target[0], currency1=currencies[0], currency2=currencies[1],
                           label=label, slider=slider, slider_label=slider_label,
                           checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
@@ -864,7 +860,6 @@ class Window(QMainWindow):
         tab.layout.addWidget(new_graphs[0].graph, alignment=Qt.Alignment())
 
         if len(csv_list) > 1:
-            #target = 'Exchange-2' if target == 'Exchange-1' else target
             new_graphs.append(Graph(method=method, csv=csv_list[1], date=date, target=target if not isinstance(target, list) else target[1], currency1=currencies[2],
                                currency2=currencies[3],
                                label=label, slider=slider, slider_label=slider_label,
