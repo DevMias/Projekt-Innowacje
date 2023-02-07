@@ -196,16 +196,14 @@ def download_csv(filepaths: list, separator=',', from_file=False) -> pd.arrays:
         error("Błąd połączenia z serwerem", "Sprawdź swoje połączenie internetowe")
         return None, "connection error"
     except UnicodeDecodeError:
-        if from_file:
-            error("Błedny plik", "Nieprawidłowy format pliku")
+        if from_file: error("Błedny plik", "Nieprawidłowy format pliku")
         return None, ""
     except csvError:
-        if from_file:
-            error("Błedny plik", "Wprowadzony plik jest pusty")
+        if from_file: error("Błedny plik", "Wprowadzony plik jest pusty")
         return None, ""
     except:
-        if from_file:
-            error("Błedny plik", "Wprowadzony plik nie jest plikiem zawierającym dane w formacie csv")
+        if from_file: error("Błedny plik", "Wprowadzony plik nie jest plikiem zawierającym dane w formacie csv")
+        else: error("Błedny plik", "Wprowadzony plik jest pusty")
         return None, ""
 
 

@@ -582,16 +582,14 @@ class Window(QMainWindow):
     def graph_from_file(self):
         file, _ = QFileDialog.getOpenFileName(self, "Detektor anomalii", "", "CSV Files (*.csv *.txt)",
                                               options=QFileDialog.Options())
-        if file is None or file == "":
-            return
+        if file is None or file == "": return
 
         csv_list, error = backend.download_csv([file])
 
         if error == "empty":
             backend.error("Błedny plik", "Wprowadzony plik jest pusty lub posiada zbyt mało danych")
 
-        if csv_list is None or any(csv is None for csv in csv_list):
-            return
+        if csv_list is None or any(csv is None for csv in csv_list): return
 
         pack = {"method": "", "csv": csv_list[0], "title": "Wykres " + file.split('/')[-1], "date": "Date",
                 "target": "Exchange"}
@@ -602,14 +600,12 @@ class Window(QMainWindow):
     def file_open(self):
         file, _ = QFileDialog.getOpenFileName(self, "Detektor anomalii", "", "CSV Files (*.csv *.txt)",
                                               options=QFileDialog.Options())
-        if file is None or file == "":
-            return
+        if file is None or file == "": return
 
         tab, pack = backend_funcs.create_graph_tab(close=self.close_tab, pack_fun=self.pack_data, file=file,
                                                    methods_list=self.method_list, important=self.important_add_tab)
 
-        if tab is None or pack is None:
-            return
+        if tab is None or pack is None: return
 
         self.pack[tab] = pack
         self.tabs.addTab(tab, file.split('/')[-1])
@@ -651,7 +647,7 @@ class Window(QMainWindow):
             columns = csv.columns.tolist()  # get list of columns in csv file
 
             if from_file and not len([name for name in columns if 'Anomaly' in name]):  # for graph_from_file() Anomaly is mandatory
-                backend.error("Nie znaleziono informacji o anomaliach :(")
+                backend.error("Nie znaleziono informacji o anomaliach")
                 return
 
             current_columns_names = None
@@ -663,15 +659,15 @@ class Window(QMainWindow):
             if current_columns_names in ['single_with_anomaly_all', 'multiple_with_anomaly_all']:
                 method = 'Wszystkie'    # needed in graph_init, no info about that from csv
 
-            # TODO: check if works fine
             if current_columns_names is not None:
                 for col in columns:
-                    if 'Date' in col and not pd.to_datetime(csv[col], format='%Y-%m-%d', errors='coerce').notnull().all():  # additional check if date not ascending
-                        errors += "Błędne dane w kolumnie " + col + ", dane muszą być w formie daty: %Y-%m-%d" + "\n"
-                    elif 'Exchange' in col and not pd.to_numeric(csv[col], errors='coerce').notnull().all():
-                        errors += "Błędne dane w kolumnie " + col + ", dane muszą być liczbą rzeczywistą" + "\n"
-                    elif 'Anomaly' in col and len([row for row in csv[col] if row != True and row != False]) > 0:
-                        errors += "Błędne dane w kolumnie " + col + ", dane muszą być wartościami True lub False" + "\n"
+                    if 'Date' in col and backend.check_date(csv, col, 'Rok-Miesiąc-Dzień') is None: return
+                    elif 'Exchange' in col:
+                        for row in csv[col]:
+                            if not isinstance(row, float): errors += "Błędne dane w kolumnie " + col + ", dane muszą być liczbą rzeczywistą" + "\n"; break
+                    elif 'Anomaly' in col:
+                        for row in csv[col]:
+                            if not isinstance(row, bool): errors += "Błędne dane w kolumnie " + col + ", dane muszą być wartościami True lub False" + "\n"; break
                 if errors != "": backend.error(errors); return
             else:
                 for key, value in expected_columns.items(): errors += str(key) + " -> " + str(value) + "\n"
@@ -722,7 +718,7 @@ class Window(QMainWindow):
 
     # download img
     def download_graph(self):
-        # TODO: think, how to connect 2 images into one in case of 2 plots
+        # TODO: concatenate 2 plots into 1 img
         graphs = self.graphs[self.tabs.currentWidget()]
 
         exporter_list = []
@@ -850,8 +846,6 @@ class Window(QMainWindow):
                 csv_list.pop(0)
             elif target[0] not in csv_list[1].columns.tolist():
                 csv_list.pop(1)
-
-        # TODO: check all cases
 
         new_graphs.append(Graph(method=method, csv=csv_list[0], date=date, target=target if not isinstance(target, list) else target[0], currency1=currencies[0], currency2=currencies[1],
                           label=label, slider=slider, slider_label=slider_label,

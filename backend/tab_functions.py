@@ -13,6 +13,7 @@ from main import Calendar
 
 def create_graph_tab(close, pack_fun, methods_list, file, important):
     csv_data, error1 = backend.download_csv([file], from_file=True) # pass file as an list (required in this function)
+    if csv_data is None: return None, None
 
     if error1 == "empty":
         backend.error("Błedny plik", "Wprowadzony plik jest pusty lub posiada zbyt mało danych")
