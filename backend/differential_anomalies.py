@@ -5,9 +5,10 @@ from backend.differential_analysis import differential_analysis
 
 def get_anomalies(datas: list, target: str = None, method: str = None, date: str = None, parameter=0):
     ad_datas = list([deepcopy(i) for i in datas if i is not None])
-
+    print(len(ad_datas))
     if len(ad_datas) < 2:
         return
+    print("----")
 
     targets_cols = list([data[[date, target]].copy() for data in ad_datas])
 

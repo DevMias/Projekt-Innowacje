@@ -73,9 +73,9 @@ class Graph:
         if self.method == "Lokalna wartość odstająca":
             self.slider.setValue(25)
             self.multiplayer = 2
-        # if self.method == 'Differential':
-        #     self.slider.setValue(25)
-        #     self.multiplayer = 2
+        if self.method == 'Analiza Różnicowa':
+            self.slider.setValue(25)
+            self.multiplayer = 2
 
         self.slider_label.setText("Czułość metody: " + str(self.slider.value()) + "%")
 
@@ -85,8 +85,6 @@ class Graph:
             if self.method == "Wszystkie":
                 self.csv = self.csv[[self.date, self.target, 'Anomaly_1', 'Anomaly_2', 'Anomaly_3', 'Anomaly_4',
                                      'Anomaly_5']]
-            elif self.method != 'Differential':
-                self.csv = self.csv[[self.date, self.target, 'Anomaly']]
             else:
                 self.csv = self.csv[[self.date, self.target, 'Anomaly']]
         self.csv = self.csv.rename(columns={self.target: "Exchange", self.date: "Date"})
@@ -105,15 +103,16 @@ class Graph:
             self.graph.sigSceneMouseMoved.connect(self.update_graph)
 
         self.graph.plot(self.csv.index, self.csv[self.target], pen=self.pen)
-
-        if not self.with_anomalies:
-            if self.differential:
-                anomaly_detected_data = get_anomalies([self.csv], self.target, self.method, self.date)
+        if self.differential:
+            anomaly_detected_data = get_anomalies([self.csv], self.target,self.method, self.date)
+        else:
+            if not self.with_anomalies:
+                anomaly_detected_data = run_method([self.csv], self.target, self.date, self.method,
+                                                   self.slider.value() / 100 / self.multiplayer)
             else:
                 anomaly_detected_data = run_method([self.csv], self.target, self.date, self.method,
                                                    self.slider.value() / 100 / self.multiplayer)
-        else:
-            anomaly_detected_data = self.csv
+                # anomaly_detected_data = self.csv
 
         self.anomalies_to_download = anomaly_detected_data
         print(anomaly_detected_data)

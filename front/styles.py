@@ -8,7 +8,7 @@ hover_color = 'rgb(168, 63, 51)'
 font_size_15 = '15px'
 font_size_20 = '20px'
 font_size_30 = '30px'
-min_tab_width = '220px'
+min_tab_width = '300px'
 
 buttonStyleSheet = f"""
 QPushButton {{ 

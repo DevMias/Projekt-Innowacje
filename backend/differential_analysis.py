@@ -13,9 +13,9 @@ def differential_analysis(datas: list, target: str = None, method: str = None, d
 
     ad_datas = list([deepcopy(i) for i in datas if i is not None])
 
+
     if len(ad_datas) < 2:
         return
-
     targets_test = list([data[[target]].copy() for data in ad_datas])
 
     differ = pd.DataFrame()

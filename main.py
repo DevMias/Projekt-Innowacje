@@ -15,8 +15,7 @@ from front.graph import Graph
 import pyqtgraph.exporters as exporters
 import pyqtgraph as pg
 
-methods_with_parameter = ["Grupowanie przestrzenne", "Las izolacji", "Lokalna wartość odstająca", "Analiza roznicowa",
-                          "Differential"]
+methods_with_parameter = ["Grupowanie przestrzenne", "Las izolacji", "Lokalna wartość odstająca", "Analiza roznicowa"]
 
 
 def clear_layout(layout):
@@ -751,10 +750,12 @@ class Window(QMainWindow):
             backend.input_errors(currencies, self.calendar_start.date(), self.calendar_stop.date())
         else:
             self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=graph_title,
-                              currencies=currencies, differential=differential)
-            if self.checkbox.isChecked():
+                              currencies=currencies, differential=False)
+            # jeśli checkbox jest zaznaczony, stwórz nową kartę
+            if differential:
+                graph_title += " Analiza Różnicowa"
                 self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=graph_title,
-                                  currencies=currencies, differential=differential)
+                                  currencies=currencies, differential=True)
 
             # create_graph csv list
 
@@ -827,12 +828,17 @@ class Window(QMainWindow):
         graph_list = list()
 
         # Tworzenie wykresów
+        if self.checkbox.isChecked():
+            method = 'Analiza Różnicowa'
+            differential = True
+        else:
+            differential = False
 
         first_graph = Graph(method=method, csv=csv_list[0], date=date, target=target, currency1=currencies[0],
                             currency2=currencies[1],
                             label=label, slider=slider, slider_label=slider_label,
                             checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
-                            with_anomalies=with_anomalies)
+                            with_anomalies=with_anomalies, differential=differential)
 
         graph_list.append(first_graph)
         tab.layout.addWidget(graph_list[0].graph, alignment=Qt.Alignment())
@@ -842,7 +848,7 @@ class Window(QMainWindow):
                                  currency2=currencies[3],
                                  label=label, slider=slider, slider_label=slider_label,
                                  checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
-                                 with_anomalies=with_anomalies)
+                                 with_anomalies=with_anomalies, differential=differential)
             graph_list.append(second_graph)
             tab.layout.addWidget(graph_list[1].graph, alignment=Qt.Alignment())
 
