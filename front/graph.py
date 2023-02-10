@@ -29,7 +29,10 @@ class Graph:
         self.anomalies = []
         self.anomalies_to_download = None
         self.date = date
-        self.date_range = (self.csv[self.date][0], self.csv[self.date][len(self.csv[self.date]) - 1])
+        if differential:
+            self.date_range = (self.csv[0][self.date][0], self.csv[self.date][len(self.csv[self.date]) - 1])
+        else:
+            self.date_range = (self.csv[0][self.date][0], self.csv[self.date][len(self.csv[self.date]) - 1])
         self.data_indexes = (0, len(self.csv[self.date]))
         self.date_label_range = label
         self.date_label_range.setText("Zakres dat: od " + self.date_range[0] + " do " + self.date_range[1])
@@ -60,89 +63,93 @@ class Graph:
         self.init_graph()
 
     def init_graph(self):
-        self.proxy = pg.SignalProxy(self.graph.scene().sigMouseMoved, rateLimit=60, slot=self.update_crosshair)
+        if not self.differential:
+            self.proxy = pg.SignalProxy(self.graph.scene().sigMouseMoved, rateLimit=60, slot=self.update_crosshair)
 
-        if self.flipped:
-            self.flip()
+            if self.flipped:
+                self.flip()
 
-        if self.method == "Grupowanie przestrzenne":
-            self.slider.setValue(50)
-        if self.method == "Las izolacji":
-            self.slider.setValue(20)
-            self.multiplayer = 2
-        if self.method == "Lokalna wartość odstająca":
-            self.slider.setValue(25)
-            self.multiplayer = 2
-        if self.method == 'Analiza Różnicowa':
-            self.slider.setValue(25)
-            self.multiplayer = 2
+            if self.method == "Grupowanie przestrzenne":
+                self.slider.setValue(50)
+            if self.method == "Las izolacji":
+                self.slider.setValue(20)
+                self.multiplayer = 2
+            if self.method == "Lokalna wartość odstająca":
+                self.slider.setValue(25)
+                self.multiplayer = 2
+            if self.method == 'Analiza Różnicowa':
+                self.slider.setValue(25)
+                self.multiplayer = 2
 
-        self.slider_label.setText("Czułość metody: " + str(self.slider.value()) + "%")
+            self.slider_label.setText("Czułość metody: " + str(self.slider.value()) + "%")
 
-        if not self.with_anomalies:
-            self.csv = self.csv[[self.date, self.target]]
-        else:
-            if self.method == "Wszystkie":
-                self.csv = self.csv[[self.date, self.target, 'Anomaly_1', 'Anomaly_2', 'Anomaly_3', 'Anomaly_4',
-                                     'Anomaly_5']]
-            else:
-                self.csv = self.csv[[self.date, self.target, 'Anomaly']]
-        self.csv = self.csv.rename(columns={self.target: "Exchange", self.date: "Date"})
-        self.date = "Date"
-        self.target = "Exchange"
-
-        self.graph.setBackground('w')
-        self.graph.setTitle(self.title)
-        self.graph.setXRange(0, len(self.csv[self.date]))
-        self.graph.setYRange(min(self.csv[self.target]), max(self.csv[self.target]))
-        x_axis = self.graph.getAxis("bottom")
-        x_axis.setTicks([self.x_ticks])
-
-        if not self.with_anomalies:
-            self.graph.sigRangeChanged.connect(self.update_graph)
-            self.graph.sigSceneMouseMoved.connect(self.update_graph)
-
-        self.graph.plot(self.csv.index, self.csv[self.target], pen=self.pen)
-        if self.differential:
-            anomaly_detected_data = get_anomalies([self.csv], self.target,self.method, self.date)
-        else:
             if not self.with_anomalies:
-                anomaly_detected_data = run_method([self.csv], self.target, self.date, self.method,
-                                                   self.slider.value() / 100 / self.multiplayer)
+                self.csv = self.csv[[self.date, self.target]]
             else:
-                anomaly_detected_data = run_method([self.csv], self.target, self.date, self.method,
-                                                   self.slider.value() / 100 / self.multiplayer)
-                # anomaly_detected_data = self.csv
+                if self.method == "Wszystkie":
+                    self.csv = self.csv[[self.date, self.target, 'Anomaly_1', 'Anomaly_2', 'Anomaly_3', 'Anomaly_4',
+                                         'Anomaly_5']]
+                else:
+                    self.csv = self.csv[[self.date, self.target, 'Anomaly']]
+            self.csv = self.csv.rename(columns={self.target: "Exchange", self.date: "Date"})
+            self.date = "Date"
+            self.target = "Exchange"
 
-        self.anomalies_to_download = anomaly_detected_data
-        print(anomaly_detected_data)
-        if self.method == "Wszystkie":
-            if anomaly_detected_data is not None:
-                self.graph.addLegend()
+            self.graph.setBackground('w')
+            self.graph.setTitle(self.title)
+            self.graph.setXRange(0, len(self.csv[self.date]))
+            self.graph.setYRange(min(self.csv[self.target]), max(self.csv[self.target]))
+            x_axis = self.graph.getAxis("bottom")
+            x_axis.setTicks([self.x_ticks])
 
-                self.anomalies = []
-                for anomalies in self.anomalies_list:
-                    anomaly = anomaly_detected_data.loc[anomaly_detected_data[anomalies] == True, ['Exchange']]
-                    temp = pd.concat([pd.Series(0), anomaly])
-                    self.anomalies.append(temp[['Exchange']])
+            if not self.with_anomalies:
+                self.graph.sigRangeChanged.connect(self.update_graph)
+                self.graph.sigSceneMouseMoved.connect(self.update_graph)
 
-                self.graph.plot(self.csv.index, self.csv[self.target], pen=self.pen)
+            self.graph.plot(self.csv.index, self.csv[self.target], pen=self.pen)
+            if self.differential:
+                anomaly_detected_data = get_anomalies(self.csv, self.target,self.method, self.date)
+            else:
+                if not self.with_anomalies:
+                    anomaly_detected_data = run_method([self.csv], self.target, self.date, self.method,
+                                                       self.slider.value() / 100 / self.multiplayer)
+                else:
+                    anomaly_detected_data = run_method([self.csv], self.target, self.date, self.method,
+                                                       self.slider.value() / 100 / self.multiplayer)
+                    # anomaly_detected_data = self.csv
 
-                for anomalies, color, legend in zip(self.anomalies, list_of_colors, list_legend):
-                    self.an_graph = self.graph.plot(anomalies.index, anomalies["Exchange"], pen=None, symbol='o',
-                                                    symbolSize=5, symbolPen=color, symbolBrush=color, name=legend)
+            self.anomalies_to_download = anomaly_detected_data
+            print(anomaly_detected_data)
+            if self.method == "Wszystkie":
+                if anomaly_detected_data is not None:
+                    self.graph.addLegend()
 
-                self.graph.showGrid(x=True, y=False, alpha=1.0)
+                    self.anomalies = []
+                    for anomalies in self.anomalies_list:
+                        anomaly = anomaly_detected_data.loc[anomaly_detected_data[anomalies] == True, ['Exchange']]
+                        temp = pd.concat([pd.Series(0), anomaly])
+                        self.anomalies.append(temp[['Exchange']])
 
+                    self.graph.plot(self.csv.index, self.csv[self.target], pen=self.pen)
+
+                    for anomalies, color, legend in zip(self.anomalies, list_of_colors, list_legend):
+                        self.an_graph = self.graph.plot(anomalies.index, anomalies["Exchange"], pen=None, symbol='o',
+                                                        symbolSize=5, symbolPen=color, symbolBrush=color, name=legend)
+
+                    self.graph.showGrid(x=True, y=False, alpha=1.0)
+
+            else:
+                if anomaly_detected_data is not None:
+                    anomalies = anomaly_detected_data.loc[anomaly_detected_data['Anomaly'] == True, ['Exchange']]
+                    temp = pd.concat([pd.Series(0), anomalies])
+                    self.anomalies = temp['Exchange']
+                    self.an_graph = self.graph.plot(self.anomalies.index, self.anomalies, pen=None, symbol='o',
+                                                    symbolSize=5, symbolPen='r', symbolBrush='r')
+
+                    self.graph.showGrid(x=True, y=False, alpha=1.0)
         else:
-            if anomaly_detected_data is not None:
-                anomalies = anomaly_detected_data.loc[anomaly_detected_data['Anomaly'] == True, ['Exchange']]
-                temp = pd.concat([pd.Series(0), anomalies])
-                self.anomalies = temp['Exchange']
-                self.an_graph = self.graph.plot(self.anomalies.index, self.anomalies, pen=None, symbol='o',
-                                                symbolSize=5, symbolPen='r', symbolBrush='r')
+            pass
 
-                self.graph.showGrid(x=True, y=False, alpha=1.0)
 
     def update_graph(self):
         self.slider_label.setText("Czułość metody: " + str(self.slider.value()) + "%")

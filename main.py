@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QAction, qApp, QApplication, QWidget, QCalendarWidge
 from backend import backend_functions as backend
 from backend import tab_functions as backend_funcs
 from backend import graph_preview as backend_graph
-from backend.differential_anomalies import differential_analysis
+from backend.differential_anomalies import differential_analysis, get_anomalies
 from front.styles import *
 from front.graph import Graph
 import pyqtgraph.exporters as exporters
@@ -745,7 +745,7 @@ class Window(QMainWindow):
             return
         #### Tworzenie containerow na wykresy
         differential = True if self.checkbox.isChecked() else False
-
+        print(len(csv_list))
         if csv_list is None:
             backend.input_errors(currencies, self.calendar_start.date(), self.calendar_stop.date())
         else:
@@ -828,13 +828,14 @@ class Window(QMainWindow):
         graph_list = list()
 
         # Tworzenie wykresów
-        if self.checkbox.isChecked():
-            method = 'Analiza Różnicowa'
-            differential = True
-        else:
-            differential = False
 
-        first_graph = Graph(method=method, csv=csv_list[0], date=date, target=target, currency1=currencies[0],
+        # print(len(csv_list))
+        # differential = False
+        if differential:
+           csv_list = get_anomalies([csv_list[0], csv_list[1]], target, method, date)
+
+        print(f"Len date + {len(date)}")
+        first_graph = Graph(method=method, csv=csv_list if differential else csv_list[0], date=date, target=target, currency1=currencies[0],
                             currency2=currencies[1],
                             label=label, slider=slider, slider_label=slider_label,
                             checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
@@ -844,7 +845,7 @@ class Window(QMainWindow):
         tab.layout.addWidget(graph_list[0].graph, alignment=Qt.Alignment())
 
         if self.checkbox.isChecked():
-            second_graph = Graph(method=method, csv=csv_list[1], date=date, target=target, currency1=currencies[2],
+            second_graph = Graph(method=method, csv=csv_list if differential else csv_list[1], date=date, target=target, currency1=currencies[2],
                                  currency2=currencies[3],
                                  label=label, slider=slider, slider_label=slider_label,
                                  checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
