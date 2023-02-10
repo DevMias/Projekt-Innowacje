@@ -10,7 +10,7 @@ from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QAction, qApp, QApplication, QWidget, QCalendarWidget, QCheckBox
-from backend import backend_functions as backend
+from backend import backend_functions as backend, differential_analysis
 from backend import tab_functions as backend_funcs
 from backend import graph_preview as backend_graph
 from front.styles import *
@@ -49,6 +49,8 @@ class Calendar(QCalendarWidget):
 class Window(QMainWindow):
     def __init__(self, parent=None):
         super(Window, self).__init__(parent, flags=Qt.WindowFlags())
+
+        self.differential = False
 
         self.graph_preview_top = pg.PlotWidget()
         self.graph_preview_bottom = pg.PlotWidget()
@@ -769,6 +771,9 @@ class Window(QMainWindow):
             backend.input_errors(currencies, self.calendar_start.date(), self.calendar_stop.date())
         else:
             self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=title, currencies=currencies)
+            if self.checkbox.isChecked():
+                self.differential = True
+                self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=title, currencies=currencies)
 
     def create_graph(self, csv_list, method, date, target, title="", currencies=None, with_anomalies=False):
         if currencies is None: currencies = [None for _ in range(4)] # legacy
@@ -847,6 +852,13 @@ class Window(QMainWindow):
             elif target[0] not in csv_list[1].columns.tolist():
                 csv_list.pop(1)
 
+        if self.differential:
+            csv_list = differential_analysis.get_anomalies(csv_list, target, method, date)
+            self.differential = False
+            target = 'Exchange'
+            date = 'Date'
+            with_anomalies = True
+
         new_graphs.append(Graph(method=method, csv=csv_list[0], date=date, target=target if not isinstance(target, list) else target[0], currency1=currencies[0], currency2=currencies[1],
                           label=label, slider=slider, slider_label=slider_label,
                           checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
@@ -889,6 +901,8 @@ class Window(QMainWindow):
 
         self.graphs[tab] = new_graphs #new_graphs[0] if len(new_graphs) < 2 else new_graphs
         self.tabs.setCurrentIndex(self.tabs.indexOf(tab))
+
+        self.differential = False
 
 def split_csv(csv_to_split: pd.DataFrame, rename: bool) -> list:
     ''' Function that splits csv file on 2 dataframes
