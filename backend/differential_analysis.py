@@ -4,7 +4,7 @@ from sklearn.preprocessing import MinMaxScaler
 from backend.backend_functions import run_method
 
 
-def differential_analysis(datas: list, target: str = None, method: str = None, date: str = None, parameter=0):
+def differential_analysis(datas: list, target: str = None, method: str = None, date: str = None, parameter=0.1):
     if datas is None:
         return
 
@@ -28,7 +28,7 @@ def differential_analysis(datas: list, target: str = None, method: str = None, d
     return difference
 
 
-def get_anomalies(datas: list, target: str = None, method: str = None, date: str = None, parameter=0):
+def get_anomalies(datas: list, target: str = None, method: str = None, date: str = None, parameter=0.1):
     ad_datas = list([deepcopy(i) for i in datas if i is not None])
 
     if len(ad_datas) < 2:
@@ -39,7 +39,14 @@ def get_anomalies(datas: list, target: str = None, method: str = None, date: str
     analysis = differential_analysis(ad_datas, target, method, date, parameter)
 
     for i in range(len(targets_cols)):
-        targets_cols[i]['Anomaly'] = analysis.Anomaly
+        if method == 'Wszystkie':
+            targets_cols[i] = targets_cols[i].assign(Anomaly_1=analysis.Anomaly_1,
+                                                     Anomaly_2=analysis.Anomaly_2,
+                                                     Anomaly_3=analysis.Anomaly_3,
+                                                     Anomaly_4=analysis.Anomaly_4,
+                                                     Anomaly_5=analysis.Anomaly_5)
+        else:
+            targets_cols[i]['Anomaly'] = analysis.Anomaly
         targets_cols[i].rename(columns={date: "Date"}, inplace=True)
         targets_cols[i].rename(columns={target: "Exchange"}, inplace=True)
 
