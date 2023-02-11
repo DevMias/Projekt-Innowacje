@@ -10,13 +10,15 @@ from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QAction, qApp, QApplication, QWidget, QCalendarWidget, QCheckBox
-from backend import backend_functions as backend
+from backend import backend_functions as backend, differential_analysis
 from backend import tab_functions as backend_funcs
 from backend import graph_preview as backend_graph
 from front.styles import *
 from front.graph import Graph
 import pyqtgraph.exporters as exporters
+from pyqtgraph import functions as fn
 import pyqtgraph as pg
+from PIL import Image
 
 
 methods_with_parameter = ["Grupowanie przestrzenne", "Las izolacji", "Lokalna wartość odstająca"]
@@ -49,6 +51,8 @@ class Calendar(QCalendarWidget):
 class Window(QMainWindow):
     def __init__(self, parent=None):
         super(Window, self).__init__(parent, flags=Qt.WindowFlags())
+
+        self.differential = False
 
         self.graph_preview_top = pg.PlotWidget()
         self.graph_preview_bottom = pg.PlotWidget()
@@ -629,6 +633,10 @@ class Window(QMainWindow):
             date_format = pack["format1"].currentText() + '-' + pack["format2"].currentText() + '-' + pack[
                 "format3"].currentText()
 
+            if csv.isnull().values.any():   # in case of incomplete data
+                backend.error('Dane zawierają wartości nieokreślone: nan')
+                return
+
             for row in csv[date]:
                 if not isinstance(row, str): errors += "Błędne dane w kolumnie " + date + ", dane muszą być w formie textu" + "\n"; break
             for t in target:
@@ -643,6 +651,10 @@ class Window(QMainWindow):
             date = pack["date"]
             target = pack["target"]
             csv = pack["csv"]
+
+            if csv.isnull().values.any():   # in case of incomplete data
+                backend.error('Dane zawierają wartości nieokreślone: nan')
+                return
 
             columns = csv.columns.tolist()  # get list of columns in csv file
 
@@ -718,28 +730,38 @@ class Window(QMainWindow):
 
     # download img
     def download_graph(self):
-        # TODO: concatenate 2 plots into 1 img
         graphs = self.graphs[self.tabs.currentWidget()]
 
         exporter_list = []
+        array_list = []
         for i in range(len(graphs)):
             plt = graphs[i].graph
             exporter_list.append(exporters.ImageExporter(plt.plotItem))
             exporter_list[i].parameters()['width'] = 1920
+            array_list.append(fn.ndarray_from_qimage(exporter_list[i].export(toBytes=True)))
 
         file, _ = QFileDialog.getSaveFileName(self, "Detektor anomalii", "anomaly detection plot",
                                               "PNG Files (*.png);;JPEG Files(*.jpg)", options=QFileDialog.Options())
 
         if file == "": return
-        filepath, extension = file.split(".")   # will carsh if file path will contain more dots
 
         try:
-            # decide what kind of data should we download, based on number of graphs from currentWidget (not by checkbox.isClicked)
             if len(self.graphs[self.tabs.currentWidget()]) > 1:
-                for i in range(len(exporter_list)): exporter_list[i].export(filepath + '_' + str(i+1) + '.' + extension)
-            else: exporter_list[0].export(file)
+                output_img = np.concatenate((array_list[0], array_list[1]), axis=0)
+            else: output_img = array_list[0]
+
+            extension = file.split('.')[-1]
+            if extension == 'jpg':
+                output_img = output_img[:, :, :-1]  # cut alpha channel
+                output_img = output_img[:, :, ::-1] # swap from BGR to RGB for .jpg
+            elif extension == 'png':
+                output_img[:, :, [0, 2]] = output_img[:, :, [2, 0]]  # swap from BGRA to RGBA for .png
+            i = Image.fromarray(output_img)
+            i.save(file)
         except PermissionError:
             backend.error("Brak dostępu do lokalizacji pliku", "Sprawdź czy plik jest zamknięty jeśli istnieje.")
+        except Exception:
+            backend.error("Unhandled exception")
 
     def create_plot(self):
         date = "Data"
@@ -762,6 +784,11 @@ class Window(QMainWindow):
         links = backend.create_link(currencies, date_start, date_stop, interval)
         csv_list, error = backend.download_csv(links)
 
+        # in case of different number rows or cols, just return error, there is no reason for differential analysis
+        if len(csv_list) > 1 and csv_list[0].shape != csv_list[1].shape:
+            backend.error('Dane nie posiadają tej samej ilości wierszy lub kolumn')
+            return
+
         if error == "connection error":
             return
 
@@ -769,6 +796,9 @@ class Window(QMainWindow):
             backend.input_errors(currencies, self.calendar_start.date(), self.calendar_stop.date())
         else:
             self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=title, currencies=currencies)
+            if self.checkbox.isChecked():
+                self.differential = True
+                self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=title, currencies=currencies)
 
     def create_graph(self, csv_list, method, date, target, title="", currencies=None, with_anomalies=False):
         if currencies is None: currencies = [None for _ in range(4)] # legacy
@@ -847,6 +877,13 @@ class Window(QMainWindow):
             elif target[0] not in csv_list[1].columns.tolist():
                 csv_list.pop(1)
 
+        if self.differential:
+            csv_list = differential_analysis.get_anomalies(csv_list, target, method, date)
+            self.differential = False
+            target = 'Exchange'
+            date = 'Date'
+            with_anomalies = True
+
         new_graphs.append(Graph(method=method, csv=csv_list[0], date=date, target=target if not isinstance(target, list) else target[0], currency1=currencies[0], currency2=currencies[1],
                           label=label, slider=slider, slider_label=slider_label,
                           checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
@@ -889,6 +926,8 @@ class Window(QMainWindow):
 
         self.graphs[tab] = new_graphs #new_graphs[0] if len(new_graphs) < 2 else new_graphs
         self.tabs.setCurrentIndex(self.tabs.indexOf(tab))
+
+        self.differential = False
 
 def split_csv(csv_to_split: pd.DataFrame, rename: bool) -> list:
     ''' Function that splits csv file on 2 dataframes
