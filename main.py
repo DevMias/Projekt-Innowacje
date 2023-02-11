@@ -16,7 +16,9 @@ from backend import graph_preview as backend_graph
 from front.styles import *
 from front.graph import Graph
 import pyqtgraph.exporters as exporters
+from pyqtgraph import functions as fn
 import pyqtgraph as pg
+from PIL import Image
 
 
 methods_with_parameter = ["Grupowanie przestrzenne", "Las izolacji", "Lokalna wartość odstająca"]
@@ -728,28 +730,38 @@ class Window(QMainWindow):
 
     # download img
     def download_graph(self):
-        # TODO: concatenate 2 plots into 1 img
         graphs = self.graphs[self.tabs.currentWidget()]
 
         exporter_list = []
+        array_list = []
         for i in range(len(graphs)):
             plt = graphs[i].graph
             exporter_list.append(exporters.ImageExporter(plt.plotItem))
             exporter_list[i].parameters()['width'] = 1920
+            array_list.append(fn.ndarray_from_qimage(exporter_list[i].export(toBytes=True)))
 
         file, _ = QFileDialog.getSaveFileName(self, "Detektor anomalii", "anomaly detection plot",
                                               "PNG Files (*.png);;JPEG Files(*.jpg)", options=QFileDialog.Options())
 
         if file == "": return
-        filepath, extension = file.split(".")   # will carsh if file path will contain more dots
 
         try:
-            # decide what kind of data should we download, based on number of graphs from currentWidget (not by checkbox.isClicked)
             if len(self.graphs[self.tabs.currentWidget()]) > 1:
-                for i in range(len(exporter_list)): exporter_list[i].export(filepath + '_' + str(i+1) + '.' + extension)
-            else: exporter_list[0].export(file)
+                output_img = np.concatenate((array_list[0], array_list[1]), axis=0)
+            else: output_img = array_list[0]
+
+            extension = file.split('.')[-1]
+            if extension == 'jpg':
+                output_img = output_img[:, :, :-1]  # cut alpha channel
+                output_img = output_img[:, :, ::-1] # swap from BGR to RGB for .jpg
+            elif extension == 'png':
+                output_img[:, :, [0, 2]] = output_img[:, :, [2, 0]]  # swap from BGRA to RGBA for .png
+            i = Image.fromarray(output_img)
+            i.save(file)
         except PermissionError:
             backend.error("Brak dostępu do lokalizacji pliku", "Sprawdź czy plik jest zamknięty jeśli istnieje.")
+        except Exception:
+            backend.error("Unhandled exception")
 
     def create_plot(self):
         date = "Data"
