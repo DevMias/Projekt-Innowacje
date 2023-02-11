@@ -631,6 +631,10 @@ class Window(QMainWindow):
             date_format = pack["format1"].currentText() + '-' + pack["format2"].currentText() + '-' + pack[
                 "format3"].currentText()
 
+            if csv.isnull().values.any():   # in case of incomplete data
+                backend.error('Dane zawierają wartości nieokreślone: nan')
+                return
+
             for row in csv[date]:
                 if not isinstance(row, str): errors += "Błędne dane w kolumnie " + date + ", dane muszą być w formie textu" + "\n"; break
             for t in target:
@@ -645,6 +649,10 @@ class Window(QMainWindow):
             date = pack["date"]
             target = pack["target"]
             csv = pack["csv"]
+
+            if csv.isnull().values.any():   # in case of incomplete data
+                backend.error('Dane zawierają wartości nieokreślone: nan')
+                return
 
             columns = csv.columns.tolist()  # get list of columns in csv file
 
@@ -763,6 +771,11 @@ class Window(QMainWindow):
 
         links = backend.create_link(currencies, date_start, date_stop, interval)
         csv_list, error = backend.download_csv(links)
+
+        # in case of different number rows or cols, just return error, there is no reason for differential analysis
+        if len(csv_list) > 1 and csv_list[0].shape != csv_list[1].shape:
+            backend.error('Dane nie posiadają tej samej ilości wierszy lub kolumn')
+            return
 
         if error == "connection error":
             return
