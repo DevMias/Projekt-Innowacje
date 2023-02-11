@@ -4,3 +4,5 @@ tensorflow
 sklearn
 pyqtgraph
 scikit-learn
+numpy
+Pillow
