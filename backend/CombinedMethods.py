@@ -4,6 +4,7 @@ from backend.StandardDeviation import standard_deviation
 from backend.IsolationForest import isolation_forest
 from backend.LocalOutlierFactor import local_outlier
 from backend.AutoEncoder import auto_encoder
+from front.styles import method_properties as mp
 
 def all_methods_combined(datas: list = None, target: str = 'Exchange', date: str = 'Date'):
 
@@ -15,12 +16,13 @@ def all_methods_combined(datas: list = None, target: str = 'Exchange', date: str
 
     results = list()
 
+    name = [key for key in mp.keys()]   # method names connected to styles (front.style.py)
     for i in range(len(all_methods)):
-        all_methods[i]['isolation_forest'] = isolation_forest(datas=[data_list[i]], target=target, date=date)['Anomaly']
-        all_methods[i]['standard_deviation'] = standard_deviation(datas=[data_list[i]], target=target, date=date)['Anomaly']
-        all_methods[i]['db_scan'] = db_scan(datas=[data_list[i]], target=target, date=date)['Anomaly']
-        all_methods[i]['local_outlier'] = local_outlier(datas=[data_list[i]], target=target, date=date)['Anomaly']
-        all_methods[i]['auto_encoder'] = auto_encoder(datas=[data_list[i]], target=target, date=date)['Anomaly']
+        all_methods[i][name[0]] = isolation_forest(datas=[data_list[i]], target=target, date=date)['Anomaly']
+        all_methods[i][name[1]] = standard_deviation(datas=[data_list[i]], target=target, date=date)['Anomaly']
+        all_methods[i][name[2]] = db_scan(datas=[data_list[i]], target=target, date=date)['Anomaly']
+        all_methods[i][name[3]] = local_outlier(datas=[data_list[i]], target=target, date=date)['Anomaly']
+        all_methods[i][name[4]] = auto_encoder(datas=[data_list[i]], target=target, date=date)['Anomaly']
 
         # create new column to store anomaly values
         anomalies = list(["Anomaly_1", "Anomaly_2", "Anomaly_3", "Anomaly_4", "Anomaly_5"])
@@ -30,11 +32,11 @@ def all_methods_combined(datas: list = None, target: str = 'Exchange', date: str
 
         # Specify anomalies
         for x in range(1, len(all_methods[i].index)):
-            methods_results = [all_methods[i]['isolation_forest'][x],
-                               all_methods[i]['standard_deviation'][x],
-                               all_methods[i]['db_scan'][x],
-                               all_methods[i]['local_outlier'][x],
-                               all_methods[i]['auto_encoder'][x]]
+            methods_results = [all_methods[i][name[0]][x],
+                               all_methods[i][name[1]][x],
+                               all_methods[i][name[2]][x],
+                               all_methods[i][name[3]][x],
+                               all_methods[i][name[4]][x]]
             result_list = [False, False, False, False, False]
             result_sum = sum(methods_results) - 1
             if result_sum >= 0:

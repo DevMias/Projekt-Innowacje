@@ -1,14 +1,9 @@
 import pyqtgraph as pg
 
 from front.styles import labelStyleSheet_red, labelStyleSheet, labelStyleSheet_yellow, labelStyleSheet_orange,\
-    labelStyleSheet_green, labelStyleSheet_light_green
+    labelStyleSheet_green, labelStyleSheet_light_green, method_properties as mp
 from backend.backend_functions import run_method
 import pandas as pd
-
-list_of_colors = [(255, 0, 0), (255, 167, 0), (255, 244, 0), (163, 255, 0), (44, 186, 0)]
-list_of_colors.reverse()
-list_legend = ["1 metoda", "2 metody", "3 metody", "4 metody", "5 metod"]
-
 
 class Graph:
     def __init__(self, method, csv, date, target, label, slider, slider_label, checkbox, date_label, value_label,
@@ -119,9 +114,10 @@ class Graph:
 
                 self.graph.plot(self.csv.index, self.csv[self.target], pen=self.pen)
 
-                for anomalies, color, legend in zip(self.anomalies, list_of_colors, list_legend):
-                    self.an_graph = self.graph.plot(anomalies.index, anomalies["Exchange"], pen=None, symbol='o',
-                                                    symbolSize=5, symbolPen=color, symbolBrush=color, name=legend)
+                for anomalies, method in zip(self.anomalies, mp):
+                    self.an_graph = self.graph.plot(anomalies.index, anomalies["Exchange"], pen=None,
+                                                    symbol='o', symbolSize=5, symbolPen=mp[method]['color'],
+                                                    symbolBrush=mp[method]['color'], name=mp[method]['polish_name'])
 
                 self.graph.showGrid(x=True, y=False, alpha=1.0)
 
@@ -188,11 +184,11 @@ class Graph:
 
                 self.graph.plot(self.csv.index, self.csv[self.target], pen=self.pen)
 
-                for anomalies, color, legend in zip(self.anomalies, list_of_colors, list_legend):
+                for anomalies, color, method in zip(self.anomalies, mp):
                     if len(self.anomalies) > 1:
                         self.an_graph = self.graph.plot(anomalies.index, anomalies["Exchange"], pen=None,
-                                                        symbol='o', symbolSize=5 + zoom_level, symbolPen=color,
-                                                        symbolBrush=color, name=legend)
+                                                        symbol='o', symbolSize=5 + zoom_level, symbolPen=mp[method]['color'],
+                                                        symbolBrush=mp[method]['color'], name=mp[method]['polish_name'])
 
                 self.graph.setYRange(min(self.csv[self.target][x1:x2]), max(self.csv[self.target][x1:x2]))
             else:

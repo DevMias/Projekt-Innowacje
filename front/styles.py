@@ -9,6 +9,13 @@ font_size_15 = '15px'
 font_size_20 = '20px'
 font_size_30 = '30px'
 
+method_properties = {
+    'isolation_forest':     {'polish_name': 'Las izolacji',                 'color': (44, 186, 0)},
+    'standard_deviation':   {'polish_name': 'Odchylenie standardowe',       'color': (163, 255, 0)},
+    'db_scan':              {'polish_name': 'Grupowanie przestrzenne',      'color': (255, 244, 0)},
+    'local_outlier':        {'polish_name': 'Lokalna wartość odstająca',    'color': (255, 167, 0)},
+    'auto_encoder':         {'polish_name': 'Autoenkoder',                  'color': (255, 0, 0)}
+}
 
 buttonStyleSheet = f"""
 QPushButton {{ 
