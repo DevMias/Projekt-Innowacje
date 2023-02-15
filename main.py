@@ -777,9 +777,10 @@ class Window(QMainWindow):
         if self.checkbox.isChecked():
             currencies.append(self.currencies_top_list1.currentText()[:3])
             currencies.append(self.currencies_top_list2.currentText()[:3])
-        title = self.title_top.text()
-        if title == "":
-            title = currencies[0] + "/" + currencies[1] # temporary
+        title_top = self.title_top.text()
+        title_bottom = self.title_bottom.text()
+        if title_top == "": title_top = currencies[0] + "/" + currencies[1]
+        if self.checkbox.isChecked() and title_bottom == "": title_bottom = currencies[2] + "/" + currencies[3]
 
         links = backend.create_link(currencies, date_start, date_stop, interval)
         csv_list, error = backend.download_csv(links)
@@ -795,12 +796,12 @@ class Window(QMainWindow):
         if csv_list is None:
             backend.input_errors(currencies, self.calendar_start.date(), self.calendar_stop.date())
         else:
-            self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=title, currencies=currencies)
+            self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=[title_top, title_bottom], currencies=currencies)
             if self.checkbox.isChecked():
                 self.differential = True
-                self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=title+" Analiza Różnicowa", currencies=currencies)
+                self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=[title_top + ' - Analiza różnicowa', title_bottom + ' - Analiza różnicowa'], currencies=currencies)
 
-    def create_graph(self, csv_list, method, date, target, title="", currencies=None, with_anomalies=False):
+    def create_graph(self, csv_list, method, date, target, title=None, currencies=None, with_anomalies=False):
         if currencies is None: currencies = [None for _ in range(4)] # legacy
         tab = QWidget()
         tab.layout = QVBoxLayout()
@@ -857,9 +858,15 @@ class Window(QMainWindow):
         button_reset = backend_funcs.create_button(style=buttonStyleSheet, min_size=(110, 40), text="Reset")
 
         if with_anomalies:
-            self.tabs.addTab(tab, title)
+            if isinstance(title, list) and 'Analiza różnicaowa' in title[0]:
+                self.tabs.addTab(tab, method + ' - Analiza różnicaowa')
+            else:
+                self.tabs.addTab(tab, title[0] if isinstance(title, list) else title)
         else:
-            self.tabs.addTab(tab, method + " " + title)
+            if isinstance(title, list) and 'Analiza różnicaowa' in title[0]:
+                self.tabs.addTab(tab, method + ' - Analiza różnicaowa')
+            else:
+                self.tabs.addTab(tab, method + " " + title[0] if isinstance(title, list) else title)
 
         new_graphs = list()
 
@@ -886,7 +893,7 @@ class Window(QMainWindow):
 
         new_graphs.append(Graph(method=method, csv=csv_list[0], date=date, target=target if not isinstance(target, list) else target[0], currency1=currencies[0], currency2=currencies[1],
                           label=label, slider=slider, slider_label=slider_label,
-                          checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
+                          checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title[1] if isinstance(title, list) else title,
                           with_anomalies=with_anomalies))
         if len(csv_list) == 1: tab.layout.addWidget(new_graphs[0].graph, alignment=Qt.Alignment())
 
@@ -894,21 +901,13 @@ class Window(QMainWindow):
             new_graphs.append(Graph(method=method, csv=csv_list[1], date=date, target=target if not isinstance(target, list) else target[1], currency1=currencies[2],
                                currency2=currencies[3],
                                label=label, slider=slider, slider_label=slider_label,
-                               checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
+                               checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title[0] if isinstance(title, list) else title,
                                with_anomalies=with_anomalies))
             tab.layout.addWidget(new_graphs[1].graph, alignment=Qt.Alignment())
 
             tab.layout.addWidget(new_graphs[0].graph, alignment=Qt.Alignment())
 
-            if new_graphs[0].currency1 is not None and new_graphs[0].currency2 is not None:
-                new_graphs[0].title = new_graphs[0].currency1 + '/' + new_graphs[0].currency2
-                new_graphs[0].graph.setTitle(new_graphs[0].title)
-                #new_graphs[0].refresh_graph()
 
-            if new_graphs[1].currency1 is not None and new_graphs[1].currency2 is not None:
-                new_graphs[1].title = new_graphs[1].currency1 + '/' + new_graphs[1].currency2
-                new_graphs[1].graph.setTitle(new_graphs[1].title)
-                #new_graphs[1].refresh_graph()
 
         if not with_anomalies:
             tab.layout.addWidget(refresh_checkbox, alignment=Qt.Alignment())
