@@ -878,12 +878,12 @@ class Window(QMainWindow):
             if new_graphs[0].currency1 != "" and new_graphs[0].currency2 != "":
                 new_graphs[0].title = new_graphs[0].currency1 + '/' + new_graphs[0].currency2
                 new_graphs[0].graph.setTitle(new_graphs[0].title)
-                new_graphs[0].refresh_graph()
+                #new_graphs[0].refresh_graph()
 
             if new_graphs[1].currency1 != "" and new_graphs[1].currency2 != "":
                 new_graphs[1].title = new_graphs[1].currency1 + '/' + new_graphs[1].currency2
                 new_graphs[1].graph.setTitle(new_graphs[1].title)
-                new_graphs[1].refresh_graph()
+                #new_graphs[1].refresh_graph()
 
         if not with_anomalies:
             tab.layout.addWidget(refresh_checkbox, alignment=Qt.Alignment())
