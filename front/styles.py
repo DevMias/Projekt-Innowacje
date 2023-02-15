@@ -8,7 +8,7 @@ hover_color = 'rgb(28, 185, 199)'
 font_size_15 = '15px'
 font_size_20 = '20px'
 font_size_30 = '30px'
-width_kurde = '100px'
+width_100 = '100px'
 
 
 buttonStyleSheet = f"""
@@ -320,7 +320,7 @@ mainTabStyleSheet = f"""
     }}
     QTabWidget{{
         border:2px solid #939393;
-        min-width:{width_kurde};
+        min-width:{width_100};
         height:18px;
         padding:20px;
         font-weight:bold;
@@ -337,7 +337,7 @@ mainTabStyleSheet = f"""
     QTabBar::tab:selected {{ 
         color:black;
         background-color: rgb(242, 242, 242);
-        min-width:{width_kurde};
+        min-width:{width_100};
         height:18px;
         padding:10px;
         font-weight:bold;
