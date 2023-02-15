@@ -798,7 +798,7 @@ class Window(QMainWindow):
             self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=title, currencies=currencies)
             if self.checkbox.isChecked():
                 self.differential = True
-                self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=title, currencies=currencies)
+                self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=title+" Analiza Różnicowa", currencies=currencies)
 
     def create_graph(self, csv_list, method, date, target, title="", currencies=None, with_anomalies=False):
         if currencies is None: currencies = [None for _ in range(4)] # legacy
@@ -888,7 +888,7 @@ class Window(QMainWindow):
                           label=label, slider=slider, slider_label=slider_label,
                           checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
                           with_anomalies=with_anomalies))
-        tab.layout.addWidget(new_graphs[0].graph, alignment=Qt.Alignment())
+        if len(csv_list) == 1: tab.layout.addWidget(new_graphs[0].graph, alignment=Qt.Alignment())
 
         if len(csv_list) > 1:
             new_graphs.append(Graph(method=method, csv=csv_list[1], date=date, target=target if not isinstance(target, list) else target[1], currency1=currencies[2],
@@ -898,6 +898,17 @@ class Window(QMainWindow):
                                with_anomalies=with_anomalies))
             tab.layout.addWidget(new_graphs[1].graph, alignment=Qt.Alignment())
 
+            tab.layout.addWidget(new_graphs[0].graph, alignment=Qt.Alignment())
+
+            if new_graphs[0].currency1 is not None and new_graphs[0].currency2 is not None:
+                new_graphs[0].title = new_graphs[0].currency1 + '/' + new_graphs[0].currency2
+                new_graphs[0].graph.setTitle(new_graphs[0].title)
+                #new_graphs[0].refresh_graph()
+
+            if new_graphs[1].currency1 is not None and new_graphs[1].currency2 is not None:
+                new_graphs[1].title = new_graphs[1].currency1 + '/' + new_graphs[1].currency2
+                new_graphs[1].graph.setTitle(new_graphs[1].title)
+                #new_graphs[1].refresh_graph()
 
         if not with_anomalies:
             tab.layout.addWidget(refresh_checkbox, alignment=Qt.Alignment())
@@ -924,10 +935,11 @@ class Window(QMainWindow):
             button_reset_graph.clicked.connect(new_graphs[i].reset_graph)
         tab.setLayout(tab.layout)
 
-        self.graphs[tab] = new_graphs #new_graphs[0] if len(new_graphs) < 2 else new_graphs
+        self.graphs[tab] = new_graphs
         self.tabs.setCurrentIndex(self.tabs.indexOf(tab))
 
         self.differential = False
+
 
 def split_csv(csv_to_split: pd.DataFrame, rename: bool) -> list:
     ''' Function that splits csv file on 2 dataframes
