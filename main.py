@@ -863,7 +863,7 @@ class Window(QMainWindow):
                           label=label, slider=slider, slider_label=slider_label,
                           checkbox=refresh_checkbox, date_label=date_label, value_label=value_label, title=title,
                           with_anomalies=with_anomalies))
-        # tab.layout.addWidget(new_graphs[0].graph, alignment=Qt.Alignment())
+        if len(csv_list) == 1: tab.layout.addWidget(new_graphs[0].graph, alignment=Qt.Alignment())
 
         if len(csv_list) > 1:
             new_graphs.append(Graph(method=method, csv=csv_list[1], date=date, target=target if not isinstance(target, list) else target[1], currency1=currencies[2],
@@ -875,12 +875,12 @@ class Window(QMainWindow):
 
             tab.layout.addWidget(new_graphs[0].graph, alignment=Qt.Alignment())
 
-            if new_graphs[0].currency1 != "" and new_graphs[0].currency2 != "":
+            if new_graphs[0].currency1 is not None and new_graphs[0].currency2 is not None:
                 new_graphs[0].title = new_graphs[0].currency1 + '/' + new_graphs[0].currency2
                 new_graphs[0].graph.setTitle(new_graphs[0].title)
                 #new_graphs[0].refresh_graph()
 
-            if new_graphs[1].currency1 != "" and new_graphs[1].currency2 != "":
+            if new_graphs[1].currency1 is not None and new_graphs[1].currency2 is not None:
                 new_graphs[1].title = new_graphs[1].currency1 + '/' + new_graphs[1].currency2
                 new_graphs[1].graph.setTitle(new_graphs[1].title)
                 #new_graphs[1].refresh_graph()
