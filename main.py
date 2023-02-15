@@ -773,7 +773,7 @@ class Window(QMainWindow):
             self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=title, currencies=currencies)
             if self.checkbox.isChecked():
                 self.differential = True
-                self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=title+" Różnicowa", currencies=currencies)
+                self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=title+" Analiza Różnicowa", currencies=currencies)
 
     def create_graph(self, csv_list, method, date, target, title="", currencies=None, with_anomalies=False):
         if currencies is None: currencies = [None for _ in range(4)] # legacy
