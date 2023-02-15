@@ -328,6 +328,28 @@ def create_creators_tab(close):
 
     profesor_label = QLabel("prof. dr hab. inż. Adam Pelikant - pomysłodawca, opiekun projektu")
     profesor_label.setStyleSheet(labelStyleSheet_not_bold)
+    
+    creators_v2_label = QLabel("Druga edycja programu 'Detektor Anomalii'")
+    creators_v2_label.setStyleSheet(labelStyleSheet_big)
+
+    kuba_label = QLabel("Jakub Mijas - kierownik projektu, programista")
+    kuba_label.setStyleSheet(labelStyleSheet_not_bold)
+
+    mateusz_p_label = QLabel("Mateusz Pruss - główny programista")
+    mateusz_p_label.setStyleSheet(labelStyleSheet_not_bold)
+
+    alicja_label = QLabel("Alicja Szydłowska - główny programista")
+    alicja_label.setStyleSheet(labelStyleSheet_not_bold)
+
+    lukas_label = QLabel("Łukasz Lasowy - interfejs użytkownika, grafika")
+    lukas_label.setStyleSheet(labelStyleSheet_not_bold)
+
+    kacper_label = QLabel("Kacper Lichman - interfejs użytkownika, grafika")
+    kacper_label.setStyleSheet(labelStyleSheet_not_bold)
+
+    mateusz_o_label = QLabel("Mateusz Orski - dokumentacja")
+    mateusz_o_label.setStyleSheet(labelStyleSheet_not_bold)
+
 
     horizontal_layout = QHBoxLayout()
 
@@ -343,6 +365,13 @@ def create_creators_tab(close):
     tab.layout.addWidget(patrycja_label, alignment=Qt.AlignTop)
     tab.layout.addWidget(dawid_label, alignment=Qt.AlignTop)
     tab.layout.addWidget(mentor_label, alignment=Qt.Alignment())
+    tab.layout.addWidget(profesor_label, alignment=Qt.Alignment())
+    tab.layout.addWidget(kuba_label, alignment=Qt.Alignment())
+    tab.layout.addWidget(mateusz_p_label, alignment=Qt.Alignment())
+    tab.layout.addWidget(alicja_label, alignment=Qt.Alignment())
+    tab.layout.addWidget(lukas_label, alignment=Qt.Alignment())
+    tab.layout.addWidget(kacper_label, alignment=Qt.Alignment())
+    tab.layout.addWidget(mateusz_o_label, alignment=Qt.Alignment())
     tab.layout.addWidget(profesor_label, alignment=Qt.Alignment())
 
     tab.layout.addWidget(QLabel(" "), alignment=Qt.Alignment())
