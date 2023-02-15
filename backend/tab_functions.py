@@ -367,7 +367,7 @@ def create_creators_tab(close):
     tab.layout.addWidget(mentor_label, alignment=Qt.Alignment())
     tab.layout.addWidget(profesor_label, alignment=Qt.Alignment())
     
-    horizontal_layout.addWidget(creators_v2_label, alignment=Qt.Alignment())
+    tab.layout.addWidget(creators_v2_label, alignment=Qt.Alignment())
     tab.layout.addWidget(kuba_label, alignment=Qt.Alignment())
     tab.layout.addWidget(mateusz_p_label, alignment=Qt.Alignment())
     tab.layout.addWidget(alicja_label, alignment=Qt.Alignment())
