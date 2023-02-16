@@ -858,15 +858,13 @@ class Window(QMainWindow):
         button_reset = backend_funcs.create_button(style=buttonStyleSheet, min_size=(110, 40), text="Reset")
 
         if with_anomalies:
-            if isinstance(title, list) and 'Analiza różnicaowa' in title[0]:
-                self.tabs.addTab(tab, method + ' - Analiza różnicaowa')
-            else:
-                self.tabs.addTab(tab, title[0] if isinstance(title, list) else title)
+            self.tabs.addTab(tab, title[1] if isinstance(title, list) else title)
         else:
-            if isinstance(title, list) and 'Analiza różnicaowa' in title[0]:
-                self.tabs.addTab(tab, method + ' - Analiza różnicaowa')
-            else:
-                self.tabs.addTab(tab, method + " " + title[0] if isinstance(title, list) else title)
+            if len(csv_list) > 1:
+                new_title = title[1].split('-')
+                if len(new_title) > 1: self.tabs.addTab(tab, method + new_title[1] if isinstance(title, list) else title)
+                else: self.tabs.addTab(tab, method if isinstance(title, list) else title)
+            else: self.tabs.addTab(tab, method + " " + title[1] if isinstance(title, list) else title)
 
         new_graphs = list()
 
