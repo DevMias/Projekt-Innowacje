@@ -217,7 +217,7 @@ class Graph:
     def flip(self):
         self.flipped = not self.flipped
 
-        if self.currency1 != "" and self.currency2 != "":
+        if self.currency1 is not None and self.currency2 is not None:
             self.title = self.currency2 + '/' + self.currency1
             self.graph.setTitle(self.title)
             temp = self.currency1
