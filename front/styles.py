@@ -5,10 +5,15 @@ main_tab_color = 'rgb(57, 57, 57)' # kolor tła zakładek
 input_border_color = 'rgb(24, 24, 24)' # kolor borderów wokół inputów
 input_bg_color = 'rgb(75, 78, 82)' # kolor tła inputów
 hover_color = 'rgb(28, 185, 199)'
-font_size_15 = '15px'
-font_size_20 = '20px'
-font_size_30 = '30px'
-width_100 = '100px'
+font_size_small = '15px'
+font_size_medium = '20px'
+font_size_big = '30px'
+tab_width = '200px'
+font_color_red='red'
+font_color_green='green'
+font_color_yellow='yellow'
+font_color_orange='orange'
+font_color_lightgreen='lightGreen'
 
 method_properties = {
     'isolation_forest':     {'polish_name': 'Las izolacji',                 'color': (44, 186, 0)},
@@ -23,7 +28,7 @@ QPushButton {{
     background-color: {input_bg_color};
     color: {font_color};
     padding: 2px;
-    font: {font_size_20};
+    font: {font_size_medium};
     border: 1px inset {input_border_color};
     border-radius: 10px;
     width:60px;
@@ -32,7 +37,7 @@ QPushButton:hover {{
     background-color: {hover_color};
 }}
 #year_checkbox{{
-    font-size:{font_size_20};
+    font-size:{font_size_medium};
     color: {font_color};
     text-transform: uppercase;
     font-family: "Calibri", Times, serif;
@@ -44,7 +49,7 @@ QPushButton {{
     background-color: {input_bg_color};
     color:{font_color};
     padding: 15px;
-    font: {font_size_20};
+    font: {font_size_medium};
     border: 1px inset {input_border_color};
     border-radius: 10px;
 }}
@@ -60,7 +65,7 @@ QCheckBox{{
     text-transform: uppercase;
     font-family: "Calibri", Times, serif;
     color: {font_color};
-    font-size: {font_size_15};
+    font-size: {font_size_small};
 }}
 QCheckBox:hover{{
     color: {hover_color};
@@ -72,7 +77,7 @@ QPushButton {{
     background-color: {input_bg_color};
     color:{font_color};
     padding: 10px;
-    font: bold {font_size_20};
+    font: bold {font_size_medium};
     border: 1px inset {input_border_color};
     border-radius: 10px;
 }}
@@ -87,7 +92,7 @@ QDateEdit
     color:{font_color};
     border-radius: 3px;
     border: 1px solid {input_border_color};
-    font: {font_size_20};
+    font: {font_size_medium};
     background-color:{input_bg_color};
     text-align:center;
     margin-left: 5px;
@@ -195,7 +200,7 @@ labelStyleSheet = f"""
 QLabel {{
     border: 0;
     padding: 2px;
-    font: bold {font_size_20};
+    font: bold {font_size_medium};
     text-transform:uppercase;
     color:{font_color};
 }}
@@ -219,7 +224,7 @@ QLineEdit {{
     border: 0;
     border-bottom: 1px solid rgb(169, 167, 169);
     background-color:rgb(67, 66, 67);
-    font: {font_size_15}
+    font: {font_size_small}
 }}
 #default_label{{
     margin-left:200px; /* label z settingsow */
@@ -233,7 +238,7 @@ labelDisabledStyleSheet = f"""
 QLabel {{
     border: 0;
     padding: 2px;
-    font: bold {font_size_20};
+    font: bold {font_size_medium};
     text-transform:uppercase;
     color:{font_color_grey};
 }}
@@ -252,7 +257,7 @@ QLineEdit {{
     border: 0;
     border-bottom: 1px solid rgb(169, 167, 169);
     background-color:rgb(67, 66, 67);
-    font: {font_size_15}
+    font: {font_size_small}
 }}
 #default_label{{
     margin-left:200px; /* label z settingsow */
@@ -262,32 +267,36 @@ QLineEdit {{
 labelStyleSheet_red = f"""
 QLabel {{
     padding: 2px;
-    font: bold {font_size_15};
-    color:{font_color};
+    font: bold {font_size_medium};
+    text-transform: uppercase;
+    color:{font_color_red};
 }}
 """
 
 labelStyleSheet_orange = f"""
 QLabel {{
     padding: 2px;
-    font: bold {font_size_15};
-    color: orange;
+    font: bold {font_size_medium};
+    text-transform: uppercase;
+    color: {font_color_orange};
 }}
 """
 
 labelStyleSheet_yellow = f"""
 QLabel {{
     padding: 2px;
-    font: bold {font_size_15};
-    color: #FEE227;
+    font: bold {font_size_medium};
+    text-transform: uppercase;
+    color: {font_color_yellow};
 }}
 """
 
 labelStyleSheet_light_green = f"""
 QLabel {{
     padding: 2px;
-    font: bold {font_size_15};
-    color: lightGreen;
+    text-transform: uppercase;
+    font: bold {font_size_medium};
+    color: {font_color_lightgreen};
 }}
 """
 
@@ -300,8 +309,9 @@ QPushButton{{
 labelStyleSheet_green = f"""
 QLabel {{
     padding: 2px;
-    font: bold {font_size_15};
-    color: green;
+    font: bold {font_size_medium};
+    text-transform: uppercase;
+    color: {font_color_green};
 }}
 """
 
@@ -309,7 +319,7 @@ labelStyleSheet_big = f"""
 QLabel {{
     color:{font_color};
     padding: 2px;
-    font: bold {font_size_30};
+    font: bold {font_size_big};
 }}
 """
 
@@ -317,7 +327,7 @@ labelStyleSheet_not_bold = f"""
 QLabel {{
     color:{font_color};
     padding: 2px;
-    font: {font_size_15};
+    font: {font_size_small};
 }}
 """
 
@@ -331,7 +341,7 @@ mainTabStyleSheet = f"""
         height:18px;
         padding:20px;
         font-weight:bold;
-        font-size:{font_size_15};
+        font-size:{font_size_small};
     }}
     QTabWidget::pane{{
         border: none; /* tu byl ten border zepsuty*/
