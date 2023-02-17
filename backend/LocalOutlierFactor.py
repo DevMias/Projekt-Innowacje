@@ -6,7 +6,19 @@ from sklearn.neighbors import LocalOutlierFactor
 
 
 def local_outlier(datas: list = None, target: str = 'Exchange', date: str = 'Date', contamination: float = .25):
-
+    """
+            Args:
+                -datas (list): List of pandas DataFrame. Each DataFrame should contain the columns "Date" and "Exchange" for the date and target variable, respectively. Default is None.
+                -target (str): Name of the target variable in the DataFrame. Default is "Exchange".
+                -date (str): Name of the date variable in the DataFrame. Default is "Date".
+                -contamination (float): Proportion of outliers in the dataset. Default is .25.
+            Returns:
+                -a pandas DataFrame if only one DataFrame was passed, or a list of pandas DataFrames if multiple DataFrames were passed.
+            Funcionality:
+                -preprocessing data.
+                -calculating anomaly score using 'LocalOutlierFactor'.
+                -normalizing data using 'StandardScaler'
+    """
     # PREPROCESSING: Make a single or double list depends on data2 optional parameter
     if datas is None: return
     data_list = list([ i for i in datas if i is not None ])     # delete None's from input

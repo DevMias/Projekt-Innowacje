@@ -7,6 +7,20 @@ from sklearn.ensemble import IsolationForest
 
 
 def isolation_forest(datas: list, target: str, date: str, contamination=0.2):
+    """
+            Args:
+                -datas (list): List of pandas DataFrame. Each DataFrame should contain the columns "Date" and "Exchange" for the date and target variable, respectively.
+                -target (str): Name of the target variable in the DataFrame.
+                -date (str): Name of the date variable in the DataFrame.
+                -contamination (float): Proportion of outliers in the dataset. Default is 0.2.
+            Returns:
+                -pandas dataframe single or a list depending on number of inputs with each having additional column 'Anomaly'
+            Funcionality:
+                -implementing isolation_forest alghoritm used for outlier detection:
+                -normalizing using 'StandardScaler'
+                -applying isolation_forest alghoritm
+                -adding new column "Anoamly'
+    """
     if datas is None:
         return
 

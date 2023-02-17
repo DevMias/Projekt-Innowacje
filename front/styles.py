@@ -1,3 +1,9 @@
+"""
+    Const for front and backend functions.
+"""
+"""
+    Frontend const for colors and size.
+"""
 font_color = 'white' # kolor czcionki
 font_color_grey = 'grey' # kolor czcionki wyłączonej
 background_color = 'rgb(50, 50, 50)' # kolor tła
@@ -22,7 +28,9 @@ method_properties = {
     'local_outlier':        {'polish_name': 'Lokalna wartość odstająca',    'color': (255, 167, 0)},
     'auto_encoder':         {'polish_name': 'Autoenkoder',                  'color': (255, 0, 0)}
 }
-
+"""
+    Various settings for objects in app window.
+"""
 buttonStyleSheet = f"""
 QPushButton {{ 
     background-color: {input_bg_color};

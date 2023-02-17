@@ -6,6 +6,25 @@ from backend.backend_functions import run_method
 import pandas as pd
 
 class Graph:
+    """
+            Args:
+                -method (str): The plot method to use, which can be one of the following: 'plot', 'scatter', or 'bar'.
+                -csv (DataFrame): The Pandas DataFrame containing the dataset to plot.
+                -date (str): The name of the date column in the dataset.
+                -target (str): The name of the target variable column in the dataset.
+                -label (QLabel): The QLabel object used to display the current date range of the plot.
+                -slider (QSlider): The QSlider object used to adjust the current date range of the plot.
+                -slider_label (QLabel): The QLabel object used to display the current value of the slider.
+                -checkbox (QCheckBox): The QCheckBox object used to toggle the display of anomalies on the plot.
+                -date_label (QLabel): The QLabel object used to display the current date value of the plot.
+                -value_label (QLabel): The QLabel object used to display the current value of the target variable on the plot.
+                -currency1 (str, optional): The name of the first currency, used to generate the plot title. Default is set to "".
+                -currency2 (str, optional): The name of the second currency, used to generate the plot title. Default is set to "".
+                -title (str, optional): The title of the plot. Default is set to "".
+                -with_anomalies (bool, optional): Whether to include anomalies on the plot. Default is set to False.
+            Functionality:
+                -Class for creating and updating the PyqtGraph plot with specified methods, datasets, date ranges and allows for user interactions.
+    """
     def __init__(self, method, csv, date, target, label, slider, slider_label, checkbox, date_label, value_label,
                  currency1="", currency2="", title="", with_anomalies=False):
         self.proxy = None
@@ -53,6 +72,17 @@ class Graph:
         self.init_graph()
 
     def init_graph(self):
+        """
+                    Funcionality:
+                            -setting up mouse movement with ps.SignalProxy.
+                            -adjusting graph.
+                            -filtering csv file.
+                            -if anomalies are not being displayed connect 'udpate_graph'.
+                            -plotting financial data.
+                            -running anomalies.
+                            -when 'Wszystkie' method is chosen plot each type of anomaly.
+                            -when anomaly is detected plot those oon red.
+        """
         self.proxy = pg.SignalProxy(self.graph.scene().sigMouseMoved, rateLimit=60, slot=self.update_crosshair)
 
         if self.flipped:
@@ -132,6 +162,11 @@ class Graph:
                 self.graph.showGrid(x=True, y=False, alpha=1.0)
 
     def update_graph(self):
+        """
+                Funcionality:
+                    -updating slider bar to relfect slider's current value.
+                    -determining current x-axis range based on the axis object and size of the CSV data
+        """
         self.slider_label.setText("Czułość metody: " + str(self.slider.value()) + "%")
         ax = self.graph.getAxis('bottom')
 
@@ -215,6 +250,18 @@ class Graph:
         self.refresh = False
 
     def flip(self):
+        """
+                Args:
+
+                    -self: the MainWindow instance
+
+                Functionality:
+                    -flip method flips the currency pair and the corresponding values of the csv dataframe in the MainWindow class.
+                    If the currency1 and currency2 attributes have been set, it swaps them and updates the title of the graph with the new currency pair.
+                    It also calculates the inverse values of the target column of the csv dataframe (i.e. the exchange rates) and updates them in the dataframe.
+                    Finally, it refreshes the graph with the new data.
+
+        """
         self.flipped = not self.flipped
 
         if self.currency1 is not None and self.currency2 is not None:
@@ -230,6 +277,9 @@ class Graph:
         self.refresh_graph()
 
     def reset_slider(self):
+        """
+                Reseting the value of the slider to a default value based on the current method selected in the GUI, and then refreshing the graph.
+        """
         if self.method == "Grupowanie przestrzenne":
             self.slider.setValue(50)
         if self.method == "Las izolacji":
@@ -240,15 +290,30 @@ class Graph:
         self.refresh_graph()
 
     def refresh_graph(self):
+        """
+            Refreshes graph.
+        """
         self.refresh = True
         self.update_graph()
 
     def reset_graph(self):
+        """
+            Reset graph to default values.
+        """
         self.checkbox.setChecked(True)
         self.init_graph()
         self.update_graph()
 
     def update_crosshair(self, e):
+        """
+            The update_crosshair method is used to update the crosshair in the graph whenever the mouse is moved over it.
+            It takes an event e as input and uses the position pos of the mouse to calculate the corresponding x and y values in the plot.
+
+            If the x value is within the range of the available data, the method checks whether the selected method is "Wszystkie"  or a specific one.
+            Based on that, it updates the color of the date and value labels to indicate whether the selected data point is an anomaly or not.
+
+            The date and value labels are then updated with the corresponding data point's date and value.
+        """
         pos = e[0]
         if self.graph.sceneBoundingRect().contains(pos):
             mouse_point = self.graph.getPlotItem().vb.mapSceneToView(pos)

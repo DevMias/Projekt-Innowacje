@@ -35,6 +35,9 @@ expected_columns = {
 
 
 def clear_layout(layout):
+    """
+        Function takes a layout as an input and removes all the widgets from that layout.
+    """
     while layout.count():
         child = layout.takeAt(0)
         if child.widget():
@@ -42,6 +45,9 @@ def clear_layout(layout):
 
 
 class Calendar(QCalendarWidget):
+    """
+        Custom QCalendarWidget that inherits from the Qt QCalendarWidget class. It is used to display a calendar widget in the GUI.
+    """
     def __init__(self, parent=None):
         super(Calendar, self).__init__(parent)
         self.setGridVisible(True)
@@ -49,6 +55,45 @@ class Calendar(QCalendarWidget):
 
 
 class Window(QMainWindow):
+    """
+        Subclass of QMainWindow that provides a graphical user interface for a tool that performs anomaly detection on financial data.
+
+        Args:
+            -differential: A boolean indicating whether the differential of the dataset is being displayed.
+            -graph_preview_top: A pg.PlotWidget instance representing the top graph preview in the UI.
+            -graph_preview_bottom: A pg.PlotWidget instance representing the bottom graph preview in the UI.
+            -top_plot_variables: A dictionary of variables related to the top graph preview.
+            -bottom_plot_variables: A dictionary of variables related to the bottom graph preview.
+            -important_tabs: A list of tabs in the UI that should not be closed.
+            -help_tab: A reference to the help tab in the UI.
+            -settings_tab: A reference to the settings tab in the UI.
+            -creators_tab: A reference to the creators tab in the UI.
+            -button_settings: A QPushButton instance that opens the settings menu.
+            -settings_pack: A dictionary containing settings loaded from a configuration file.
+            -interval_list: A list of strings representing the possible intervals to display in the UI.
+            -pack: A dictionary containing configuration settings for the current dataset.
+            -tabs: A QTabWidget instance representing the tabbed interface for the UI.
+            -tab_main: A QWidget instance representing the main tab in the UI.
+            -graphs: A dictionary containing references to the various plots in the UI.
+            -button_plot: A QPushButton instance that generates the plot.
+            -swap_currencies_bottom: A QPushButton instance that swaps the currencies in the bottom graph.
+            -swap_currencies_top: A QPushButton instance that swaps the currencies in the top graph.
+            -calendar_start_label: A QLabel instance representing the label for the start date.
+            -calendar_start: A QDateEdit instance representing the widget for selecting the start date.
+            -calendar_stop_label: A QLabel instance representing the label for the end date.
+            -calendar_stop: A QDateEdit instance representing the widget for selecting the end date.
+            -method_list: A list of strings representing the possible anomaly detection methods to use.
+            -method_label: A QLabel instance representing the label for the method selection.
+            -methods: A QComboBox instance representing the drop-down for selecting the anomaly detection method.
+            -interval_label: A QLabel instance representing the label for the interval selection.
+            -interval: A QComboBox instance representing the drop-down for selecting the interval.
+            -currencies_bottom_label: A QLabel instance representing the label for the currency selection in the bottom graph.
+            -currencies_bottom_list1: A QComboBox instance representing the drop-down for selecting the first currency in the bottom graph.
+            -currencies_bottom_list2: A QComboBox instance representing the drop-down for selecting the second currency in the bottom graph.
+            -checkbox: A QCheckBox instance representing the checkbox for disabling a currency in the bottom graph.
+            -currencies_top_label: A QLabel instance representing the label for the currency selection in the top graph.
+            -currencies_top_list1: A QComboBox instance representing the drop-down for selecting the first currency in the top
+    """
     def __init__(self, parent=None):
         super(Window, self).__init__(parent, flags=Qt.WindowFlags())
 
@@ -198,12 +243,19 @@ class Window(QMainWindow):
 
 
     def change_label_top(self): # zmienic funkcje nie dziala w kazdym przypadku
+        """
+            Method is called when the currency is changed in the top plot.
+            It sets the placeholder text of the top plot title line edit widget to the text of the top plot.
+        """
         self.title_top.setPlaceholderText(
             #self.graph_preview_top.text() #to moze dobrze
         )
 
 
     def change_label_bottom(self): # zmienic funkcje nie dziala w kazdym przypadku
+        """
+            function is used to set the text of the placeholder in the QLineEdit widget for the title of the bottom plot
+        """
         self.title_bottom.setPlaceholderText(
             # self.bottom_plot_variables["currencies"][0].currentText()[:3] + '/' +
             # self.bottom_plot_variables["currencies"][1].currentText()[:3]
@@ -212,6 +264,12 @@ class Window(QMainWindow):
 
 
     def swap_clicked_top(self):
+        """
+            function handles a click event for the swap currencies button in the top graph.
+            When the button is clicked, it swaps the currencies selected in the top graph's currency selection comboboxes and updates the title placeholder text accordingly.
+            If the current placeholder text in the title matches the current currency selection, it updates the placeholder text to show the new currency selection in reverse order.
+            Otherwise, it updates the placeholder text to show the currency selection in the original order.
+        """
         if self.title_top.placeholderText() == self.currencies_top_list1.currentText()[:3] + '/' + self.currencies_top_list2.currentText()[:3]:
             self.title_top.setPlaceholderText(
                 self.currencies_top_list2.currentText()[:3] + '/' + self.currencies_top_list1.currentText()[:3]
@@ -223,6 +281,11 @@ class Window(QMainWindow):
 
 
     def swap_clicked_bottom(self):
+        """
+            function swaps the currencies shown in the graph title and updates the title.
+            It checks if the current title matches the format 'currency1/currency2' and if it does, it swaps the currency abbreviations and updates the title.
+            If it does not match this format, it sets the title to 'currency1/currency2
+        """
         if self.title_bottom.placeholderText() == self.currencies_bottom_list1.currentText()[:3] + '/' + self.currencies_bottom_list2.currentText()[:3]:
             self.title_bottom.setPlaceholderText(
                 self.currencies_bottom_list2.currentText()[:3] + '/' + self.currencies_bottom_list1.currentText()[:3]
@@ -234,6 +297,11 @@ class Window(QMainWindow):
 
 
     def checkbox_clicked(self):
+        """
+            slot function that handles the state change of the checkbox.
+            If the checkbox is checked, it enables the top plot along with its corresponding controls and updates the label of the checkbox to "Wyłącz".
+            If the checkbox is unchecked, it disables the top plot and its corresponding controls and updates the label of the checkbox to "Włącz".
+        """
         if self.checkbox.isChecked():
             self.graph_preview_bottom.hide()
             self.checkbox.setText("Wyłącz")
@@ -264,6 +332,10 @@ class Window(QMainWindow):
 
 
     def init_menu(self):
+        """
+            menu bar with several menu items .
+            Each menu item is connected to a specific function, which is triggered when the user selects the menu item.
+        """
         exit_action = QAction('&Zamknij', self)
         exit_action.setShortcut('Ctrl+Q')
         exit_action.setStatusTip('Wyjdź z aplikacji')
@@ -291,6 +363,12 @@ class Window(QMainWindow):
         menubar.addAction(creators_action)
 
     def init_layout(self):
+        """
+            function initializes the main layout of the application. It creates several widgets and adds them to the layout using a QGridLayout.
+            The layout includes widgets for selecting currencies, dates, intervals and methods, as well as a button to plot the graphs and a checkbox to enable/disable the second graph.
+            It also initializes the graph preview widgets with default values and connects signals to slots to update the graph previews when the user changes any of the settings.
+            Finally, it sets the main layout of the application to be the QGridLayout and sets it as the central widget.
+        """
         clear_layout(self.layout)
 
         # lists for currencies
@@ -415,16 +493,25 @@ class Window(QMainWindow):
         self.graph_preview_bottom = backend_graph.create_plot(self.graph_preview_bottom, self.bottom_plot_variables)
 
     def swap_currencies(self):
+        """
+            Swapping currencies.
+        """
         tmp = self.currencies_bottom_list1.currentText()
         self.currencies_bottom_list1.setCurrentText(self.currencies_bottom_list2.currentText())
         self.currencies_bottom_list2.setCurrentText(tmp)
 
     def swap_currencies2(self):
+        """
+            Swaps the selected currencies in two dropdown menus.
+        """
         tmp = self.currencies_top_list1.currentText()
         self.currencies_top_list1.setCurrentText(self.currencies_top_list2.currentText())
         self.currencies_top_list2.setCurrentText(tmp)
 
     def important_add_tab(self):
+        """
+            Adds or removes a tab from a list of "important" tabs, and sets or removes an icon to indicate whether the tab is important
+        """
         tab = self.tabs.currentWidget()
         if tab not in self.important_tabs:
             self.tabs.setTabIcon(self.tabs.indexOf(tab), QIcon(important_icon))
@@ -434,6 +521,12 @@ class Window(QMainWindow):
             self.important_tabs.pop(self.important_tabs.index(tab))
 
     def close_tab(self, index):
+        """
+            Args:
+                -index (int or bool): The index of the tab to be closed, or a boolean value indicating that the currently selected tab should be closed.
+
+                Close the tab in QTabWidget.
+        """
         if not isinstance(index, bool):
             if self.tabs.widget(index) in self.important_tabs:
                 pressed = backend.error("Czy chcesz zamknąć ważną kartę?", title="Ważna karta",
@@ -463,6 +556,9 @@ class Window(QMainWindow):
         self.close_tab(current_index)
 
     def settings(self):
+        """
+            Function creating and displaying settings widget. When it already exists it switches to it.
+        """
         if self.settings_tab is not None:
             self.tabs.setCurrentIndex(self.tabs.indexOf(self.settings_tab))
             return
@@ -492,6 +588,9 @@ class Window(QMainWindow):
         # self.help_tab = tab
 
     def creators(self):
+        """
+            Creators of project
+        """
         if self.creators_tab is not None:
             self.tabs.setCurrentIndex(self.tabs.indexOf(self.creators_tab))
             return
@@ -504,6 +603,9 @@ class Window(QMainWindow):
         self.creators_tab = tab
 
     def save_settings_to_file(self):
+        """
+            Saves the user's settings to a file named "settings". The method sets various UI elements to the values in the settings_pack dictionary.
+        """
         # self.currencies1.setCurrentText(self.settings_pack["currencies1"].currentText())
         # self.currencies2.setCurrentText(self.settings_pack["currencies2"].currentText())
         # self.methods.setCurrentText(self.settings_pack["methods"].currentText())
@@ -545,6 +647,9 @@ class Window(QMainWindow):
         open('settings', 'w').writelines(settings)
 
     def read_settings_from_file(self):
+        """
+            Reads the user's settings from a file named "settings" and populates the settings_pack dictionary with the values.
+        """
         f = open('settings', "r").readlines()
         settings = []
         for line in f:
@@ -556,6 +661,10 @@ class Window(QMainWindow):
                               "currencies12": settings[7], "currencies21": settings[8]}
 
     def reset_settings(self):
+        """
+            Resets the user's settings to their default values by reading the "default_settings" file and overwriting the "settings" file with the default values.
+            The method then closes the current tab and opens the settings tab to show the new settings.
+        """
         f = open('default_settings', "r").readlines()
         settings = []
         for line in f:
@@ -584,6 +693,15 @@ class Window(QMainWindow):
 
     # load csv (with anomaly column)
     def graph_from_file(self):
+        """
+            Allows the user to select a CSV file using a file dialog, which is then used to create a graph.
+            The method first displays a file dialog using the `getOpenFileName()` method of the `QFileDialog` class, which allows the user to select a CSV file.
+            If the user selects a file, the `download_csv()` function from the `backend` module is called with a list containing the selected file.
+            The `download_csv()` function reads the CSV file and returns a list containing a `pandas` DataFrame for each CSV file.
+            The method then checks for any errors and displays an error message if necessary.
+            If there are no errors, the method creates a dictionary `pack` with keys for the graph method, the CSV data, the title of the graph, the x-axis label, and the y-axis label.
+            The `pack_data()` method is then called with the `pack` dictionary to create a graph from the CSV data.
+        """
         file, _ = QFileDialog.getOpenFileName(self, "Detektor anomalii", "", "CSV Files (*.csv *.txt)",
                                               options=QFileDialog.Options())
         if file is None or file == "": return
@@ -602,6 +720,15 @@ class Window(QMainWindow):
 
     # load csv (without anomaly column)
     def file_open(self):
+        """
+            Allows the user to select a CSV file using a file dialog and create a graph from the data in the selected file.
+            The method first displays a file dialog using the `getOpenFileName()` method of the `QFileDialog` class, which allows the user to select a CSV file.
+            If the user selects a file, the `create_graph_tab()` function from the `backend_funcs` module is called with the selected file, a list of available graph methods, and several callback functions.
+            The `create_graph_tab()` function reads the CSV file and creates a tab containing a graph and controls for the user to adjust the graph settings.
+            The `create_graph_tab()` function returns a tuple containing the graph tab and a dictionary containing the graph data and settings.
+            If there are errors creating the graph tab or dictionary, the method returns early. If the graph tab and dictionary are successfully created, the method adds the graph tab to the
+            `QTabWidget` object and sets the current tab to the new graph tab.
+        """
         file, _ = QFileDialog.getOpenFileName(self, "Detektor anomalii", "", "CSV Files (*.csv *.txt)",
                                               options=QFileDialog.Options())
         if file is None or file == "": return
@@ -617,6 +744,10 @@ class Window(QMainWindow):
 
     # load csv (used while loading data without anomaly as an trigger to button named "Wygeneruj wykres")
     def pack_data(self, pack):
+        """
+            Create graph from provided data. Load graph with or without anomalies. If the pack is false create graph without anomalies.
+            If data is incomplete or has ane errors error message is showed.
+        """
         from_file = True
         errors = ""
 
@@ -691,6 +822,9 @@ class Window(QMainWindow):
 
     # download csv
     def download_data(self):
+        """
+            Downloading data from current opened graph. Ask user if he wants to downlaod anomaly data.
+        """
         pressed = backend.error("Czy chcesz również pobrać dane o anomaliach?", icon=QMessageBox.Question,
                                 buttons=QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, title="Dane")
 
@@ -730,6 +864,9 @@ class Window(QMainWindow):
 
     # download img
     def download_graph(self):
+        """
+            User can download graph as PNG or JPEG file.
+        """
         graphs = self.graphs[self.tabs.currentWidget()]
 
         exporter_list = []
@@ -764,6 +901,9 @@ class Window(QMainWindow):
             backend.error("Unhandled exception")
 
     def create_plot(self):
+        """
+            Create new graph with data from user settings.
+        """
         date = "Data"
         target = "Zamkniecie"
 
@@ -802,6 +942,19 @@ class Window(QMainWindow):
                 self.create_graph(csv_list=csv_list, method=method, date=date, target=target, title=[title_top + ' - Analiza różnicowa', title_bottom + ' - Analiza różnicowa'], currencies=currencies)
 
     def create_graph(self, csv_list, method, date, target, title=None, currencies=None, with_anomalies=False):
+        """
+            Creating new tab with graph based on provided data.
+            If 'with_anomalies' is true, graph will include anommalies.
+
+            Args:
+                -csv_list: a list of pandas DataFrames containing the data to be plotted.
+                -method: a string representing the anomaly detection method to use.
+                -date: a string representing the name of the column in the data containing dates.
+                -target: a string or list of strings representing the names of the columns in the data containing the target variables to be plotted.
+                -title: an optional string representing the title of the graph.
+                -currencies: an optional list of strings representing the currencies used in the data, used to set the title of the graph.
+                -with_anomalies: a boolean indicating whether the graph should include anomalies.
+        """
         if currencies is None: currencies = [None for _ in range(4)] # legacy
         tab = QWidget()
         tab.layout = QVBoxLayout()

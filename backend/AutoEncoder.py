@@ -9,6 +9,30 @@ from sklearn.model_selection import train_test_split
 
 
 def auto_encoder(datas: list = None, target: str = None, date: str = None, split_perc=0.5):
+    """
+        Args:
+            -datas: list, default=None - A list of pandas dataframes containing the data.
+            -target: str, default=None - A string representing the column name of the target variable.
+            -date: str, default=None - A string representing the column name of the date variable.
+            -split_perc: float, default=0.5 - A float representing the proportion of the dataset to include in the test split.
+        Returns:
+
+            -target_cols[0] if len(target_cols) == 1 else target_cols: A pandas dataframe representing the data with the anomaly detection result column.
+
+        Functionality:
+            -function is an implementation of the Autoencoder anomaly detection method.
+            The function takes a list of dataframes, target column name, date column name, and split percentage as inputs.
+            The function then trains an autoencoder model on the data with the use of novelty detection.
+            The function returns a dataframe that shows anomalies in the data.
+            The function first creates a copy of the data in the input dataframe and checks if it is not empty.
+            Then it creates a list of target columns by selecting the date and target columns from the data.
+            It then goes through each target column in the list and performs the following steps:
+                    -selects the target column and creates a copy of it.
+                    -splits the data into training and testing datasets.
+                    -uses the training dataset to train the autoencoder model using the selected novelty detection method.
+                    -predicts and finds the threshold for anomaly detection based on the testing data using the trained model.
+                    -predicts the anomalies in the data using the threshold, and returns a copy of the original data with an additional column called "Anomaly" that flags the data as an anomaly or not.
+        """
     if datas is None:
         return
 
@@ -88,6 +112,16 @@ def auto_encoder(datas: list = None, target: str = None, date: str = None, split
 
 
 def find_threshold(model, x_train_scaled):
+    """
+        Args:
+            -model: a trained autoencoder model.
+            -x_train_scaled: scaled training data used to train the model.
+        Returns:
+            -threshold: threshold for anomaly scores.
+        Functionality:
+            -The find_threshold function takes a trained autoencoder model and scaled training data as inputs.
+            It uses the model to generate reconstructions of the training data and calculates the mean and standard deviation of the mean squared logarithmic error (MSLE) of the reconstructions.
+    """
     reconstructions = model.predict(x_train_scaled)
     # provides losses of individual instances
 
@@ -99,6 +133,20 @@ def find_threshold(model, x_train_scaled):
 
 
 def get_predictions(model, x_test_scaled, threshold):
+    """
+        Args:
+            -model: A trained Autoencoder model from the TensorFlow Keras library
+            -x_test_scaled: A numpy array with shape (n_samples, n_features) containing the scaled test data
+            -threshold: A float representing the threshold for distinguishing anomalies from normal data.
+
+        Returns:
+            -preds: A pandas Series containing the predicted labels for each instance in the test set. A value of 0 indicates an anomaly, and a value of 1 indicates normal data.
+
+        Functionality:
+            -function takes a trained autoencoder model, a set of scaled test data, and a threshold value.
+            It generates predictions for the test data based on the trained model and then determines if each instance is an anomaly or not based on the provided threshold.
+            Anomalies are assigned a value of 0 and normal data are assigned a value of 1, and the function returns these values as a Pandas series.
+    """
     predictions = model.predict(x_test_scaled)
     # provides losses of individual instances
 

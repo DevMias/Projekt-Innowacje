@@ -1,5 +1,7 @@
 from enum import Enum
-
+"""
+    Errors for program.
+"""
 class PopupError(str, Enum):
     MISSING_PARAMETERS = "Brakuje parametrów\n"
     EMPTY_CURRENCY_LIST = "Nie podano żadnych walut\n"
