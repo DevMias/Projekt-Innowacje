@@ -12,6 +12,30 @@ from main import Calendar
 
 
 def create_graph_tab(close, pack_fun, methods_list, file, important):
+    """
+                Args:
+                    close: a function to close the tab
+                    pack_fun: a function to pack the necessary parameters for the graph
+                    methods_list: a list of available graphing methods
+                    file: the file to be graphed
+                    important: a function to mark the graph as important
+                Functionality:
+                    -Importing csv data using fucntion from backend_functions.py
+                        Return: None if file is empty or has error
+                    -QWidget object creating box layout
+                    -QLineEdit object for the graph title adding it to the widget layout
+                    -QComboBox object for the date format adding it to to the widget layout
+                    -Function GenerateGraph button for widget layout, creating dictionary pack (nescessary elements for generating a graph)
+                    -Pack:
+                        -method: the QComboBox object for the graphing method
+                        -csv: the Pandas DataFrame object of the CSV data
+                        -title: the QLineEdit object for the graph title
+                        -date: the QComboBox object for the date column
+                        -target: a list of two QComboBox objects for the target column
+                        -format1: the QComboBox object for the first date format
+                        -format2: the QComboBox object for the second date format
+                        -format3: the QComboBox object for the third date format
+            """
     csv_data, error1 = backend.download_csv([file], from_file=True) # pass file as an list (required in this function)
     if csv_data is None: return None, None
 
@@ -139,6 +163,19 @@ def create_graph_tab(close, pack_fun, methods_list, file, important):
 
 
 def create_settings_tab(method_list, interval_list, close, save, reset, checkbox):
+    """
+                Args:
+                    -method_list list of methods (strings) that are used in the application.
+                    -interval_list list of intervals (strings) that are used in the application.
+                    -close function that is called when the user clicks the "close" button on the tab.
+                    -save function that is called when the user clicks the "save" button on the tab.
+                    -reset function that is called when the user clicks the "reset" button on the tab.
+                    -checkbox checkbox widget that is used to enable/disable certain functionalities.
+                Functionality:
+                    Reading current settings from a file setting values of the widgets.
+                    User can modify settings and save them using "save" button and saving it in the file
+                    Reset button to reset setting to default values
+            """
     settings = read_settings_from_file()
 
     tab = QWidget()
@@ -297,6 +334,10 @@ def create_settings_tab(method_list, interval_list, close, save, reset, checkbox
 
 
 def create_creators_tab(close):
+    """
+            Functionality:
+                    -Creating widget containing authors of the app.
+    """
     tab = QWidget()
     tab.layout = QVBoxLayout()
 
@@ -384,6 +425,13 @@ def create_creators_tab(close):
 
 
 def create_help_tab(close):
+    """
+            Args:
+                -close called when user clicks close button.
+            Functionality:
+                -Help tab to show user a description of the methods used in program.
+
+    """
     tab = QWidget()
     tab.layout = QVBoxLayout()
 
@@ -449,6 +497,13 @@ def create_help_tab(close):
 
 
 def read_settings_from_file():
+    """
+            Functionality:
+                   -reading content of setting file.
+                   -extracting values from each line
+            Returns:
+                   -returning dictionary which contains different key-valuepairs
+    """
     f = open('settings', "r").readlines()
     settings = []
     for line in f:
@@ -460,6 +515,19 @@ def read_settings_from_file():
 
 
 def create_button(text="", style="", icon=None, function=None, min_size=None, max_size=None):
+    """
+            Args:
+                -text (str): The text to be displayed on the button. Default is an empty string.
+                -style (str): The CSS style to be applied to the button. Default is an empty string.
+                -icon (QIcon): The icon to be displayed on the button. Default is None.
+                -function (function): The function to be called when the button is clicked. Default is None.
+                -min_size (tuple of ints): The minimum size of the button. Default is None.
+                -max_size (tuple of ints): The maximum size of the button. Default is None.
+            Returns:
+                -button (QPushButton): The created button widget.
+            Functionality:
+                -creating button
+            """
     button = QPushButton(text)
     button.setStyleSheet(style)
     if icon is not None:
@@ -475,6 +543,12 @@ def create_button(text="", style="", icon=None, function=None, min_size=None, ma
 
 
 def create_calendar(widget):
+    """
+            Args:
+                -widget (class) representing a widget type.
+            Functionality:
+                -creating calendar widget.
+            """
     calendar = widget()
 
     return calendar

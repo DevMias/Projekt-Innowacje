@@ -7,7 +7,27 @@ from backend.AutoEncoder import auto_encoder
 from front.styles import method_properties as mp
 
 def all_methods_combined(datas: list = None, target: str = 'Exchange', date: str = 'Date'):
+    """
+            Args:
+                -datas (list of pandas dataframes): A list of pandas dataframes, where each dataframe contains a time series with two
+                -columns: 'date' and 'target' (value of the time series at that date).
+                -target (str): The name of the column in the input dataframes that contains the target values (time series values). Thedefault value is 'Exchange'.
+                -date (str): The name of the column in the input dataframes that contains the date values. The default value is 'Date'.
 
+            Returns:
+                   Union[pd.DataFrame, List[pd.DataFrame]]: Returns either a single pandas dataframe or a list of pandas dataframes,
+                   depending on the length of the input list. Each returned dataframe has multiple additional columns, one for each
+                   of the five methods and one for each possible combination of methods (up to five anomalies), that indicate whether
+                   a data point in the time series is an anomaly or not, as identified by the respective method(s).
+
+            Funcionality:
+                   Applying a combination of five anomaly detection methods (Isolation Forest, Standard Deviation, DBSCAN, Local
+                   Outlier Factor, and Autoencoder) to identify anomalies in a given time series data. It takes in a list of pandas dataframes
+                   as input, where each dataframe contains a time series with two columns: 'date' and 'target' (value of the time series at
+                   that date). The function returns a list of pandas dataframes, where each dataframe has multiple additional columns,
+                   one for each of the five methods and one for each possible combination of methods (up to five anomalies), that indicate
+                   whether a data point in the time series is an anomaly or not, as identified by the respective method(s).
+    """
     # Run all methods and create DataFrame
     if datas is None: return
     data_list = list([i for i in datas if i is not None])  # delete None's from input

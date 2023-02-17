@@ -4,6 +4,17 @@ import numpy as np
 
 
 def standard_deviation(datas: list = None, target: str = None, date: str = None):
+    """
+            Args:
+                -datas: a list of dataframes containing target variable data
+                -target: the name of the target variable
+                -date: the name of the date column
+            Returns:
+                -None if dataframes in 'datas' ate all None
+            Functionality:
+                -calculating standard deviation.
+                - identifying anomalies
+           """
     if datas is None:
         return
 

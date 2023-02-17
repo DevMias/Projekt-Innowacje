@@ -7,7 +7,19 @@ from backend.AutoEncoder import auto_encoder
 
 
 def majority(datas: list = None, target: str = None, date: str = None):
-
+    """
+            Args:
+                -datas (list of dataframes) with None as default.
+                -target dataframe columns.
+                -date dataframe columns.
+            Returns:
+                -list of pandas Dataframes.
+                -if 'datas' is None returns None.
+            Functionality:
+                -applying five outlier detection methods on each dataframe.
+                -creating new boolean column 'Anomaly' for each dataframe.
+                -calculating the percentage of methods that marked is as anomaly. If percentage >=50% marks row as outlier.
+            """
     if datas is None:
         return
     data_list = list([i for i in datas if i is not None])  # delete None's from input

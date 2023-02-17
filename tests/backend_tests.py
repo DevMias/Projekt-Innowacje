@@ -5,6 +5,9 @@ from backend.backend_functions import input_errors
 from enums.backend_enums import PopupError
 
 class Test__input_errors(unittest.TestCase):
+    """
+        Tests for backend functions.
+    """
     def test__missing_parameters(self):
         self.assertEqual(input_errors(None, None, None, generate_popup=False), PopupError.MISSING_PARAMETERS)
         self.assertEqual(input_errors(None, QDate.currentDate(), None, generate_popup=False), PopupError.MISSING_PARAMETERS)

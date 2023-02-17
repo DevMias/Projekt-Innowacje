@@ -4,6 +4,15 @@ from backend import backend_functions
 
 
 def create_plot(graph, plot_info):
+    """
+            Args:
+                -graph PlotWidget object
+                -plot_info dictionary containing information about a plot that will be created
+            Returns:
+                -PlotWidget object displaying plot of currency exchange rate data.
+            Funcionality"
+                -creating plot widget and shows data of a currency exchange.
+    """
     if graph is None:
         graph = pg.PlotWidget()
 

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>backend.AutoEncoder &mdash; Projekt_innowacja 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Projekt_innowacja
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Projekt-Innowacje</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Projekt_innowacja</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">backend.AutoEncoder</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for backend.AutoEncoder</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">MinMaxScaler</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">Sequential</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Dropout</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+
+<div class="viewcode-block" id="auto_encoder"><a class="viewcode-back" href="../../backend.html#backend.AutoEncoder.auto_encoder">[docs]</a><span class="k">def</span> <span class="nf">auto_encoder</span><span class="p">(</span><span class="n">datas</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">split_perc</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            -datas: list, default=None - A list of pandas dataframes containing the data.</span>
+<span class="sd">            -target: str, default=None - A string representing the column name of the target variable.</span>
+<span class="sd">            -date: str, default=None - A string representing the column name of the date variable.</span>
+<span class="sd">            -split_perc: float, default=0.5 - A float representing the proportion of the dataset to include in the test split.</span>
+<span class="sd">        Returns:</span>
+
+<span class="sd">            -target_cols[0] if len(target_cols) == 1 else target_cols: A pandas dataframe representing the data with the anomaly detection result column.</span>
+
+<span class="sd">        Functionality:</span>
+<span class="sd">            -function is an implementation of the Autoencoder anomaly detection method.</span>
+<span class="sd">            The function takes a list of dataframes, target column name, date column name, and split percentage as inputs.</span>
+<span class="sd">            The function then trains an autoencoder model on the data with the use of novelty detection.</span>
+<span class="sd">            The function returns a dataframe that shows anomalies in the data.</span>
+<span class="sd">            The function first creates a copy of the data in the input dataframe and checks if it is not empty.</span>
+<span class="sd">            Then it creates a list of target columns by selecting the date and target columns from the data.</span>
+<span class="sd">            It then goes through each target column in the list and performs the following steps:</span>
+<span class="sd">                    -selects the target column and creates a copy of it.</span>
+<span class="sd">                    -splits the data into training and testing datasets.</span>
+<span class="sd">                    -uses the training dataset to train the autoencoder model using the selected novelty detection method.</span>
+<span class="sd">                    -predicts and finds the threshold for anomaly detection based on the testing data using the trained model.</span>
+<span class="sd">                    -predicts the anomalies in the data using the threshold, and returns a copy of the original data with an additional column called &quot;Anomaly&quot; that flags the data as an anomaly or not.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">datas</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">ad_datas</span> <span class="o">=</span> <span class="nb">list</span><span class="p">([</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">datas</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">ad_datas</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="n">target_cols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">([</span><span class="n">data</span><span class="p">[[</span><span class="n">date</span><span class="p">,</span> <span class="n">target</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">ad_datas</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">target_cols</span><span class="p">)):</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">ad_datas</span><span class="p">[</span><span class="n">i</span><span class="p">][[</span><span class="n">target</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">target_data</span> <span class="o">=</span> <span class="n">ad_datas</span><span class="p">[</span><span class="n">i</span><span class="p">][[</span><span class="n">target</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+            <span class="n">features</span><span class="p">,</span> <span class="n">target_data</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">split_perc</span>
+        <span class="p">)</span>
+
+        <span class="c1"># use case is novelty detection so use only the normal data</span>
+        <span class="c1"># for training</span>
+        <span class="n">train_index</span> <span class="o">=</span> <span class="n">y_train</span><span class="p">[</span><span class="n">y_train</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+        <span class="n">train_data</span> <span class="o">=</span> <span class="n">x_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">train_index</span><span class="p">]</span>
+
+        <span class="c1"># min max scale the input data</span>
+        <span class="n">min_max_scaler</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">(</span><span class="n">feature_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">x_train_scaled</span> <span class="o">=</span> <span class="n">min_max_scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="n">x_test_scaled</span> <span class="o">=</span> <span class="n">min_max_scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+
+        <span class="k">class</span> <span class="nc">AutoEncoder</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+
+            <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_units</span><span class="p">,</span> <span class="n">code_size</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+                <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">([</span>
+                    <span class="n">Dense</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">),</span>
+                    <span class="n">Dropout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
+                    <span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">),</span>
+                    <span class="n">Dropout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
+                    <span class="n">Dense</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">),</span>
+                    <span class="n">Dropout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
+                    <span class="n">Dense</span><span class="p">(</span><span class="n">code_size</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)</span>
+                <span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">([</span>
+                    <span class="n">Dense</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">),</span>
+                    <span class="n">Dropout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
+                    <span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">),</span>
+                    <span class="n">Dropout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
+                    <span class="n">Dense</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">),</span>
+                    <span class="n">Dropout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
+                    <span class="n">Dense</span><span class="p">(</span><span class="n">output_units</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">)</span>
+                <span class="p">])</span>
+
+            <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+                <span class="n">encoded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+                <span class="n">decoded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">encoded</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">decoded</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">AutoEncoder</span><span class="p">(</span><span class="n">output_units</span><span class="o">=</span><span class="n">x_train_scaled</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="c1"># configurations of model</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;msle&#39;</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;mse&#39;</span><span class="p">],</span> <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">)</span>
+
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">find_threshold</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">x_train_scaled</span><span class="p">)</span>
+        <span class="n">predictions</span> <span class="o">=</span> <span class="n">get_predictions</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">x_test_scaled</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+
+        <span class="n">temp</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">({</span><span class="s1">&#39;Anomaly_after_method&#39;</span><span class="p">:</span> <span class="n">predictions</span><span class="o">.</span><span class="n">copy</span><span class="p">()})</span>
+
+        <span class="n">target_cols</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">temp</span><span class="p">[</span><span class="s1">&#39;Anomaly_after_method&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Anomaly&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">target_cols</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">temp</span><span class="p">[</span><span class="s1">&#39;Anomaly_after_method&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Anomaly&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">target_cols</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">date</span><span class="p">:</span> <span class="s2">&quot;Date&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">target_cols</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">target</span><span class="p">:</span> <span class="s2">&quot;Exchange&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">target_cols</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+
+        <span class="n">target_cols</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s1">&#39;Anomaly&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">target_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_cols</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">target_cols</span></div>
+
+
+<div class="viewcode-block" id="find_threshold"><a class="viewcode-back" href="../../backend.html#backend.AutoEncoder.find_threshold">[docs]</a><span class="k">def</span> <span class="nf">find_threshold</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">x_train_scaled</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            -model: a trained autoencoder model.</span>
+<span class="sd">            -x_train_scaled: scaled training data used to train the model.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            -threshold: threshold for anomaly scores.</span>
+<span class="sd">        Functionality:</span>
+<span class="sd">            -The find_threshold function takes a trained autoencoder model and scaled training data as inputs.</span>
+<span class="sd">            It uses the model to generate reconstructions of the training data and calculates the mean and standard deviation of the mean squared logarithmic error (MSLE) of the reconstructions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">reconstructions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_train_scaled</span><span class="p">)</span>
+    <span class="c1"># provides losses of individual instances</span>
+
+    <span class="n">reconstruction_errors</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">msle</span><span class="p">(</span><span class="n">reconstructions</span><span class="p">,</span> <span class="n">x_train_scaled</span><span class="p">)</span>
+    <span class="c1"># threshold for anomaly scores</span>
+
+    <span class="n">threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">reconstruction_errors</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">reconstruction_errors</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">threshold</span></div>
+
+
+<div class="viewcode-block" id="get_predictions"><a class="viewcode-back" href="../../backend.html#backend.AutoEncoder.get_predictions">[docs]</a><span class="k">def</span> <span class="nf">get_predictions</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">x_test_scaled</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            -model: A trained Autoencoder model from the TensorFlow Keras library</span>
+<span class="sd">            -x_test_scaled: A numpy array with shape (n_samples, n_features) containing the scaled test data</span>
+<span class="sd">            -threshold: A float representing the threshold for distinguishing anomalies from normal data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            -preds: A pandas Series containing the predicted labels for each instance in the test set. A value of 0 indicates an anomaly, and a value of 1 indicates normal data.</span>
+
+<span class="sd">        Functionality:</span>
+<span class="sd">            -function takes a trained autoencoder model, a set of scaled test data, and a threshold value.</span>
+<span class="sd">            It generates predictions for the test data based on the trained model and then determines if each instance is an anomaly or not based on the provided threshold.</span>
+<span class="sd">            Anomalies are assigned a value of 0 and normal data are assigned a value of 1, and the function returns these values as a Pandas series.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test_scaled</span><span class="p">)</span>
+    <span class="c1"># provides losses of individual instances</span>
+
+    <span class="n">errors</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">msle</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">x_test_scaled</span><span class="p">)</span>
+    <span class="c1"># 0 = anomaly, 1 = normal</span>
+
+    <span class="n">anomaly_mask</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshold</span>
+
+    <span class="n">preds</span> <span class="o">=</span> <span class="n">anomaly_mask</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">preds</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mateusz Orski 235939.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

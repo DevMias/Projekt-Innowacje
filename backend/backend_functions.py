@@ -44,6 +44,16 @@ y - year
 
 
 def return_date(date):
+    """
+        Args: date (datetime): A datetime object that represents a date.
+
+        Returns:
+            -str: Returns a string representation of the date in the format 'YYYYMMDD'.
+        Functionality:
+            -function takes a datetime object as input and returns a string representation of the date in the format 'YYYYMMDD'.
+             used to convert datetime objects to the format used in the dataset.
+
+    """
     month = str(date.date().month())
     day = str(date.date().day())
     if date.date().month() < 10:
@@ -55,10 +65,38 @@ def return_date(date):
 
 
 def string_to_date(date):
+    """
+        Args:
+            date (str): A date string in the format 'YYYYMMDD'.
+
+        Returns:
+            QDate: Returns a QDate object that represents the date.
+
+        Functionality:
+                -function takes a date string in the format 'YYYYMMDD' as input and returns a QDate object that represents the date.
+                 It is used to convert date strings in the format used in the dataset to QDate objects, which can be used in PyQt5 for
+                 displaying dates.
+    """
     return QDate(int(date[:4]), int(date[4:6]), int(date[6:8]))
 
 
 def create_link(currencies: list, date_start: str, date_stop: str, interval: str) -> list:
+    """
+        Args:
+            -currencies (list of str): A list of currency codes, represented as two-letter strings, for which exchange rate data
+            is to be downloaded. The list must contain either two or four currency codes.
+            -date_start (str): A string representation of the start date for the exchange rate data, in the format 'YYYY-MM-DD'.
+            -date_stop (str): A string representation of the end date for the exchange rate data, in the format 'YYYY-MM-DD'.
+            -interval (str): A string that specifies the time interval for the exchange rate data.
+        Returns:
+                list: Returns a list of one or two Stooq links that can be used to download historical exchange rate data for the
+                specified currencies and time period.
+        Functionality:
+            This function takes a list of currency codes, a start date, an end date, and a time interval as input, and returns a list
+            of Stooq links that can be used to download historical exchange rate data for the specified currencies and time period.
+            The returned list contains one or two links, depending on whether two or four currency codes were provided.
+
+    """
     if interval == "Dzienny":
         interval = 'd'
     if interval == "Tygodniowy":
@@ -82,6 +120,24 @@ def create_link(currencies: list, date_start: str, date_stop: str, interval: str
 
 
 def error(text, inform_text="", title="Błąd", icon=QMessageBox.Critical, buttons=QMessageBox.Ok):
+    """
+        Args:
+            -text (str): The main text to be displayed in the error message box.
+            -inform_text (str): Optional informative text to be displayed below the main text in the error message box.
+            -title (str): Optional title for the error message box. The default value is "Błąd".
+            -icon (QMessageBox.Icon): Optional icon to be displayed in the error message box. The default value is
+                QMessageBox.Critical.
+            -buttons (QMessageBox.StandardButtons): Optional buttons to be displayed in the error message box. The default value
+                   is QMessageBox.Ok.
+
+        Returns:
+            -int: Returns the button clicked by the user.
+
+        Functionality:
+                function displays an error message box with the specified text and icon, and returns the button clicked by the user.
+                The default icon is the 'Critical' icon, and the default button is the 'Ok' button. The function also takes an optional
+                informative text and title for the message box.
+           """
     msg = QMessageBox()
     msg.setWindowIcon(QIcon(app_logo))
     msg.setText(text)
@@ -94,6 +150,29 @@ def error(text, inform_text="", title="Błąd", icon=QMessageBox.Critical, butto
 
 
 def check_date(data, date, date_format):
+    """
+        This function checks the format of the dates in the specified column of a pandas DataFrame, and returns the DataFrame if
+        the format is correct. The function takes the DataFrame, the name of the date column, and the expected date format as input.
+        The date format should be specified using the strings 'Rok', 'Miesiąc', and 'Dzień' separated by a single separator character.
+        If the format is correct, the function also checks that the dates are in chronological order, and displays a warning message
+        if they are not.
+
+        Args:
+            -data (pd.DataFrame): The pandas DataFrame to be checked.
+            -date (str): The name of the column that contains the dates to be checked.
+            -date_format (str): A string that specifies the expected date format.
+
+        Returns:
+            -pd.DataFrame: Returns the input DataFrame if the date format is correct and the dates are in chronological order.
+            Otherwise, the function displays an error or warning message and returns None.
+
+        Functionality:
+            This function checks the format of the dates in the specified column of a pandas DataFrame, and returns the DataFrame if
+            the format is correct. The function takes the DataFrame, the name of the date column, and the expected date format as input.
+            The date format should be specified using the strings 'Rok', 'Miesiąc', and 'Dzień' separated by a single separator character.
+            If the format is correct, the function also checks that the dates are in chronological order, and displays a warning message
+            if they are not.
+    """
     date_as_list = list(data[date][0])
 
     separator = None
@@ -158,6 +237,21 @@ def check_date(data, date, date_format):
 
 
 def download_csv_without_errors(link):
+    """
+        This function attempts to download a CSV file from the specified link using pandas, and returns the resulting DataFrame
+        if the download is successful. If the download fails or the resulting DataFrame is empty or null, the function returns None.
+
+        Args:
+            -link (str): A string that contains the URL for the CSV file to be downloaded.
+
+        Returns:
+            Union[pd.DataFrame, None]: Returns a pandas DataFrame containing the data from the downloaded CSV file, or None if
+            the download failed or the resulting DataFrame is empty or null.
+
+        Functionality:
+            -function download a CSV file from the specified link using pandas, and returns the resulting DataFrame
+            if the download is successful. If the download fails or the resulting DataFrame is empty or null, the function returns None.
+    """
     try:
         dataframe = pd.read_csv(link, sep=',')
 
@@ -170,6 +264,25 @@ def download_csv_without_errors(link):
 
 
 def download_csv(filepaths: list, separator=',', from_file=False) -> pd.arrays:
+    """
+        Args:
+            -filepaths (List[str]): A list of strings that contains the file paths or URLs for the CSV files to be downloaded.
+            -separator (str): A string that specifies the separator character to be used in the resulting DataFrames. The default
+                value is ','.
+            -from_file (bool): A boolean that specifies whether the file paths are for local files or URLs. The default value is False.
+
+        Returns:
+            -Tuple[Union[List[pd.DataFrame], None], str]: Returns a tuple containing a list of pandas DataFrames, or a value of
+            None and a string that specifies the reason for the failure.
+
+        Functionality:
+            -function attempts to download one or more CSV files from the specified file paths or URLs using pandas, and returns
+            a list of DataFrames containing the data from the downloaded CSV files if the downloads are successful. If any of the
+            downloaded DataFrames are empty or null, the function returns a tuple with a value of None and the string "empty". If the
+            function encounters a connection error, it returns a tuple with a value of None and the string "connection error". If the
+            function encounters an error with the file format or any other type of error, it returns a tuple with a value of None and
+            an empty string.
+    """
     try:
         dfs = list()
         for i in range(len(filepaths)):
@@ -208,6 +321,20 @@ def download_csv(filepaths: list, separator=',', from_file=False) -> pd.arrays:
 
 
 def run_method(datas: list, target: str, date: str, method: str, parameter=0):
+    """
+        Args:
+            -datas (List): A list of pandas DataFrames containing the input data.
+            -target (str): A string that specifies the name of the column containing the target variable.
+            -date (str): A string that specifies the name of the column containing the date variable.
+            -method (str): A string that specifies the name of the anomaly detection method to be executed.
+            -parameter (Union[int, float]): A numeric parameter that may be required by some of the anomaly detection methods. The default value is 0.
+        Returns:
+            -pd.DataFrame: Returns a pandas DataFrame containing the results of the specified anomaly detection method.
+
+        Functionality:
+            -function executes the specified anomaly detection method on the given input data and returns a pandas DataFrame
+            containing the results.
+    """
     if method == "Odchylenie standardowe":
         return standard_deviation(datas=datas, target=target, date=date)
     if method == "Grupowanie przestrzenne":

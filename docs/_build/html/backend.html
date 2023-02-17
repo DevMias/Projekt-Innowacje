@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>backend package &mdash; Projekt_innowacja 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="enums package" href="enums.html" />
+    <link rel="prev" title="Examples package" href="Examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Projekt_innowacja
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Projekt-Innowacje</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Examples.html">Examples package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">backend package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-backend.AutoEncoder">backend.AutoEncoder module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#backend.AutoEncoder.auto_encoder"><code class="docutils literal notranslate"><span class="pre">auto_encoder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.AutoEncoder.find_threshold"><code class="docutils literal notranslate"><span class="pre">find_threshold()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.AutoEncoder.get_predictions"><code class="docutils literal notranslate"><span class="pre">get_predictions()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#backend-combinedmethods-module">backend.CombinedMethods module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-backend.DB_scan">backend.DB_scan module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#backend.DB_scan.db_scan"><code class="docutils literal notranslate"><span class="pre">db_scan()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-backend.IsolationForest">backend.IsolationForest module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#backend.IsolationForest.isolation_forest"><code class="docutils literal notranslate"><span class="pre">isolation_forest()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-backend.LocalOutlierFactor">backend.LocalOutlierFactor module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#backend.LocalOutlierFactor.local_outlier"><code class="docutils literal notranslate"><span class="pre">local_outlier()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-backend.Majority">backend.Majority module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#backend.Majority.majority"><code class="docutils literal notranslate"><span class="pre">majority()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-backend.StandardDeviation">backend.StandardDeviation module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#backend.StandardDeviation.standard_deviation"><code class="docutils literal notranslate"><span class="pre">standard_deviation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#backend-backend-functions-module">backend.backend_functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#backend-differential-analysis-module">backend.differential_analysis module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#backend-graph-preview-module">backend.graph_preview module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#backend-tab-functions-module">backend.tab_functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-backend">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="enums.html">enums package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="front.html">front package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html">tests package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Projekt_innowacja</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">Projekt-Innowacje</a></li>
+      <li class="breadcrumb-item active">backend package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/backend.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="backend-package">
+<h1>backend package<a class="headerlink" href="#backend-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-backend.AutoEncoder">
+<span id="backend-autoencoder-module"></span><h2>backend.AutoEncoder module<a class="headerlink" href="#module-backend.AutoEncoder" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.AutoEncoder.auto_encoder">
+<span class="sig-prename descclassname"><span class="pre">backend.AutoEncoder.</span></span><span class="sig-name descname"><span class="pre">auto_encoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_perc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/AutoEncoder.html#auto_encoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.AutoEncoder.auto_encoder" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-datas: list, default=None - A list of pandas dataframes containing the data.
+-target: str, default=None - A string representing the column name of the target variable.
+-date: str, default=None - A string representing the column name of the date variable.
+-split_perc: float, default=0.5 - A float representing the proportion of the dataset to include in the test split.</p>
+</dd>
+</dl>
+<p>Returns:</p>
+<blockquote>
+<div><p>-target_cols[0] if len(target_cols) == 1 else target_cols: A pandas dataframe representing the data with the anomaly detection result column.</p>
+</div></blockquote>
+<dl>
+<dt>Functionality:</dt><dd><p>-function is an implementation of the Autoencoder anomaly detection method.
+The function takes a list of dataframes, target column name, date column name, and split percentage as inputs.
+The function then trains an autoencoder model on the data with the use of novelty detection.
+The function returns a dataframe that shows anomalies in the data.
+The function first creates a copy of the data in the input dataframe and checks if it is not empty.
+Then it creates a list of target columns by selecting the date and target columns from the data.
+It then goes through each target column in the list and performs the following steps:</p>
+<blockquote>
+<div><p>-selects the target column and creates a copy of it.
+-splits the data into training and testing datasets.
+-uses the training dataset to train the autoencoder model using the selected novelty detection method.
+-predicts and finds the threshold for anomaly detection based on the testing data using the trained model.
+-predicts the anomalies in the data using the threshold, and returns a copy of the original data with an additional column called “Anomaly” that flags the data as an anomaly or not.</p>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.AutoEncoder.find_threshold">
+<span class="sig-prename descclassname"><span class="pre">backend.AutoEncoder.</span></span><span class="sig-name descname"><span class="pre">find_threshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_train_scaled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/AutoEncoder.html#find_threshold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.AutoEncoder.find_threshold" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-model: a trained autoencoder model.
+-x_train_scaled: scaled training data used to train the model.</p>
+</dd>
+<dt>Returns:</dt><dd><p>-threshold: threshold for anomaly scores.</p>
+</dd>
+<dt>Functionality:</dt><dd><p>-The find_threshold function takes a trained autoencoder model and scaled training data as inputs.
+It uses the model to generate reconstructions of the training data and calculates the mean and standard deviation of the mean squared logarithmic error (MSLE) of the reconstructions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.AutoEncoder.get_predictions">
+<span class="sig-prename descclassname"><span class="pre">backend.AutoEncoder.</span></span><span class="sig-name descname"><span class="pre">get_predictions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_test_scaled</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/AutoEncoder.html#get_predictions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.AutoEncoder.get_predictions" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-model: A trained Autoencoder model from the TensorFlow Keras library
+-x_test_scaled: A numpy array with shape (n_samples, n_features) containing the scaled test data
+-threshold: A float representing the threshold for distinguishing anomalies from normal data.</p>
+</dd>
+<dt>Returns:</dt><dd><p>-preds: A pandas Series containing the predicted labels for each instance in the test set. A value of 0 indicates an anomaly, and a value of 1 indicates normal data.</p>
+</dd>
+<dt>Functionality:</dt><dd><p>-function takes a trained autoencoder model, a set of scaled test data, and a threshold value.
+It generates predictions for the test data based on the trained model and then determines if each instance is an anomaly or not based on the provided threshold.
+Anomalies are assigned a value of 0 and normal data are assigned a value of 1, and the function returns these values as a Pandas series.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="backend-combinedmethods-module">
+<h2>backend.CombinedMethods module<a class="headerlink" href="#backend-combinedmethods-module" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-backend.DB_scan">
+<span id="backend-db-scan-module"></span><h2>backend.DB_scan module<a class="headerlink" href="#module-backend.DB_scan" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.DB_scan.db_scan">
+<span class="sig-prename descclassname"><span class="pre">backend.DB_scan.</span></span><span class="sig-name descname"><span class="pre">db_scan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiplayer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/DB_scan.html#db_scan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.DB_scan.db_scan" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-datas (list of pandas dataframes): A list of pandas dataframes, where each dataframe contains a time series with two
+-columns: ‘date’ and ‘target’ (value of the time series at that date).
+-target (str): The name of the column in the input dataframes that contains the target values (time series values).
+-date (str): The name of the column in the input dataframes that contains the date values.
+-multiplayer (float): A multiplier value to adjust the epsilon value for the DBSCAN algorithm. The default value is 0.5.</p>
+</dd>
+<dt>Returns:</dt><dd><p>-Union[pd.DataFrame, List[pd.DataFrame]]: Returns either a single pandas dataframe or a list of pandas dataframes,
+depending on the length of the input list. Each returned dataframe contains an additional column ‘Anomaly’ that
+indicates whether a data point in the time series is anomaly or not.</p>
+</dd>
+<dt>Funcionality:</dt><dd><p>-applying the DBSCAN clustering algoritm to detect anomalies in data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-backend.IsolationForest">
+<span id="backend-isolationforest-module"></span><h2>backend.IsolationForest module<a class="headerlink" href="#module-backend.IsolationForest" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.IsolationForest.isolation_forest">
+<span class="sig-prename descclassname"><span class="pre">backend.IsolationForest.</span></span><span class="sig-name descname"><span class="pre">isolation_forest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contamination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/IsolationForest.html#isolation_forest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.IsolationForest.isolation_forest" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-datas (list): List of pandas DataFrame. Each DataFrame should contain the columns “Date” and “Exchange” for the date and target variable, respectively.
+-target (str): Name of the target variable in the DataFrame.
+-date (str): Name of the date variable in the DataFrame.
+-contamination (float): Proportion of outliers in the dataset. Default is 0.2.</p>
+</dd>
+<dt>Returns:</dt><dd><p>-pandas dataframe single or a list depending on number of inputs with each having additional column ‘Anomaly’</p>
+</dd>
+<dt>Funcionality:</dt><dd><p>-implementing isolation_forest alghoritm used for outlier detection:
+-normalizing using ‘StandardScaler’
+-applying isolation_forest alghoritm
+-adding new column “Anoamly’</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-backend.LocalOutlierFactor">
+<span id="backend-localoutlierfactor-module"></span><h2>backend.LocalOutlierFactor module<a class="headerlink" href="#module-backend.LocalOutlierFactor" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.LocalOutlierFactor.local_outlier">
+<span class="sig-prename descclassname"><span class="pre">backend.LocalOutlierFactor.</span></span><span class="sig-name descname"><span class="pre">local_outlier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Exchange'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Date'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contamination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.25</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/LocalOutlierFactor.html#local_outlier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.LocalOutlierFactor.local_outlier" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-datas (list): List of pandas DataFrame. Each DataFrame should contain the columns “Date” and “Exchange” for the date and target variable, respectively. Default is None.
+-target (str): Name of the target variable in the DataFrame. Default is “Exchange”.
+-date (str): Name of the date variable in the DataFrame. Default is “Date”.
+-contamination (float): Proportion of outliers in the dataset. Default is .25.</p>
+</dd>
+<dt>Returns:</dt><dd><p>-a pandas DataFrame if only one DataFrame was passed, or a list of pandas DataFrames if multiple DataFrames were passed.</p>
+</dd>
+<dt>Funcionality:</dt><dd><p>-preprocessing data.
+-calculating anomaly score using ‘LocalOutlierFactor’.
+-normalizing data using ‘StandardScaler’</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-backend.Majority">
+<span id="backend-majority-module"></span><h2>backend.Majority module<a class="headerlink" href="#module-backend.Majority" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.Majority.majority">
+<span class="sig-prename descclassname"><span class="pre">backend.Majority.</span></span><span class="sig-name descname"><span class="pre">majority</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/Majority.html#majority"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.Majority.majority" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-datas (list of dataframes) with None as default.
+-target dataframe columns.
+-date dataframe columns.</p>
+</dd>
+<dt>Returns:</dt><dd><p>-list of pandas Dataframes.
+-if ‘datas’ is None returns None.</p>
+</dd>
+<dt>Functionality:</dt><dd><p>-applying five outlier detection methods on each dataframe.
+-creating new boolean column ‘Anomaly’ for each dataframe.
+-calculating the percentage of methods that marked is as anomaly. If percentage &gt;=50% marks row as outlier.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-backend.StandardDeviation">
+<span id="backend-standarddeviation-module"></span><h2>backend.StandardDeviation module<a class="headerlink" href="#module-backend.StandardDeviation" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.StandardDeviation.standard_deviation">
+<span class="sig-prename descclassname"><span class="pre">backend.StandardDeviation.</span></span><span class="sig-name descname"><span class="pre">standard_deviation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/StandardDeviation.html#standard_deviation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.StandardDeviation.standard_deviation" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-datas: a list of dataframes containing target variable data
+-target: the name of the target variable
+-date: the name of the date column</p>
+</dd>
+<dt>Returns:</dt><dd><p>-None if dataframes in ‘datas’ ate all None</p>
+</dd>
+<dt>Functionality:</dt><dd><p>-calculating standard deviation.
+- identifying anomalies</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="backend-backend-functions-module">
+<h2>backend.backend_functions module<a class="headerlink" href="#backend-backend-functions-module" title="Permalink to this heading"></a></h2>
+</section>
+<section id="backend-differential-analysis-module">
+<h2>backend.differential_analysis module<a class="headerlink" href="#backend-differential-analysis-module" title="Permalink to this heading"></a></h2>
+</section>
+<section id="backend-graph-preview-module">
+<h2>backend.graph_preview module<a class="headerlink" href="#backend-graph-preview-module" title="Permalink to this heading"></a></h2>
+</section>
+<section id="backend-tab-functions-module">
+<h2>backend.tab_functions module<a class="headerlink" href="#backend-tab-functions-module" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-backend">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-backend" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Examples.html" class="btn btn-neutral float-left" title="Examples package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="enums.html" class="btn btn-neutral float-right" title="enums package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mateusz Orski 235939.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

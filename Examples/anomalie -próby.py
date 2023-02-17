@@ -18,10 +18,22 @@ from sklearn.covariance import EllipticEnvelope
 from sklearn.neighbors import LocalOutlierFactor
 from sklearn.neighbors import KernelDensity
 from numpy import quantile, where
+"""
+    File handling anomalies and applying them.
 
+    Reading data from csv file and applying different anomalies detection methods.
+"""
 def parser(s):
+    """
+            Args:
+                s (string) : single string for conversion with date argument for example 15/03/2022.
+            Returns:
+                datatime (object): representing the date in format March 15 2022.
+            """
     return datetime.strptime(s, '%d/%m/%Y')
-
+"""
+    Loading data from csv file and plotting it
+"""
 s1 = pd.read_csv("Dane historyczne dla CHF_PLN4.csv",parse_dates=[0], index_col=0, date_parser=parser)
 
 #s1 = pd.read_csv("D:/PythonWorkspace/do zajęć/Dane historyczne dla CHF_PLN3.csv", index_col="Time", parse_dates=True,  squeeze=True)
@@ -41,7 +53,9 @@ np_scaled = scaler.fit_transform(s1.values.reshape(-1, 1))
 data = pd.DataFrame(np_scaled)
 
 
-
+"""
+    Applying 'IsolationForest' anomaly detection to identify outliers.
+"""
 # train isolation forest
 outliers_fraction = float(.05)
 model =  IsolationForest(contamination=outliers_fraction)
@@ -65,7 +79,9 @@ plt.legend()
 plt.show();
 
 #-----------------------------------
-
+"""
+    Applying 'OneClassSVM' anomaly detection.
+"""
 model = OneClassSVM(nu=outliers_fraction, kernel="rbf", gamma=0.05)
 model.fit(data)
 s1['anomaly'] = model.predict(data)
@@ -80,7 +96,9 @@ plt.legend()
 plt.show();
 
 #-----------------------------------
-
+"""
+    Applying 'EllipticEnvelope' anomaly detection.
+"""
 envelope =  EllipticEnvelope(contamination = outliers_fraction) 
 X_train = np_scaled
 envelope.fit(X_train)
@@ -101,6 +119,11 @@ plt.legend()
 plt.show();
 
 #------------------------------------
+"""
+    Applying 'Kernel Density' anomaly detector 
+
+    Plotting time series, outliers highlighted in red
+"""
 model = LocalOutlierFactor(n_neighbors=20, contamination=0.05)
 s1['anomaly']=model.fit_predict(data)
 
@@ -114,7 +137,10 @@ plt.legend()
 plt.show();
 
 #---------------------------------
-
+"""
+    Applying 'KernelDensity' anomaly detection model.
+    Data below 5% step is considered  anomalous
+"""
 kern_dens = KernelDensity()
 kern_dens.fit(s1)
 

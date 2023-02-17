@@ -8,6 +8,20 @@ from sklearn.preprocessing import StandardScaler
 
 
 def db_scan(datas: list = None, target: str = None, date: str = None, multiplayer=0.5):
+    """
+        Args:
+            -datas (list of pandas dataframes): A list of pandas dataframes, where each dataframe contains a time series with two
+            -columns: 'date' and 'target' (value of the time series at that date).
+            -target (str): The name of the column in the input dataframes that contains the target values (time series values).
+            -date (str): The name of the column in the input dataframes that contains the date values.
+            -multiplayer (float): A multiplier value to adjust the epsilon value for the DBSCAN algorithm. The default value is 0.5.
+        Returns:
+            -Union[pd.DataFrame, List[pd.DataFrame]]: Returns either a single pandas dataframe or a list of pandas dataframes,
+            depending on the length of the input list. Each returned dataframe contains an additional column 'Anomaly' that
+            indicates whether a data point in the time series is anomaly or not.
+        Funcionality:
+                -applying the DBSCAN clustering algoritm to detect anomalies in data.
+    """
     if datas is None:
         return
 
