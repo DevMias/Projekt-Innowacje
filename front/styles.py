@@ -8,7 +8,7 @@ hover_color = 'rgb(28, 185, 199)'
 font_size_small = '15px'
 font_size_medium = '20px'
 font_size_big = '30px'
-tab_width = '200px'
+min_tab_width = '250px'
 font_color_red='red'
 font_color_green='green'
 font_color_yellow='yellow'
@@ -337,7 +337,7 @@ mainTabStyleSheet = f"""
     }}
     QTabWidget{{
         border:2px solid #939393;
-        min-width:{width_100};
+        min-width:{min_tab_width};
         height:18px;
         padding:20px;
         font-weight:bold;
@@ -345,16 +345,20 @@ mainTabStyleSheet = f"""
     }}
     QTabWidget::pane{{
         border: none; /* tu byl ten border zepsuty*/
+        min-width:{min_tab_width};
+        
     }}
     QTabBar::tab{{
         color:{font_color};
         background-color:rgb(82, 82, 82);
         font-weight:normal;
+        min-width:{min_tab_width};
+        
     }}
     QTabBar::tab:selected {{ 
         color:black;
         background-color: rgb(242, 242, 242);
-        min-width:{width_100};
+        min-width:{min_tab_width};
         height:18px;
         padding:10px;
         font-weight:bold;
