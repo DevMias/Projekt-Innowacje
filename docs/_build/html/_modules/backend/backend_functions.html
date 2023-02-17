@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>backend.backend_functions &mdash; Projekt_innowacja 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Projekt_innowacja
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Projekt-Innowacje</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Projekt_innowacja</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">backend.backend_functions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for backend.backend_functions</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">from</span> <span class="nn">csv</span> <span class="kn">import</span> <span class="n">Error</span> <span class="k">as</span> <span class="n">csvError</span>
+<span class="kn">from</span> <span class="nn">urllib.error</span> <span class="kn">import</span> <span class="n">URLError</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">dt</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QDate</span>
+
+<span class="kn">from</span> <span class="nn">backend.AutoEncoder</span> <span class="kn">import</span> <span class="n">auto_encoder</span>
+<span class="kn">from</span> <span class="nn">backend.DB_scan</span> <span class="kn">import</span> <span class="n">db_scan</span>
+<span class="kn">from</span> <span class="nn">backend.StandardDeviation</span> <span class="kn">import</span> <span class="n">standard_deviation</span>
+<span class="kn">from</span> <span class="nn">backend.IsolationForest</span> <span class="kn">import</span> <span class="n">isolation_forest</span>
+<span class="kn">from</span> <span class="nn">backend.LocalOutlierFactor</span> <span class="kn">import</span> <span class="n">local_outlier</span>
+<span class="kn">from</span> <span class="nn">backend.Majority</span> <span class="kn">import</span> <span class="n">majority</span>
+<span class="kn">from</span> <span class="nn">backend.CombinedMethods</span> <span class="kn">import</span> <span class="n">all_methods_combined</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QMessageBox</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QIcon</span>
+
+<span class="kn">from</span> <span class="nn">enums.backend_enums</span> <span class="kn">import</span> <span class="n">PopupError</span>
+<span class="kn">from</span> <span class="nn">front.styles</span> <span class="kn">import</span> <span class="n">app_logo</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">https://stooq.pl/q/d/l/?s=[currency1][currency2]&amp;d1=[date_start]&amp;d2=[date_stop]&amp;i=[interval]</span>
+
+<span class="sd">currencies:</span>
+<span class="sd">currency1: eur - euro </span>
+<span class="sd">currency2: usd - dollar</span>
+<span class="sd">eurusd = euro to dollar</span>
+
+<span class="sd">date format: yyyymmdd</span>
+
+<span class="sd">No date format: (https://stooq.pl/q/d/l/?s=usdpln&amp;i=y) 02-01-1984 to current day</span>
+
+<span class="sd">Intervals:</span>
+<span class="sd">d - day</span>
+<span class="sd">w - week</span>
+<span class="sd">m - month</span>
+<span class="sd">q - quarter</span>
+<span class="sd">y - year</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<div class="viewcode-block" id="return_date"><a class="viewcode-back" href="../../backend.html#backend.backend_functions.return_date">[docs]</a><span class="k">def</span> <span class="nf">return_date</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args: date (datetime): A datetime object that represents a date.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            -str: Returns a string representation of the date in the format &#39;YYYYMMDD&#39;.</span>
+<span class="sd">        Functionality:</span>
+<span class="sd">            -function takes a datetime object as input and returns a string representation of the date in the format &#39;YYYYMMDD&#39;.</span>
+<span class="sd">             used to convert datetime objects to the format used in the dataset.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">month</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">month</span><span class="p">())</span>
+    <span class="n">day</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">day</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">date</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">month</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="n">month</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">month</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">date</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">day</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="n">day</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">day</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">year</span><span class="p">())</span> <span class="o">+</span> <span class="n">month</span> <span class="o">+</span> <span class="n">day</span></div>
+
+
+<div class="viewcode-block" id="string_to_date"><a class="viewcode-back" href="../../backend.html#backend.backend_functions.string_to_date">[docs]</a><span class="k">def</span> <span class="nf">string_to_date</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            date (str): A date string in the format &#39;YYYYMMDD&#39;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            QDate: Returns a QDate object that represents the date.</span>
+
+<span class="sd">        Functionality:</span>
+<span class="sd">                -function takes a date string in the format &#39;YYYYMMDD&#39; as input and returns a QDate object that represents the date.</span>
+<span class="sd">                 It is used to convert date strings in the format used in the dataset to QDate objects, which can be used in PyQt5 for</span>
+<span class="sd">                 displaying dates.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">QDate</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">date</span><span class="p">[:</span><span class="mi">4</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">date</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">date</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">]))</span></div>
+
+
+<div class="viewcode-block" id="create_link"><a class="viewcode-back" href="../../backend.html#backend.backend_functions.create_link">[docs]</a><span class="k">def</span> <span class="nf">create_link</span><span class="p">(</span><span class="n">currencies</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">date_start</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">date_stop</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">interval</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            -currencies (list of str): A list of currency codes, represented as two-letter strings, for which exchange rate data</span>
+<span class="sd">            is to be downloaded. The list must contain either two or four currency codes.</span>
+<span class="sd">            -date_start (str): A string representation of the start date for the exchange rate data, in the format &#39;YYYY-MM-DD&#39;.</span>
+<span class="sd">            -date_stop (str): A string representation of the end date for the exchange rate data, in the format &#39;YYYY-MM-DD&#39;.</span>
+<span class="sd">            -interval (str): A string that specifies the time interval for the exchange rate data.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">                list: Returns a list of one or two Stooq links that can be used to download historical exchange rate data for the</span>
+<span class="sd">                specified currencies and time period.</span>
+<span class="sd">        Functionality:</span>
+<span class="sd">            This function takes a list of currency codes, a start date, an end date, and a time interval as input, and returns a list</span>
+<span class="sd">            of Stooq links that can be used to download historical exchange rate data for the specified currencies and time period.</span>
+<span class="sd">            The returned list contains one or two links, depending on whether two or four currency codes were provided.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">interval</span> <span class="o">==</span> <span class="s2">&quot;Dzienny&quot;</span><span class="p">:</span>
+        <span class="n">interval</span> <span class="o">=</span> <span class="s1">&#39;d&#39;</span>
+    <span class="k">if</span> <span class="n">interval</span> <span class="o">==</span> <span class="s2">&quot;Tygodniowy&quot;</span><span class="p">:</span>
+        <span class="n">interval</span> <span class="o">=</span> <span class="s1">&#39;w&#39;</span>
+    <span class="k">if</span> <span class="n">interval</span> <span class="o">==</span> <span class="s2">&quot;Miesięczny&quot;</span><span class="p">:</span>
+        <span class="n">interval</span> <span class="o">=</span> <span class="s1">&#39;m&#39;</span>
+    <span class="k">if</span> <span class="n">interval</span> <span class="o">==</span> <span class="s2">&quot;Kwartalny&quot;</span><span class="p">:</span>
+        <span class="n">interval</span> <span class="o">=</span> <span class="s1">&#39;q&#39;</span>
+    <span class="k">if</span> <span class="n">interval</span> <span class="o">==</span> <span class="s2">&quot;Roczny&quot;</span><span class="p">:</span>
+        <span class="n">interval</span> <span class="o">=</span> <span class="s1">&#39;y&#39;</span>
+
+    <span class="n">link1</span> <span class="o">=</span> <span class="s2">&quot;https://stooq.pl/q/d/l/?s=&quot;</span> <span class="o">+</span> <span class="n">currencies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">currencies</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;&amp;d1=&quot;</span> <span class="o">+</span> <span class="n">date_start</span> <span class="o">+</span> <span class="s2">&quot;&amp;d2=&quot;</span> <span class="o">+</span> <span class="n">date_stop</span> <span class="o">+</span> <span class="s2">&quot;&amp;i=&quot;</span> <span class="o">+</span> \
+           <span class="n">interval</span>
+
+    <span class="n">link2</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">currencies</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">link2</span> <span class="o">=</span> <span class="s2">&quot;https://stooq.pl/q/d/l/?s=&quot;</span> <span class="o">+</span> <span class="n">currencies</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">currencies</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;&amp;d1=&quot;</span> <span class="o">+</span> <span class="n">date_start</span> <span class="o">+</span> <span class="s2">&quot;&amp;d2=&quot;</span> <span class="o">+</span> <span class="n">date_stop</span> <span class="o">+</span> <span class="s2">&quot;&amp;i=&quot;</span> <span class="o">+</span> \
+                <span class="n">interval</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">link1</span><span class="p">,</span> <span class="n">link2</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">currencies</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="p">[</span><span class="n">link1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="error"><a class="viewcode-back" href="../../backend.html#backend.backend_functions.error">[docs]</a><span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">inform_text</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Błąd&quot;</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Critical</span><span class="p">,</span> <span class="n">buttons</span><span class="o">=</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            -text (str): The main text to be displayed in the error message box.</span>
+<span class="sd">            -inform_text (str): Optional informative text to be displayed below the main text in the error message box.</span>
+<span class="sd">            -title (str): Optional title for the error message box. The default value is &quot;Błąd&quot;.</span>
+<span class="sd">            -icon (QMessageBox.Icon): Optional icon to be displayed in the error message box. The default value is</span>
+<span class="sd">                QMessageBox.Critical.</span>
+<span class="sd">            -buttons (QMessageBox.StandardButtons): Optional buttons to be displayed in the error message box. The default value</span>
+<span class="sd">                   is QMessageBox.Ok.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            -int: Returns the button clicked by the user.</span>
+
+<span class="sd">        Functionality:</span>
+<span class="sd">                function displays an error message box with the specified text and icon, and returns the button clicked by the user.</span>
+<span class="sd">                The default icon is the &#39;Critical&#39; icon, and the default button is the &#39;Ok&#39; button. The function also takes an optional</span>
+<span class="sd">                informative text and title for the message box.</span>
+<span class="sd">           &quot;&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">()</span>
+    <span class="n">msg</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">QIcon</span><span class="p">(</span><span class="n">app_logo</span><span class="p">))</span>
+    <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">msg</span><span class="o">.</span><span class="n">setInformativeText</span><span class="p">(</span><span class="n">inform_text</span><span class="p">)</span>
+    <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">icon</span><span class="p">)</span>
+    <span class="n">msg</span><span class="o">.</span><span class="n">setStandardButtons</span><span class="p">(</span><span class="n">buttons</span><span class="p">)</span>
+    <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">msg</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">msg</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="check_date"><a class="viewcode-back" href="../../backend.html#backend.backend_functions.check_date">[docs]</a><span class="k">def</span> <span class="nf">check_date</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">date_format</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function checks the format of the dates in the specified column of a pandas DataFrame, and returns the DataFrame if</span>
+<span class="sd">        the format is correct. The function takes the DataFrame, the name of the date column, and the expected date format as input.</span>
+<span class="sd">        The date format should be specified using the strings &#39;Rok&#39;, &#39;Miesiąc&#39;, and &#39;Dzień&#39; separated by a single separator character.</span>
+<span class="sd">        If the format is correct, the function also checks that the dates are in chronological order, and displays a warning message</span>
+<span class="sd">        if they are not.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            -data (pd.DataFrame): The pandas DataFrame to be checked.</span>
+<span class="sd">            -date (str): The name of the column that contains the dates to be checked.</span>
+<span class="sd">            -date_format (str): A string that specifies the expected date format.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            -pd.DataFrame: Returns the input DataFrame if the date format is correct and the dates are in chronological order.</span>
+<span class="sd">            Otherwise, the function displays an error or warning message and returns None.</span>
+
+<span class="sd">        Functionality:</span>
+<span class="sd">            This function checks the format of the dates in the specified column of a pandas DataFrame, and returns the DataFrame if</span>
+<span class="sd">            the format is correct. The function takes the DataFrame, the name of the date column, and the expected date format as input.</span>
+<span class="sd">            The date format should be specified using the strings &#39;Rok&#39;, &#39;Miesiąc&#39;, and &#39;Dzień&#39; separated by a single separator character.</span>
+<span class="sd">            If the format is correct, the function also checks that the dates are in chronological order, and displays a warning message</span>
+<span class="sd">            if they are not.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">date_as_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">date</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">separator</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">date_as_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">():</span>
+            <span class="n">separator</span> <span class="o">=</span> <span class="n">c</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="n">separator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">error</span><span class="p">(</span><span class="s2">&quot;Błędny format daty&quot;</span><span class="p">,</span> <span class="s2">&quot;Dane w kolumnie &quot;</span> <span class="o">+</span> <span class="n">date</span> <span class="o">+</span> <span class="s2">&quot; mają nieprawidłowy format&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">format_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="n">year</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">month</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">day</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">date_f</span> <span class="ow">in</span> <span class="n">date_format</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">date_f</span> <span class="o">==</span> <span class="s2">&quot;Rok&quot;</span><span class="p">:</span>
+            <span class="n">format_string</span> <span class="o">+=</span> <span class="s2">&quot;%Y&quot;</span>
+            <span class="n">year</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">date_f</span> <span class="o">==</span> <span class="s2">&quot;Miesiąc&quot;</span><span class="p">:</span>
+            <span class="n">format_string</span> <span class="o">+=</span> <span class="s2">&quot;%m&quot;</span>
+            <span class="n">month</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">date_f</span> <span class="o">==</span> <span class="s2">&quot;Dzień&quot;</span><span class="p">:</span>
+            <span class="n">format_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">&quot;</span>
+            <span class="n">day</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">format_string</span> <span class="o">+=</span> <span class="n">separator</span>
+
+    <span class="k">if</span> <span class="n">year</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">month</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">day</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">error</span><span class="p">(</span><span class="s2">&quot;Błędny format daty&quot;</span><span class="p">,</span> <span class="s2">&quot;Wprowadzono niepoprawny format daty&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">format_string</span> <span class="o">=</span> <span class="n">format_string</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">date_first</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">date</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">format_string</span><span class="p">)</span>
+        <span class="n">date_last</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">date</span><span class="p">][</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">date</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">format_string</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">date_first</span> <span class="o">&gt;</span> <span class="n">date_last</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">dates_in_order</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">date_first</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">date</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">format_string</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">date_last</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">date</span><span class="p">][</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">format_string</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">date_first</span> <span class="o">&gt;</span> <span class="n">date_last</span><span class="p">:</span>
+                <span class="n">dates_in_order</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">date_first</span> <span class="o">=</span> <span class="n">date_last</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dates_in_order</span><span class="p">:</span>
+            <span class="n">error</span><span class="p">(</span><span class="s2">&quot;Daty w pliku nie są uporządkowane&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Uwaga&quot;</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Warning</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">error</span><span class="p">(</span><span class="s2">&quot;Błędny format daty&quot;</span><span class="p">,</span> <span class="s2">&quot;Format danych w kolumnie &quot;</span> <span class="o">+</span> <span class="n">date</span> <span class="o">+</span> <span class="s2">&quot; nie zgadza się z wprowadzonym&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="download_csv_without_errors"><a class="viewcode-back" href="../../backend.html#backend.backend_functions.download_csv_without_errors">[docs]</a><span class="k">def</span> <span class="nf">download_csv_without_errors</span><span class="p">(</span><span class="n">link</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function attempts to download a CSV file from the specified link using pandas, and returns the resulting DataFrame</span>
+<span class="sd">        if the download is successful. If the download fails or the resulting DataFrame is empty or null, the function returns None.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            -link (str): A string that contains the URL for the CSV file to be downloaded.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Union[pd.DataFrame, None]: Returns a pandas DataFrame containing the data from the downloaded CSV file, or None if</span>
+<span class="sd">            the download failed or the resulting DataFrame is empty or null.</span>
+
+<span class="sd">        Functionality:</span>
+<span class="sd">            -function download a CSV file from the specified link using pandas, and returns the resulting DataFrame</span>
+<span class="sd">            if the download is successful. If the download fails or the resulting DataFrame is empty or null, the function returns None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">dataframe</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="download_csv"><a class="viewcode-back" href="../../backend.html#backend.backend_functions.download_csv">[docs]</a><span class="k">def</span> <span class="nf">download_csv</span><span class="p">(</span><span class="n">filepaths</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">from_file</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">arrays</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            -filepaths (List[str]): A list of strings that contains the file paths or URLs for the CSV files to be downloaded.</span>
+<span class="sd">            -separator (str): A string that specifies the separator character to be used in the resulting DataFrames. The default</span>
+<span class="sd">                value is &#39;,&#39;.</span>
+<span class="sd">            -from_file (bool): A boolean that specifies whether the file paths are for local files or URLs. The default value is False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            -Tuple[Union[List[pd.DataFrame], None], str]: Returns a tuple containing a list of pandas DataFrames, or a value of</span>
+<span class="sd">            None and a string that specifies the reason for the failure.</span>
+
+<span class="sd">        Functionality:</span>
+<span class="sd">            -function attempts to download one or more CSV files from the specified file paths or URLs using pandas, and returns</span>
+<span class="sd">            a list of DataFrames containing the data from the downloaded CSV files if the downloads are successful. If any of the</span>
+<span class="sd">            downloaded DataFrames are empty or null, the function returns a tuple with a value of None and the string &quot;empty&quot;. If the</span>
+<span class="sd">            function encounters a connection error, it returns a tuple with a value of None and the string &quot;connection error&quot;. If the</span>
+<span class="sd">            function encounters an error with the file format or any other type of error, it returns a tuple with a value of None and</span>
+<span class="sd">            an empty string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dfs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">filepaths</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">from_file</span><span class="p">:</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepaths</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="n">sniffer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">Sniffer</span><span class="p">()</span>
+                <span class="n">dialect</span> <span class="o">=</span> <span class="n">sniffer</span><span class="o">.</span><span class="n">sniff</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="n">separator</span> <span class="o">=</span> <span class="n">dialect</span><span class="o">.</span><span class="n">delimiter</span>
+
+            <span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filepaths</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sep</span><span class="o">=</span><span class="n">separator</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;empty&quot;</span>
+
+            <span class="k">if</span> <span class="n">separator</span> <span class="o">!=</span> <span class="s1">&#39;,&#39;</span><span class="p">:</span>
+                <span class="n">error</span><span class="p">(</span><span class="s2">&quot;Wykryto separator &#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;Pliki wyjściowe będą zawierać separator &#39;,&#39;.&quot;</span>
+                                                                    <span class="s2">&quot; Uważaj na nadpisywanie plików.&quot;</span><span class="p">,</span>
+                      <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Separator w pliku&quot;</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Information</span><span class="p">)</span>
+            <span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">dfs</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">except</span> <span class="n">URLError</span><span class="p">:</span>
+        <span class="n">error</span><span class="p">(</span><span class="s2">&quot;Błąd połączenia z serwerem&quot;</span><span class="p">,</span> <span class="s2">&quot;Sprawdź swoje połączenie internetowe&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;connection error&quot;</span>
+    <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">from_file</span><span class="p">:</span> <span class="n">error</span><span class="p">(</span><span class="s2">&quot;Błedny plik&quot;</span><span class="p">,</span> <span class="s2">&quot;Nieprawidłowy format pliku&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">except</span> <span class="n">csvError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">from_file</span><span class="p">:</span> <span class="n">error</span><span class="p">(</span><span class="s2">&quot;Błedny plik&quot;</span><span class="p">,</span> <span class="s2">&quot;Wprowadzony plik jest pusty&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">from_file</span><span class="p">:</span> <span class="n">error</span><span class="p">(</span><span class="s2">&quot;Błedny plik&quot;</span><span class="p">,</span> <span class="s2">&quot;Wprowadzony plik nie jest plikiem zawierającym dane w formacie csv&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">error</span><span class="p">(</span><span class="s2">&quot;Błedny plik&quot;</span><span class="p">,</span> <span class="s2">&quot;Wprowadzony plik jest pusty&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="run_method"><a class="viewcode-back" href="../../backend.html#backend.backend_functions.run_method">[docs]</a><span class="k">def</span> <span class="nf">run_method</span><span class="p">(</span><span class="n">datas</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            -datas (List): A list of pandas DataFrames containing the input data.</span>
+<span class="sd">            -target (str): A string that specifies the name of the column containing the target variable.</span>
+<span class="sd">            -date (str): A string that specifies the name of the column containing the date variable.</span>
+<span class="sd">            -method (str): A string that specifies the name of the anomaly detection method to be executed.</span>
+<span class="sd">            -parameter (Union[int, float]): A numeric parameter that may be required by some of the anomaly detection methods. The default value is 0.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            -pd.DataFrame: Returns a pandas DataFrame containing the results of the specified anomaly detection method.</span>
+
+<span class="sd">        Functionality:</span>
+<span class="sd">            -function executes the specified anomaly detection method on the given input data and returns a pandas DataFrame</span>
+<span class="sd">            containing the results.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;Odchylenie standardowe&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">standard_deviation</span><span class="p">(</span><span class="n">datas</span><span class="o">=</span><span class="n">datas</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;Grupowanie przestrzenne&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">db_scan</span><span class="p">(</span><span class="n">datas</span><span class="o">=</span><span class="n">datas</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="n">multiplayer</span><span class="o">=</span><span class="n">parameter</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;Las izolacji&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">isolation_forest</span><span class="p">(</span><span class="n">datas</span><span class="o">=</span><span class="n">datas</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="n">contamination</span><span class="o">=</span><span class="n">parameter</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;Lokalna wartość odstająca&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">local_outlier</span><span class="p">(</span><span class="n">datas</span><span class="o">=</span><span class="n">datas</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="n">contamination</span><span class="o">=</span><span class="n">parameter</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;Większościowa&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">majority</span><span class="p">(</span><span class="n">datas</span><span class="o">=</span><span class="n">datas</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;Autoenkoder&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">auto_encoder</span><span class="p">(</span><span class="n">datas</span><span class="o">=</span><span class="n">datas</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;Wszystkie&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">all_methods_combined</span><span class="p">(</span><span class="n">datas</span><span class="o">=</span><span class="n">datas</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="input_errors"><a class="viewcode-back" href="../../backend.html#backend.backend_functions.input_errors">[docs]</a><span class="k">def</span> <span class="nf">input_errors</span><span class="p">(</span><span class="n">currency_list</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="n">QDate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stop_date</span><span class="p">:</span> <span class="n">QDate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">generate_popup</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; This class should always return some kind of error, it is called when csv file is not specified in main.py</span>
+<span class="sd">        There is a test class for this function in tests.backend_tests.py (feel free to add more tests) and enum class in enums.backend_enums.py&#39;&#39;&#39;</span>
+    <span class="n">my_errors</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">currency_list</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">stop_date</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">stop_date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">my_errors</span> <span class="o">+=</span> <span class="n">PopupError</span><span class="o">.</span><span class="n">MISSING_PARAMETERS</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">list_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">currency_list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">list_len</span><span class="p">:</span> <span class="n">my_errors</span> <span class="o">=</span> <span class="n">PopupError</span><span class="o">.</span><span class="n">EMPTY_CURRENCY_LIST</span> <span class="c1"># check if empty</span>
+        <span class="k">elif</span> <span class="n">list_len</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span> <span class="n">my_errors</span> <span class="o">=</span> <span class="n">PopupError</span><span class="o">.</span><span class="n">NO_CURRENCY_PAIR</span>  <span class="c1"># check if even</span>
+        <span class="k">for</span> <span class="n">curr_1</span><span class="p">,</span> <span class="n">curr_2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">currency_list</span><span class="p">[::</span><span class="mi">2</span><span class="p">],</span> <span class="n">currency_list</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]):</span> <span class="c1"># it will take i and i+1 element of currency_list</span>
+            <span class="k">if</span> <span class="n">curr_1</span> <span class="o">==</span> <span class="n">curr_2</span><span class="p">:</span> <span class="n">my_errors</span> <span class="o">=</span> <span class="n">PopupError</span><span class="o">.</span><span class="n">NOT_UNIQUE_CURRENCIES</span><span class="p">;</span> <span class="k">break</span>
+        <span class="k">if</span> <span class="n">list_len</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">and</span> <span class="n">currency_list</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">currency_list</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]:</span> <span class="n">my_errors</span> <span class="o">=</span> <span class="n">PopupError</span><span class="o">.</span><span class="n">NOT_UNIQUE_CURRENCIES</span> <span class="c1"># write universally in future</span>
+
+        <span class="k">if</span> <span class="n">start_date</span><span class="o">.</span><span class="n">year</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">stop_date</span><span class="o">.</span><span class="n">year</span><span class="p">():</span> <span class="n">my_errors</span> <span class="o">+=</span> <span class="n">PopupError</span><span class="o">.</span><span class="n">DEND_BEFORE_DSTART</span>
+        <span class="k">elif</span> <span class="n">start_date</span><span class="o">.</span><span class="n">year</span><span class="p">()</span> <span class="o">==</span> <span class="n">stop_date</span><span class="o">.</span><span class="n">year</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">start_date</span><span class="o">.</span><span class="n">month</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">stop_date</span><span class="o">.</span><span class="n">month</span><span class="p">():</span> <span class="n">my_errors</span> <span class="o">+=</span> <span class="n">PopupError</span><span class="o">.</span><span class="n">DEND_BEFORE_DSTART</span>
+            <span class="k">elif</span> <span class="n">start_date</span><span class="o">.</span><span class="n">month</span><span class="p">()</span> <span class="o">==</span> <span class="n">stop_date</span><span class="o">.</span><span class="n">month</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">start_date</span><span class="o">.</span><span class="n">day</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">stop_date</span><span class="o">.</span><span class="n">day</span><span class="p">():</span> <span class="n">my_errors</span> <span class="o">+=</span> <span class="n">PopupError</span><span class="o">.</span><span class="n">DEND_BEFORE_DSTART</span>
+                <span class="k">elif</span> <span class="n">start_date</span><span class="o">.</span><span class="n">day</span><span class="p">()</span> <span class="o">==</span> <span class="n">stop_date</span><span class="o">.</span><span class="n">day</span><span class="p">():</span> <span class="n">my_errors</span> <span class="o">+=</span> <span class="n">PopupError</span><span class="o">.</span><span class="n">DEND_BEFORE_DSTART</span>
+
+        <span class="k">if</span> <span class="n">start_date</span><span class="o">.</span><span class="n">toPyDate</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">():</span> <span class="n">my_errors</span> <span class="o">+=</span> <span class="n">PopupError</span><span class="o">.</span><span class="n">NOT_EXIST_DATE</span>
+        <span class="k">elif</span> <span class="n">stop_date</span><span class="o">.</span><span class="n">year</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">1970</span><span class="p">:</span> <span class="n">my_errors</span> <span class="o">+=</span> <span class="n">PopupError</span><span class="o">.</span><span class="n">NO_DATA_FOR_DATE</span>
+
+    <span class="k">if</span> <span class="n">my_errors</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="n">my_errors</span> <span class="o">+=</span> <span class="n">PopupError</span><span class="o">.</span><span class="n">UNEXPECTED_ERROR</span>
+    <span class="k">if</span> <span class="n">generate_popup</span><span class="p">:</span> <span class="n">error</span><span class="p">(</span><span class="s2">&quot;Błedne dane&quot;</span><span class="p">,</span> <span class="n">my_errors</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">my_errors</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mateusz Orski 235939.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

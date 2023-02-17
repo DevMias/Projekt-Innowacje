@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>backend.tab_functions &mdash; Projekt_innowacja 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Projekt_innowacja
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Projekt-Innowacje</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Projekt_innowacja</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">backend.tab_functions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for backend.tab_functions</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QDate</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QIcon</span>
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QDateEdit</span><span class="p">,</span> \
+    <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QGridLayout</span>
+
+<span class="kn">import</span> <span class="nn">main</span>
+<span class="kn">from</span> <span class="nn">backend</span> <span class="kn">import</span> <span class="n">backend_functions</span> <span class="k">as</span> <span class="n">backend</span>
+<span class="kn">from</span> <span class="nn">front.styles</span> <span class="kn">import</span> <span class="n">buttonStyleSheet</span><span class="p">,</span> <span class="n">labelStyleSheet</span><span class="p">,</span> <span class="n">comboBoxStyleSheet</span><span class="p">,</span> <span class="n">currencies_list</span><span class="p">,</span> <span class="n">DateEditStyleSheet</span><span class="p">,</span> \
+    <span class="n">flag_list</span><span class="p">,</span> <span class="n">labelStyleSheet_big</span><span class="p">,</span> <span class="n">labelStyleSheet_not_bold</span><span class="p">,</span> <span class="n">important_icon</span><span class="p">,</span> <span class="n">close_icon</span><span class="p">,</span> <span class="n">comboBoxDisabledStyleSheet</span>
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">Calendar</span>
+
+
+<div class="viewcode-block" id="create_graph_tab"><a class="viewcode-back" href="../../backend.html#backend.tab_functions.create_graph_tab">[docs]</a><span class="k">def</span> <span class="nf">create_graph_tab</span><span class="p">(</span><span class="n">close</span><span class="p">,</span> <span class="n">pack_fun</span><span class="p">,</span> <span class="n">methods_list</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">important</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Args:</span>
+<span class="sd">                    close: a function to close the tab</span>
+<span class="sd">                    pack_fun: a function to pack the necessary parameters for the graph</span>
+<span class="sd">                    methods_list: a list of available graphing methods</span>
+<span class="sd">                    file: the file to be graphed</span>
+<span class="sd">                    important: a function to mark the graph as important</span>
+<span class="sd">                Functionality:</span>
+<span class="sd">                    -Importing csv data using fucntion from backend_functions.py</span>
+<span class="sd">                        Return: None if file is empty or has error</span>
+<span class="sd">                    -QWidget object creating box layout</span>
+<span class="sd">                    -QLineEdit object for the graph title adding it to the widget layout</span>
+<span class="sd">                    -QComboBox object for the date format adding it to to the widget layout</span>
+<span class="sd">                    -Function GenerateGraph button for widget layout, creating dictionary pack (nescessary elements for generating a graph)</span>
+<span class="sd">                    -Pack:</span>
+<span class="sd">                        -method: the QComboBox object for the graphing method</span>
+<span class="sd">                        -csv: the Pandas DataFrame object of the CSV data</span>
+<span class="sd">                        -title: the QLineEdit object for the graph title</span>
+<span class="sd">                        -date: the QComboBox object for the date column</span>
+<span class="sd">                        -target: a list of two QComboBox objects for the target column</span>
+<span class="sd">                        -format1: the QComboBox object for the first date format</span>
+<span class="sd">                        -format2: the QComboBox object for the second date format</span>
+<span class="sd">                        -format3: the QComboBox object for the third date format</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+    <span class="n">csv_data</span><span class="p">,</span> <span class="n">error1</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">download_csv</span><span class="p">([</span><span class="n">file</span><span class="p">],</span> <span class="n">from_file</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># pass file as an list (required in this function)</span>
+    <span class="k">if</span> <span class="n">csv_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">error1</span> <span class="o">==</span> <span class="s2">&quot;empty&quot;</span><span class="p">:</span>
+        <span class="n">backend</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Błedny plik&quot;</span><span class="p">,</span> <span class="s2">&quot;Wprowadzony plik jest pusty lub posiada zbyt mało danych&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">csv</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">csv</span> <span class="ow">in</span> <span class="n">csv_data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="n">columns</span> <span class="o">=</span> <span class="n">csv_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>  <span class="c1"># one element list (csv_data), generated by download_csv function</span>
+
+    <span class="n">tab</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+    <span class="n">horizontal_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+
+    <span class="n">title_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Tytuł wykresu&quot;</span><span class="p">)</span>
+    <span class="n">title_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+    <span class="n">horizontal_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">title_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+
+    <span class="n">button_important</span> <span class="o">=</span> <span class="n">create_button</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="n">buttonStyleSheet</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">QIcon</span><span class="p">(</span><span class="n">important_icon</span><span class="p">),</span> <span class="n">function</span><span class="o">=</span><span class="n">important</span><span class="p">,</span>
+                                     <span class="n">max_size</span><span class="o">=</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">))</span>
+    <span class="n">horizontal_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">button_important</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+
+    <span class="n">button_close</span> <span class="o">=</span> <span class="n">create_button</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="n">buttonStyleSheet</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">QIcon</span><span class="p">(</span><span class="n">close_icon</span><span class="p">),</span> <span class="n">function</span><span class="o">=</span><span class="n">close</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">))</span>
+    <span class="n">horizontal_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">button_close</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">horizontal_layout</span><span class="p">)</span>
+
+    <span class="n">title</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+    <span class="n">title</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+    <span class="n">title</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+
+    <span class="n">date_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Format daty&quot;</span><span class="p">)</span>
+    <span class="n">date_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+
+    <span class="n">date_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+
+    <span class="n">date_format_box1</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+    <span class="n">date_format_box1</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxStyleSheet</span><span class="p">)</span>
+    <span class="n">date_format_box2</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+    <span class="n">date_format_box2</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxStyleSheet</span><span class="p">)</span>
+    <span class="n">date_format_box3</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+    <span class="n">date_format_box3</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxStyleSheet</span><span class="p">)</span>
+
+    <span class="n">date_format_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Dzień&quot;</span><span class="p">,</span> <span class="s2">&quot;Miesiąc&quot;</span><span class="p">,</span> <span class="s2">&quot;Rok&quot;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">date_format</span> <span class="ow">in</span> <span class="n">date_format_list</span><span class="p">:</span>
+        <span class="n">date_format_box1</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">date_format</span><span class="p">)</span>
+        <span class="n">date_format_box2</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">date_format</span><span class="p">)</span>
+        <span class="n">date_format_box3</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">date_format</span><span class="p">)</span>
+
+    <span class="n">date_format_box1</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="s2">&quot;Rok&quot;</span><span class="p">)</span>
+    <span class="n">date_format_box2</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="s2">&quot;Miesiąc&quot;</span><span class="p">)</span>
+    <span class="n">date_format_box3</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="s2">&quot;Dzień&quot;</span><span class="p">)</span>
+
+    <span class="n">date_label1</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="n">date_label1</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+
+    <span class="n">date_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">date_format_box1</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">date_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">date_format_box2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">date_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">date_format_box3</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">date_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">date_label1</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">date_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">date_label1</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">date_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">date_label1</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">date_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">date_layout</span><span class="p">)</span>
+
+    <span class="n">date_column_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Kolumna z datą&quot;</span><span class="p">)</span>
+    <span class="n">date_column_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">date_column_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+
+    <span class="n">date_column</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+    <span class="n">date_column</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxStyleSheet</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+        <span class="n">date_column</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+
+    <span class="n">date_column</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="s2">&quot;Date&quot;</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">date_column</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+
+    <span class="n">target_column_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Kolumna z wartością&quot;</span><span class="p">)</span>
+    <span class="n">target_column_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">target_column_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+
+    <span class="n">target_column_1</span><span class="p">,</span> <span class="n">target_column_2</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">(),</span> <span class="n">QComboBox</span><span class="p">()</span>
+    <span class="n">target_column_1</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxStyleSheet</span><span class="p">)</span>
+    <span class="n">target_column_2</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxStyleSheet</span><span class="p">)</span>
+
+    <span class="n">target_column_2</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s1">&#39;Nie wybrano&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+        <span class="n">target_column_1</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+        <span class="n">target_column_2</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+
+    <span class="n">target_column_1</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">target_column_2</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">columns</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">main</span><span class="o">.</span><span class="n">expected_columns</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">3</span><span class="p">:]</span> <span class="k">else</span> <span class="s1">&#39;Nie wybrano&#39;</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">target_column_1</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">target_column_2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+
+    <span class="n">method_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Metoda&quot;</span><span class="p">)</span>
+    <span class="n">method_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+
+    <span class="n">methods</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+    <span class="n">methods</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxStyleSheet</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">methods_list</span><span class="p">:</span>
+        <span class="n">methods</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+
+    <span class="n">methods</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="s2">&quot;Większościowa&quot;</span><span class="p">)</span>
+
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">method_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">methods</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+
+    <span class="n">button_plot</span> <span class="o">=</span> <span class="n">create_button</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="n">buttonStyleSheet</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Wygeneruj wykres&quot;</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">pack_fun</span><span class="p">)</span>
+
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">button_plot</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span>
+
+    <span class="c1"># pass first element of csv_data_list</span>
+    <span class="n">pack</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="n">methods</span><span class="p">,</span> <span class="s2">&quot;csv&quot;</span><span class="p">:</span> <span class="n">csv_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">date_column</span><span class="p">,</span> <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">target_column_1</span><span class="p">,</span> <span class="n">target_column_2</span><span class="p">],</span>
+            <span class="s2">&quot;format1&quot;</span><span class="p">:</span> <span class="n">date_format_box1</span><span class="p">,</span> <span class="s2">&quot;format2&quot;</span><span class="p">:</span> <span class="n">date_format_box2</span><span class="p">,</span> <span class="s2">&quot;format3&quot;</span><span class="p">:</span> <span class="n">date_format_box3</span><span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">tab</span><span class="p">,</span> <span class="n">pack</span></div>
+
+
+<div class="viewcode-block" id="create_settings_tab"><a class="viewcode-back" href="../../backend.html#backend.tab_functions.create_settings_tab">[docs]</a><span class="k">def</span> <span class="nf">create_settings_tab</span><span class="p">(</span><span class="n">method_list</span><span class="p">,</span> <span class="n">interval_list</span><span class="p">,</span> <span class="n">close</span><span class="p">,</span> <span class="n">save</span><span class="p">,</span> <span class="n">reset</span><span class="p">,</span> <span class="n">checkbox</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Args:</span>
+<span class="sd">                    -method_list list of methods (strings) that are used in the application.</span>
+<span class="sd">                    -interval_list list of intervals (strings) that are used in the application.</span>
+<span class="sd">                    -close function that is called when the user clicks the &quot;close&quot; button on the tab.</span>
+<span class="sd">                    -save function that is called when the user clicks the &quot;save&quot; button on the tab.</span>
+<span class="sd">                    -reset function that is called when the user clicks the &quot;reset&quot; button on the tab.</span>
+<span class="sd">                    -checkbox checkbox widget that is used to enable/disable certain functionalities.</span>
+<span class="sd">                Functionality:</span>
+<span class="sd">                    Reading current settings from a file setting values of the widgets.</span>
+<span class="sd">                    User can modify settings and save them using &quot;save&quot; button and saving it in the file</span>
+<span class="sd">                    Reset button to reset setting to default values</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">read_settings_from_file</span><span class="p">()</span>
+
+    <span class="n">tab</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+
+    <span class="c1"># calendars for setting dates</span>
+    <span class="n">calendar_start_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Data początkowa&quot;</span><span class="p">)</span>
+    <span class="n">calendar_start_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+    <span class="n">calendar_stop_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Data końcowa&quot;</span><span class="p">)</span>
+    <span class="n">calendar_stop_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+
+    <span class="n">calendar_start</span> <span class="o">=</span> <span class="n">create_calendar</span><span class="p">(</span><span class="n">Calendar</span><span class="p">)</span>
+    <span class="n">calendar_stop</span> <span class="o">=</span> <span class="n">create_calendar</span><span class="p">(</span><span class="n">Calendar</span><span class="p">)</span>
+
+    <span class="n">calstart</span> <span class="o">=</span> <span class="n">QDateEdit</span><span class="p">()</span>
+    <span class="n">calstart</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">DateEditStyleSheet</span><span class="p">)</span>
+    <span class="n">calstart</span><span class="o">.</span><span class="n">setCalendarPopup</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">calstart</span><span class="o">.</span><span class="n">setDisplayFormat</span><span class="p">(</span><span class="s2">&quot;dd-MM-yyyy&quot;</span><span class="p">)</span>
+    <span class="n">calstart</span><span class="o">.</span><span class="n">setCalendarWidget</span><span class="p">(</span><span class="n">calendar_start</span><span class="p">)</span>
+    <span class="n">calstart</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;settings_element&quot;</span><span class="p">)</span>
+
+    <span class="n">calstop</span> <span class="o">=</span> <span class="n">QDateEdit</span><span class="p">()</span>
+    <span class="n">calstop</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">DateEditStyleSheet</span><span class="p">)</span>
+    <span class="n">calstop</span><span class="o">.</span><span class="n">setCalendarPopup</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">calstop</span><span class="o">.</span><span class="n">setDisplayFormat</span><span class="p">(</span><span class="s2">&quot;dd-MM-yyyy&quot;</span><span class="p">)</span>
+    <span class="n">calstop</span><span class="o">.</span><span class="n">setCalendarWidget</span><span class="p">(</span><span class="n">calendar_stop</span><span class="p">)</span>
+    <span class="n">calstop</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;settings_element&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;date_checkbox&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;False&quot;</span><span class="p">:</span>
+        <span class="n">calstart</span><span class="o">.</span><span class="n">setDate</span><span class="p">(</span><span class="n">backend</span><span class="o">.</span><span class="n">string_to_date</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;date_start&quot;</span><span class="p">]))</span>
+        <span class="n">calstop</span><span class="o">.</span><span class="n">setDate</span><span class="p">(</span><span class="n">backend</span><span class="o">.</span><span class="n">string_to_date</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;date_stop&quot;</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">calstart</span><span class="o">.</span><span class="n">setDate</span><span class="p">(</span><span class="n">QDate</span><span class="o">.</span><span class="n">currentDate</span><span class="p">()</span><span class="o">.</span><span class="n">addYears</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">calstop</span><span class="o">.</span><span class="n">setDate</span><span class="p">(</span><span class="n">QDate</span><span class="o">.</span><span class="n">currentDate</span><span class="p">())</span>
+
+    <span class="n">method_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Metoda&quot;</span><span class="p">)</span>
+    <span class="n">method_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+    <span class="n">methods</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+    <span class="n">methods</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxStyleSheet</span><span class="p">)</span>
+    <span class="n">methods</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;settings_element&quot;</span><span class="p">)</span>
+
+    <span class="c1"># intervals</span>
+    <span class="n">interval_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Interwał&quot;</span><span class="p">)</span>
+    <span class="n">interval_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+    <span class="n">intervals</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+    <span class="n">intervals</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxStyleSheet</span><span class="p">)</span>
+    <span class="n">intervals</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;settings_element&quot;</span><span class="p">)</span>
+
+    <span class="c1"># currencies</span>
+    <span class="n">currencies_top</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Waluty&quot;</span><span class="p">)</span>
+    <span class="n">currencies_top</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+    <span class="n">currencies_top_list1</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+    <span class="n">currencies_top_list1</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxStyleSheet</span><span class="p">)</span>
+    <span class="n">currencies_top_list1</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;settings_element&quot;</span><span class="p">)</span>
+    <span class="n">currencies_top_list2</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+    <span class="n">currencies_top_list2</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxStyleSheet</span><span class="p">)</span>
+    <span class="n">currencies_top_list2</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;settings_element&quot;</span><span class="p">)</span>
+
+    <span class="n">currencies_bottom_list1</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+    <span class="n">currencies_bottom_list1</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxStyleSheet</span><span class="p">)</span>
+    <span class="n">currencies_bottom_list1</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;settings_element&quot;</span><span class="p">)</span>
+    <span class="n">currencies_bottom_list2</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+    <span class="n">currencies_bottom_list2</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxStyleSheet</span><span class="p">)</span>
+    <span class="n">currencies_bottom_list2</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;settings_element&quot;</span><span class="p">)</span>
+
+    <span class="c1"># lists for currencies</span>
+    <span class="k">for</span> <span class="n">flag</span><span class="p">,</span> <span class="n">currency</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">flag_list</span><span class="p">,</span> <span class="n">currencies_list</span><span class="p">):</span>
+        <span class="n">currencies_top_list1</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">QIcon</span><span class="p">(</span><span class="n">flag</span><span class="p">),</span> <span class="n">currency</span><span class="p">)</span>
+        <span class="n">currencies_top_list2</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">QIcon</span><span class="p">(</span><span class="n">flag</span><span class="p">),</span> <span class="n">currency</span><span class="p">)</span>
+        <span class="n">currencies_bottom_list1</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">QIcon</span><span class="p">(</span><span class="n">flag</span><span class="p">),</span> <span class="n">currency</span><span class="p">)</span>
+        <span class="n">currencies_bottom_list2</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">QIcon</span><span class="p">(</span><span class="n">flag</span><span class="p">),</span> <span class="n">currency</span><span class="p">)</span>
+
+    <span class="c1"># currencies1.setCurrentText(settings[&quot;currencies1&quot;])</span>
+    <span class="n">currencies_top_list1</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;currencies1&quot;</span><span class="p">]))</span>
+    <span class="c1"># currencies2.setCurrentText(settings[&quot;currencies2&quot;])</span>
+    <span class="n">currencies_top_list2</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;currencies2&quot;</span><span class="p">]))</span>
+
+    <span class="n">currencies_bottom_list1</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;currencies12&quot;</span><span class="p">]))</span>
+    <span class="n">currencies_bottom_list2</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;currencies21&quot;</span><span class="p">]))</span>
+
+    <span class="k">for</span> <span class="n">interval</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">interval_list</span><span class="p">):</span>
+        <span class="n">intervals</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
+
+    <span class="c1"># intervals.setCurrentText(settings[&quot;intervals&quot;])</span>
+    <span class="n">intervals</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;intervals&quot;</span><span class="p">]))</span>
+
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">method_list</span><span class="p">:</span>
+        <span class="n">methods</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+
+    <span class="c1"># methods.setCurrentText(settings[&quot;methods&quot;])</span>
+    <span class="n">methods</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;methods&quot;</span><span class="p">]))</span>
+
+    <span class="n">button_reset</span> <span class="o">=</span> <span class="n">create_button</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="n">buttonStyleSheet</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Resetuj&quot;</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">reset</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">40</span><span class="p">))</span>
+
+    <span class="n">button_close</span> <span class="o">=</span> <span class="n">create_button</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="n">buttonStyleSheet</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">QIcon</span><span class="p">(</span><span class="n">close_icon</span><span class="p">),</span> <span class="n">function</span><span class="o">=</span><span class="n">close</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">))</span>
+
+    <span class="n">default_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Ustawienia wartości domyślnych&quot;</span><span class="p">)</span>
+    <span class="n">default_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+    <span class="n">default_label</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;default_label&quot;</span><span class="p">)</span>
+
+    <span class="n">date_checkbox</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">()</span>
+    <span class="n">date_checkbox</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Ostatni rok&quot;</span><span class="p">)</span>
+    <span class="n">date_checkbox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">date_checkbox</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">buttonStyleSheet</span><span class="p">)</span>
+    <span class="n">date_checkbox</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;year_checkbox&quot;</span><span class="p">)</span>
+
+    <span class="n">button_save</span> <span class="o">=</span> <span class="n">create_button</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="n">buttonStyleSheet</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Zapisz&quot;</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">save</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">40</span><span class="p">))</span>
+    <span class="n">button_save</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;settings_element&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">checkbox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+        <span class="n">currencies_top_list1</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">currencies_top_list2</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">currencies_top_list1</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxStyleSheet</span><span class="p">)</span>
+        <span class="n">currencies_top_list2</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxStyleSheet</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">currencies_top_list1</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">currencies_top_list2</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">currencies_top_list1</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxDisabledStyleSheet</span><span class="p">)</span>
+        <span class="n">currencies_top_list2</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">comboBoxDisabledStyleSheet</span><span class="p">)</span>
+
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">QGridLayout</span><span class="p">()</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">default_label</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignHCenter</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">button_close</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
+    <span class="c1"># self.tab_main.layout.addWidget(self.button_settings, 0, 2, alignment=Qt.AlignRight)</span>
+
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">currencies_top</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignHCenter</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">currencies_top_list1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignLeft</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">currencies_top_list2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignLeft</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">currencies_bottom_list1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">currencies_bottom_list2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
+
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">calendar_start_label</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignHCenter</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">calstart</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignHCenter</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">calendar_stop_label</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignHCenter</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">calstop</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignHCenter</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">date_checkbox</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignHCenter</span><span class="p">)</span>
+
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">interval_label</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignHCenter</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">intervals</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignHCenter</span><span class="p">)</span>
+
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">method_label</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignHCenter</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">methods</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignHCenter</span><span class="p">)</span>
+
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">button_save</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignLeft</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">button_reset</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span> <span class="c1">#WYPOZYZJONOWAC</span>
+
+    <span class="n">tab</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span>
+
+    <span class="n">settings_pack</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;methods&quot;</span><span class="p">:</span> <span class="n">methods</span><span class="p">,</span> <span class="s2">&quot;intervals&quot;</span><span class="p">:</span> <span class="n">intervals</span><span class="p">,</span> <span class="s2">&quot;date_start&quot;</span><span class="p">:</span> <span class="n">calstart</span><span class="p">,</span>
+                     <span class="s2">&quot;date_stop&quot;</span><span class="p">:</span> <span class="n">calstop</span><span class="p">,</span> <span class="s2">&quot;currencies1&quot;</span><span class="p">:</span> <span class="n">currencies_top_list1</span><span class="p">,</span> <span class="s2">&quot;currencies2&quot;</span><span class="p">:</span> <span class="n">currencies_top_list2</span><span class="p">,</span>
+                     <span class="s2">&quot;date_checkbox&quot;</span><span class="p">:</span> <span class="n">date_checkbox</span><span class="p">,</span> <span class="s2">&quot;currencies12&quot;</span><span class="p">:</span> <span class="n">currencies_bottom_list1</span><span class="p">,</span> 
+                     <span class="s2">&quot;currencies21&quot;</span><span class="p">:</span> <span class="n">currencies_bottom_list2</span><span class="p">}</span> <span class="c1">#tutaj dodac currencies bottom</span>
+
+    <span class="k">return</span> <span class="n">tab</span><span class="p">,</span> <span class="n">settings_pack</span></div>
+
+
+<div class="viewcode-block" id="create_creators_tab"><a class="viewcode-back" href="../../backend.html#backend.tab_functions.create_creators_tab">[docs]</a><span class="k">def</span> <span class="nf">create_creators_tab</span><span class="p">(</span><span class="n">close</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Functionality:</span>
+<span class="sd">                    -Creating widget containing authors of the app.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tab</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+
+    <span class="n">button_close</span> <span class="o">=</span> <span class="n">create_button</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="n">buttonStyleSheet</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">QIcon</span><span class="p">(</span><span class="n">close_icon</span><span class="p">),</span> <span class="n">function</span><span class="o">=</span><span class="n">close</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">))</span>
+
+    <span class="n">creators_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Twórcy programu &#39;Detektor Anomalii&#39;&quot;</span><span class="p">)</span>
+    <span class="n">creators_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_big</span><span class="p">)</span>
+
+    <span class="n">olek_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Aleksander Forusiński - kierownik projektu, programista&quot;</span><span class="p">)</span>
+    <span class="n">olek_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_not_bold</span><span class="p">)</span>
+
+    <span class="n">marcin_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Marcin Broś - główny programista&quot;</span><span class="p">)</span>
+    <span class="n">marcin_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_not_bold</span><span class="p">)</span>
+
+    <span class="n">szymon_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Szymon Suchorab - interfejs użytkownika, grafika&quot;</span><span class="p">)</span>
+    <span class="n">szymon_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_not_bold</span><span class="p">)</span>
+
+    <span class="n">dominika_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Dominika Szaradowska - interfejs użytkownika&quot;</span><span class="p">)</span>
+    <span class="n">dominika_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_not_bold</span><span class="p">)</span>
+
+    <span class="n">patrycja_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Patrycja Stępora - interfejs użytkownika&quot;</span><span class="p">)</span>
+    <span class="n">patrycja_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_not_bold</span><span class="p">)</span>
+
+    <span class="n">dawid_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Dawid Kunz - dokumentacja&quot;</span><span class="p">)</span>
+    <span class="n">dawid_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_not_bold</span><span class="p">)</span>
+
+    <span class="n">mentor_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Adam Włodarczyk - Mentor biznesowy - Commerzbank&quot;</span><span class="p">)</span>
+    <span class="n">mentor_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_not_bold</span><span class="p">)</span>
+
+    <span class="n">profesor_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;prof. dr hab. inż. Adam Pelikant - pomysłodawca, opiekun projektu&quot;</span><span class="p">)</span>
+    <span class="n">profesor_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_not_bold</span><span class="p">)</span>
+    
+    <span class="n">creators_v2_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Druga edycja programu &#39;Detektor Anomalii&#39;&quot;</span><span class="p">)</span>
+    <span class="n">creators_v2_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_big</span><span class="p">)</span>
+
+    <span class="n">kuba_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Jakub Mijas - kierownik projektu, programista&quot;</span><span class="p">)</span>
+    <span class="n">kuba_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_not_bold</span><span class="p">)</span>
+
+    <span class="n">mateusz_p_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Mateusz Pruss - główny programista&quot;</span><span class="p">)</span>
+    <span class="n">mateusz_p_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_not_bold</span><span class="p">)</span>
+
+    <span class="n">alicja_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Alicja Szydłowska - główny programista&quot;</span><span class="p">)</span>
+    <span class="n">alicja_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_not_bold</span><span class="p">)</span>
+
+    <span class="n">lukas_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Łukasz Lasowy - interfejs użytkownika, grafika&quot;</span><span class="p">)</span>
+    <span class="n">lukas_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_not_bold</span><span class="p">)</span>
+
+    <span class="n">kacper_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Kacper Lichman - interfejs użytkownika, grafika&quot;</span><span class="p">)</span>
+    <span class="n">kacper_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_not_bold</span><span class="p">)</span>
+
+    <span class="n">mateusz_o_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Mateusz Orski - dokumentacja&quot;</span><span class="p">)</span>
+    <span class="n">mateusz_o_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_not_bold</span><span class="p">)</span>
+
+
+    <span class="n">horizontal_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+
+    <span class="n">horizontal_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">creators_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">horizontal_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">button_close</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">horizontal_layout</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">),</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">olek_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">marcin_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">szymon_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">dominika_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">patrycja_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">dawid_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">mentor_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">profesor_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">creators_v2_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">kuba_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">mateusz_p_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">alicja_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">lukas_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">kacper_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">mateusz_o_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">profesor_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">),</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">),</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tab</span></div>
+
+
+<div class="viewcode-block" id="create_help_tab"><a class="viewcode-back" href="../../backend.html#backend.tab_functions.create_help_tab">[docs]</a><span class="k">def</span> <span class="nf">create_help_tab</span><span class="p">(</span><span class="n">close</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Args:</span>
+<span class="sd">                -close called when user clicks close button.</span>
+<span class="sd">            Functionality:</span>
+<span class="sd">                -Help tab to show user a description of the methods used in program.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tab</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+
+    <span class="n">button_close</span> <span class="o">=</span> <span class="n">create_button</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="n">buttonStyleSheet</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">QIcon</span><span class="p">(</span><span class="n">close_icon</span><span class="p">),</span> <span class="n">function</span><span class="o">=</span><span class="n">close</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">))</span>
+
+    <span class="n">help_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Pomoc&quot;</span><span class="p">)</span>
+    <span class="n">help_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_big</span><span class="p">)</span>
+
+    <span class="n">help_link</span> <span class="o">=</span> <span class="s2">&quot;&lt;a style=</span><span class="se">\&quot;</span><span class="s2">font-weight: normal;</span><span class="se">\&quot;</span><span class="s2"> href=</span><span class="se">\&quot;</span><span class="s2">help/index.html</span><span class="se">\&quot;</span><span class="s2">&gt;Odchylenie standardowe&lt;/a&gt;&quot;</span>
+    <span class="n">help_label2</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">help_link</span><span class="p">)</span>
+    <span class="n">help_label2</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_big</span><span class="p">)</span>
+
+    <span class="n">methods_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Opis metod użytych do wykrywania anomalii&quot;</span><span class="p">)</span>
+    <span class="n">methods_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+
+    <span class="n">standard_deviation_link</span> <span class="o">=</span> <span class="s2">&quot;&lt;a style=</span><span class="se">\&quot;</span><span class="s2">font-weight: normal;</span><span class="se">\&quot;</span><span class="s2"> href=</span><span class="se">\&quot;</span><span class="s2">https://pl.wikipedia.org/wiki/Odchylenie_standardowe</span><span class="se">\&quot;</span><span class="s2">&gt;Odchylenie standardowe&lt;/a&gt;&quot;</span>
+    <span class="n">standard_deviation_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">standard_deviation_link</span><span class="p">)</span>
+    <span class="n">standard_deviation_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+    <span class="n">standard_deviation_label</span><span class="o">.</span><span class="n">setOpenExternalLinks</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">db_scan_link</span> <span class="o">=</span> <span class="s2">&quot;&lt;a style=</span><span class="se">\&quot;</span><span class="s2">font-weight: normal;</span><span class="se">\&quot;</span><span class="s2"> href=</span><span class="se">\&quot;</span><span class="s2">https://en.wikipedia.org/wiki/DBSCAN</span><span class="se">\&quot;</span><span class="s2">&gt;Grupowanie przestrzenne&lt;/a&gt;&quot;</span>
+    <span class="n">db_scan_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">db_scan_link</span><span class="p">)</span>
+    <span class="n">db_scan_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+    <span class="n">db_scan_label</span><span class="o">.</span><span class="n">setOpenExternalLinks</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">isolation_forest_link</span> <span class="o">=</span> <span class="s2">&quot;&lt;a style=</span><span class="se">\&quot;</span><span class="s2">font-weight: normal;</span><span class="se">\&quot;</span><span class="s2"> href=</span><span class="se">\&quot;</span><span class="s2">https://en.wikipedia.org/wiki/Isolation_forest</span><span class="se">\&quot;</span><span class="s2">&gt;Las izolacji&lt;/a&gt;&quot;</span>
+    <span class="n">isolation_forest_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">isolation_forest_link</span><span class="p">)</span>
+    <span class="n">isolation_forest_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+    <span class="n">isolation_forest_label</span><span class="o">.</span><span class="n">setOpenExternalLinks</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">local_outlier_link</span> <span class="o">=</span> <span class="s2">&quot;&lt;a style=</span><span class="se">\&quot;</span><span class="s2">font-weight: normal;</span><span class="se">\&quot;</span><span class="s2"> href=</span><span class="se">\&quot;</span><span class="s2">https://en.wikipedia.org/wiki/Local_outlier_factor</span><span class="se">\&quot;</span><span class="s2">&gt;Lokalna wartość odstająca&lt;/a&gt;&quot;</span>
+    <span class="n">local_outlier_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">local_outlier_link</span><span class="p">)</span>
+    <span class="n">local_outlier_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+    <span class="n">local_outlier_label</span><span class="o">.</span><span class="n">setOpenExternalLinks</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">autoencoder_link</span> <span class="o">=</span> <span class="s2">&quot;&lt;a style=</span><span class="se">\&quot;</span><span class="s2">font-weight: normal;</span><span class="se">\&quot;</span><span class="s2"> href=</span><span class="se">\&quot;</span><span class="s2">https://en.wikipedia.org/wiki/Autoencoder</span><span class="se">\&quot;</span><span class="s2">&gt;Autoenkoder&lt;/a&gt;&quot;</span>
+    <span class="n">autoencoder_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">autoencoder_link</span><span class="p">)</span>
+    <span class="n">autoencoder_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+    <span class="n">autoencoder_label</span><span class="o">.</span><span class="n">setOpenExternalLinks</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">horizontal_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+
+    <span class="n">horizontal_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">help_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">horizontal_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">button_close</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">horizontal_layout</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">),</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">help_label2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">methods_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">standard_deviation_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">db_scan_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">isolation_forest_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">local_outlier_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span><span class="p">)</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">autoencoder_label</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span><span class="p">)</span>
+
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">),</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">),</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">),</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">),</span> <span class="n">alignment</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">Alignment</span><span class="p">())</span>
+    <span class="n">tab</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">tab</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tab</span></div>
+
+
+<div class="viewcode-block" id="read_settings_from_file"><a class="viewcode-back" href="../../backend.html#backend.tab_functions.read_settings_from_file">[docs]</a><span class="k">def</span> <span class="nf">read_settings_from_file</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Functionality:</span>
+<span class="sd">                   -reading content of setting file.</span>
+<span class="sd">                   -extracting values from each line</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                   -returning dictionary which contains different key-valuepairs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;settings&#39;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;currencies1&quot;</span><span class="p">:</span> <span class="n">settings</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;currencies2&quot;</span><span class="p">:</span> <span class="n">settings</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;methods&quot;</span><span class="p">:</span> <span class="n">settings</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="s2">&quot;intervals&quot;</span><span class="p">:</span> <span class="n">settings</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="s2">&quot;date_start&quot;</span><span class="p">:</span> <span class="n">settings</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="s2">&quot;date_stop&quot;</span><span class="p">:</span> <span class="n">settings</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="s2">&quot;date_checkbox&quot;</span><span class="p">:</span> <span class="n">settings</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> 
+            <span class="s2">&quot;currencies12&quot;</span><span class="p">:</span> <span class="n">settings</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span> <span class="s2">&quot;currencies21&quot;</span><span class="p">:</span> <span class="n">settings</span><span class="p">[</span><span class="mi">8</span><span class="p">]}</span></div>
+
+
+<div class="viewcode-block" id="create_button"><a class="viewcode-back" href="../../backend.html#backend.tab_functions.create_button">[docs]</a><span class="k">def</span> <span class="nf">create_button</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Args:</span>
+<span class="sd">                -text (str): The text to be displayed on the button. Default is an empty string.</span>
+<span class="sd">                -style (str): The CSS style to be applied to the button. Default is an empty string.</span>
+<span class="sd">                -icon (QIcon): The icon to be displayed on the button. Default is None.</span>
+<span class="sd">                -function (function): The function to be called when the button is clicked. Default is None.</span>
+<span class="sd">                -min_size (tuple of ints): The minimum size of the button. Default is None.</span>
+<span class="sd">                -max_size (tuple of ints): The maximum size of the button. Default is None.</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                -button (QPushButton): The created button widget.</span>
+<span class="sd">            Functionality:</span>
+<span class="sd">                -creating button</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+    <span class="n">button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">button</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">icon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">icon</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">function</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">min_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="n">min_size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">min_size</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">max_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">setMaximumSize</span><span class="p">(</span><span class="n">max_size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">max_size</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">button</span></div>
+
+
+<div class="viewcode-block" id="create_calendar"><a class="viewcode-back" href="../../backend.html#backend.tab_functions.create_calendar">[docs]</a><span class="k">def</span> <span class="nf">create_calendar</span><span class="p">(</span><span class="n">widget</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Args:</span>
+<span class="sd">                -widget (class) representing a widget type.</span>
+<span class="sd">            Functionality:</span>
+<span class="sd">                -creating calendar widget.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+    <span class="n">calendar</span> <span class="o">=</span> <span class="n">widget</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">calendar</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mateusz Orski 235939.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
