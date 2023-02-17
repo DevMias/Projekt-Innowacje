@@ -48,7 +48,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#backend.AutoEncoder.get_predictions"><code class="docutils literal notranslate"><span class="pre">get_predictions()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#backend-combinedmethods-module">backend.CombinedMethods module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-backend.CombinedMethods">backend.CombinedMethods module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#backend.CombinedMethods.all_methods_combined"><code class="docutils literal notranslate"><span class="pre">all_methods_combined()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-backend.DB_scan">backend.DB_scan module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#backend.DB_scan.db_scan"><code class="docutils literal notranslate"><span class="pre">db_scan()</span></code></a></li>
 </ul>
@@ -69,10 +72,37 @@
 <li class="toctree-l4"><a class="reference internal" href="#backend.StandardDeviation.standard_deviation"><code class="docutils literal notranslate"><span class="pre">standard_deviation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#backend-backend-functions-module">backend.backend_functions module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#backend-differential-analysis-module">backend.differential_analysis module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#backend-graph-preview-module">backend.graph_preview module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#backend-tab-functions-module">backend.tab_functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-backend.backend_functions">backend.backend_functions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#backend.backend_functions.check_date"><code class="docutils literal notranslate"><span class="pre">check_date()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.backend_functions.create_link"><code class="docutils literal notranslate"><span class="pre">create_link()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.backend_functions.download_csv"><code class="docutils literal notranslate"><span class="pre">download_csv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.backend_functions.download_csv_without_errors"><code class="docutils literal notranslate"><span class="pre">download_csv_without_errors()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.backend_functions.error"><code class="docutils literal notranslate"><span class="pre">error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.backend_functions.input_errors"><code class="docutils literal notranslate"><span class="pre">input_errors()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.backend_functions.return_date"><code class="docutils literal notranslate"><span class="pre">return_date()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.backend_functions.run_method"><code class="docutils literal notranslate"><span class="pre">run_method()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.backend_functions.string_to_date"><code class="docutils literal notranslate"><span class="pre">string_to_date()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-backend.differential_analysis">backend.differential_analysis module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#backend.differential_analysis.differential_analysis"><code class="docutils literal notranslate"><span class="pre">differential_analysis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.differential_analysis.get_anomalies"><code class="docutils literal notranslate"><span class="pre">get_anomalies()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-backend.graph_preview">backend.graph_preview module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#backend.graph_preview.create_plot"><code class="docutils literal notranslate"><span class="pre">create_plot()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-backend.tab_functions">backend.tab_functions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#backend.tab_functions.create_button"><code class="docutils literal notranslate"><span class="pre">create_button()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.tab_functions.create_calendar"><code class="docutils literal notranslate"><span class="pre">create_calendar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.tab_functions.create_creators_tab"><code class="docutils literal notranslate"><span class="pre">create_creators_tab()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.tab_functions.create_graph_tab"><code class="docutils literal notranslate"><span class="pre">create_graph_tab()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.tab_functions.create_help_tab"><code class="docutils literal notranslate"><span class="pre">create_help_tab()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.tab_functions.create_settings_tab"><code class="docutils literal notranslate"><span class="pre">create_settings_tab()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#backend.tab_functions.read_settings_from_file"><code class="docutils literal notranslate"><span class="pre">read_settings_from_file()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-backend">Module contents</a></li>
 </ul>
 </li>
@@ -182,8 +212,32 @@ Anomalies are assigned a value of 0 and normal data are assigned a value of 1, a
 </dd></dl>
 
 </section>
-<section id="backend-combinedmethods-module">
-<h2>backend.CombinedMethods module<a class="headerlink" href="#backend-combinedmethods-module" title="Permalink to this heading"></a></h2>
+<section id="module-backend.CombinedMethods">
+<span id="backend-combinedmethods-module"></span><h2>backend.CombinedMethods module<a class="headerlink" href="#module-backend.CombinedMethods" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.CombinedMethods.all_methods_combined">
+<span class="sig-prename descclassname"><span class="pre">backend.CombinedMethods.</span></span><span class="sig-name descname"><span class="pre">all_methods_combined</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Exchange'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Date'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/CombinedMethods.html#all_methods_combined"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.CombinedMethods.all_methods_combined" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-datas (list of pandas dataframes): A list of pandas dataframes, where each dataframe contains a time series with two
+-columns: ‘date’ and ‘target’ (value of the time series at that date).
+-target (str): The name of the column in the input dataframes that contains the target values (time series values). Thedefault value is ‘Exchange’.
+-date (str): The name of the column in the input dataframes that contains the date values. The default value is ‘Date’.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Union[pd.DataFrame, List[pd.DataFrame]]: Returns either a single pandas dataframe or a list of pandas dataframes,
+depending on the length of the input list. Each returned dataframe has multiple additional columns, one for each
+of the five methods and one for each possible combination of methods (up to five anomalies), that indicate whether
+a data point in the time series is an anomaly or not, as identified by the respective method(s).</p>
+</dd>
+<dt>Funcionality:</dt><dd><p>Applying a combination of five anomaly detection methods (Isolation Forest, Standard Deviation, DBSCAN, Local
+Outlier Factor, and Autoencoder) to identify anomalies in a given time series data. It takes in a list of pandas dataframes
+as input, where each dataframe contains a time series with two columns: ‘date’ and ‘target’ (value of the time series at
+that date). The function returns a list of pandas dataframes, where each dataframe has multiple additional columns,
+one for each of the five methods and one for each possible combination of methods (up to five anomalies), that indicate
+whether a data point in the time series is an anomaly or not, as identified by the respective method(s).</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-backend.DB_scan">
 <span id="backend-db-scan-module"></span><h2>backend.DB_scan module<a class="headerlink" href="#module-backend.DB_scan" title="Permalink to this heading"></a></h2>
@@ -290,17 +344,347 @@ indicates whether a data point in the time series is anomaly or not.</p>
 </dd></dl>
 
 </section>
-<section id="backend-backend-functions-module">
-<h2>backend.backend_functions module<a class="headerlink" href="#backend-backend-functions-module" title="Permalink to this heading"></a></h2>
+<section id="module-backend.backend_functions">
+<span id="backend-backend-functions-module"></span><h2>backend.backend_functions module<a class="headerlink" href="#module-backend.backend_functions" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.backend_functions.check_date">
+<span class="sig-prename descclassname"><span class="pre">backend.backend_functions.</span></span><span class="sig-name descname"><span class="pre">check_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_format</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/backend_functions.html#check_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.backend_functions.check_date" title="Permalink to this definition"></a></dt>
+<dd><p>This function checks the format of the dates in the specified column of a pandas DataFrame, and returns the DataFrame if
+the format is correct. The function takes the DataFrame, the name of the date column, and the expected date format as input.
+The date format should be specified using the strings ‘Rok’, ‘Miesiąc’, and ‘Dzień’ separated by a single separator character.
+If the format is correct, the function also checks that the dates are in chronological order, and displays a warning message
+if they are not.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>-data (pd.DataFrame): The pandas DataFrame to be checked.
+-date (str): The name of the column that contains the dates to be checked.
+-date_format (str): A string that specifies the expected date format.</p>
+</dd>
+<dt>Returns:</dt><dd><p>-pd.DataFrame: Returns the input DataFrame if the date format is correct and the dates are in chronological order.
+Otherwise, the function displays an error or warning message and returns None.</p>
+</dd>
+<dt>Functionality:</dt><dd><p>This function checks the format of the dates in the specified column of a pandas DataFrame, and returns the DataFrame if
+the format is correct. The function takes the DataFrame, the name of the date column, and the expected date format as input.
+The date format should be specified using the strings ‘Rok’, ‘Miesiąc’, and ‘Dzień’ separated by a single separator character.
+If the format is correct, the function also checks that the dates are in chronological order, and displays a warning message
+if they are not.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.backend_functions.create_link">
+<span class="sig-prename descclassname"><span class="pre">backend.backend_functions.</span></span><span class="sig-name descname"><span class="pre">create_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">currencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/backend/backend_functions.html#create_link"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.backend_functions.create_link" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-currencies (list of str): A list of currency codes, represented as two-letter strings, for which exchange rate data
+is to be downloaded. The list must contain either two or four currency codes.
+-date_start (str): A string representation of the start date for the exchange rate data, in the format ‘YYYY-MM-DD’.
+-date_stop (str): A string representation of the end date for the exchange rate data, in the format ‘YYYY-MM-DD’.
+-interval (str): A string that specifies the time interval for the exchange rate data.</p>
+</dd>
+<dt>Returns:</dt><dd><p>list: Returns a list of one or two Stooq links that can be used to download historical exchange rate data for the
+specified currencies and time period.</p>
+</dd>
+<dt>Functionality:</dt><dd><p>This function takes a list of currency codes, a start date, an end date, and a time interval as input, and returns a list
+of Stooq links that can be used to download historical exchange rate data for the specified currencies and time period.
+The returned list contains one or two links, depending on whether two or four currency codes were provided.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.backend_functions.download_csv">
+<span class="sig-prename descclassname"><span class="pre">backend.backend_functions.</span></span><span class="sig-name descname"><span class="pre">download_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepaths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">&lt;module</span> <span class="pre">'pandas.arrays'</span> <span class="pre">from</span> <span class="pre">'C:\\Users\\Mateusz\\PycharmProjects\\pythonProject\\venv\\lib\\site-packages\\pandas\\arrays\\__init__.py'&gt;</span></span></span><a class="reference internal" href="_modules/backend/backend_functions.html#download_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.backend_functions.download_csv" title="Permalink to this definition"></a></dt>
+<dd><dl>
+<dt>Args:</dt><dd><p>-filepaths (List[str]): A list of strings that contains the file paths or URLs for the CSV files to be downloaded.
+-separator (str): A string that specifies the separator character to be used in the resulting DataFrames. The default</p>
+<blockquote>
+<div><p>value is ‘,’.</p>
+</div></blockquote>
+<p>-from_file (bool): A boolean that specifies whether the file paths are for local files or URLs. The default value is False.</p>
+</dd>
+<dt>Returns:</dt><dd><p>-Tuple[Union[List[pd.DataFrame], None], str]: Returns a tuple containing a list of pandas DataFrames, or a value of
+None and a string that specifies the reason for the failure.</p>
+</dd>
+<dt>Functionality:</dt><dd><p>-function attempts to download one or more CSV files from the specified file paths or URLs using pandas, and returns
+a list of DataFrames containing the data from the downloaded CSV files if the downloads are successful. If any of the
+downloaded DataFrames are empty or null, the function returns a tuple with a value of None and the string “empty”. If the
+function encounters a connection error, it returns a tuple with a value of None and the string “connection error”. If the
+function encounters an error with the file format or any other type of error, it returns a tuple with a value of None and
+an empty string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.backend_functions.download_csv_without_errors">
+<span class="sig-prename descclassname"><span class="pre">backend.backend_functions.</span></span><span class="sig-name descname"><span class="pre">download_csv_without_errors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/backend_functions.html#download_csv_without_errors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.backend_functions.download_csv_without_errors" title="Permalink to this definition"></a></dt>
+<dd><p>This function attempts to download a CSV file from the specified link using pandas, and returns the resulting DataFrame
+if the download is successful. If the download fails or the resulting DataFrame is empty or null, the function returns None.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>-link (str): A string that contains the URL for the CSV file to be downloaded.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Union[pd.DataFrame, None]: Returns a pandas DataFrame containing the data from the downloaded CSV file, or None if
+the download failed or the resulting DataFrame is empty or null.</p>
+</dd>
+<dt>Functionality:</dt><dd><p>-function download a CSV file from the specified link using pandas, and returns the resulting DataFrame
+if the download is successful. If the download fails or the resulting DataFrame is empty or null, the function returns None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.backend_functions.error">
+<span class="sig-prename descclassname"><span class="pre">backend.backend_functions.</span></span><span class="sig-name descname"><span class="pre">error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inform_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Błąd'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buttons</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1024</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/backend_functions.html#error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.backend_functions.error" title="Permalink to this definition"></a></dt>
+<dd><dl>
+<dt>Args:</dt><dd><p>-text (str): The main text to be displayed in the error message box.
+-inform_text (str): Optional informative text to be displayed below the main text in the error message box.
+-title (str): Optional title for the error message box. The default value is “Błąd”.
+-icon (QMessageBox.Icon): Optional icon to be displayed in the error message box. The default value is</p>
+<blockquote>
+<div><p>QMessageBox.Critical.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>-buttons (QMessageBox.StandardButtons): Optional buttons to be displayed in the error message box. The default value</dt><dd><p>is QMessageBox.Ok.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>-int: Returns the button clicked by the user.</p>
+</dd>
+<dt>Functionality:</dt><dd><p>function displays an error message box with the specified text and icon, and returns the button clicked by the user.
+The default icon is the ‘Critical’ icon, and the default button is the ‘Ok’ button. The function also takes an optional
+informative text and title for the message box.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.backend_functions.input_errors">
+<span class="sig-prename descclassname"><span class="pre">backend.backend_functions.</span></span><span class="sig-name descname"><span class="pre">input_errors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">currency_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QDate</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QDate</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generate_popup</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/backend_functions.html#input_errors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.backend_functions.input_errors" title="Permalink to this definition"></a></dt>
+<dd><p>This class should always return some kind of error, it is called when csv file is not specified in main.py
+There is a test class for this function in tests.backend_tests.py (feel free to add more tests) and enum class in enums.backend_enums.py</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.backend_functions.return_date">
+<span class="sig-prename descclassname"><span class="pre">backend.backend_functions.</span></span><span class="sig-name descname"><span class="pre">return_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/backend_functions.html#return_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.backend_functions.return_date" title="Permalink to this definition"></a></dt>
+<dd><p>Args: date (datetime): A datetime object that represents a date.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>-str: Returns a string representation of the date in the format ‘YYYYMMDD’.</p>
+</dd>
+<dt>Functionality:</dt><dd><dl class="simple">
+<dt>-function takes a datetime object as input and returns a string representation of the date in the format ‘YYYYMMDD’.</dt><dd><p>used to convert datetime objects to the format used in the dataset.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.backend_functions.run_method">
+<span class="sig-prename descclassname"><span class="pre">backend.backend_functions.</span></span><span class="sig-name descname"><span class="pre">run_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/backend_functions.html#run_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.backend_functions.run_method" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-datas (List): A list of pandas DataFrames containing the input data.
+-target (str): A string that specifies the name of the column containing the target variable.
+-date (str): A string that specifies the name of the column containing the date variable.
+-method (str): A string that specifies the name of the anomaly detection method to be executed.
+-parameter (Union[int, float]): A numeric parameter that may be required by some of the anomaly detection methods. The default value is 0.</p>
+</dd>
+<dt>Returns:</dt><dd><p>-pd.DataFrame: Returns a pandas DataFrame containing the results of the specified anomaly detection method.</p>
+</dd>
+<dt>Functionality:</dt><dd><p>-function executes the specified anomaly detection method on the given input data and returns a pandas DataFrame
+containing the results.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.backend_functions.string_to_date">
+<span class="sig-prename descclassname"><span class="pre">backend.backend_functions.</span></span><span class="sig-name descname"><span class="pre">string_to_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/backend_functions.html#string_to_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.backend_functions.string_to_date" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>date (str): A date string in the format ‘YYYYMMDD’.</p>
+</dd>
+<dt>Returns:</dt><dd><p>QDate: Returns a QDate object that represents the date.</p>
+</dd>
+<dt>Functionality:</dt><dd><dl class="simple">
+<dt>-function takes a date string in the format ‘YYYYMMDD’ as input and returns a QDate object that represents the date.</dt><dd><p>It is used to convert date strings in the format used in the dataset to QDate objects, which can be used in PyQt5 for
+displaying dates.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="backend-differential-analysis-module">
-<h2>backend.differential_analysis module<a class="headerlink" href="#backend-differential-analysis-module" title="Permalink to this heading"></a></h2>
+<section id="module-backend.differential_analysis">
+<span id="backend-differential-analysis-module"></span><h2>backend.differential_analysis module<a class="headerlink" href="#module-backend.differential_analysis" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.differential_analysis.differential_analysis">
+<span class="sig-prename descclassname"><span class="pre">backend.differential_analysis.</span></span><span class="sig-name descname"><span class="pre">differential_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/differential_analysis.html#differential_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.differential_analysis.differential_analysis" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-datas (list): A list of datasets to be analyzed.
+-target (str, optional): The target variable to analyze for anomalies. Default is set to None.
+-method (str, optional): The anomaly detection method to use. Default is set to None.
+-date (str, optional): The name of the date column in the dataset. Default is set to None.
+-parameter (float, optional): A parameter used by the specified anomaly detection method. Default is set to 0.1.</p>
+</dd>
+<dt>Returns:</dt><dd><p>-parameter (float, optional): A parameter used by the specified anomaly detection method. Default is set to 0.1.</p>
+</dd>
+<dt>Funcionality:</dt><dd><p>-creating differ dataframe with a date column and a target column, and scales the target variable for the first and second datasets using a ‘MinMaxScaler’, setting range.
+-calculating difference between two scaled variables and saving it in ‘differ’ dataframe.
+-running specified detection method.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.differential_analysis.get_anomalies">
+<span class="sig-prename descclassname"><span class="pre">backend.differential_analysis.</span></span><span class="sig-name descname"><span class="pre">get_anomalies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/differential_analysis.html#get_anomalies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.differential_analysis.get_anomalies" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-datas (list): a list of pandas dataframes with time series data to analyze.
+-target (str): the name of the target variable to analyze, as a string. Default is None.
+-method (str): the name of the method to use for anomaly detection, as a string. Possible values are:”RobustZScore”, “MedianAbsoluteDeviation”, “ExtremeStudentizedDeviation”, “None” or “Wszystkie”. Default is None.
+-date (str): the name of the date column in the dataframes, as a string. Default is None.
+-parameter (float): a parameter used by the anomaly detection method, as a float. Default is 0.1.</p>
+</dd>
+<dt>Returns:</dt><dd><p>list: a list of pandas dataframes with the same time series data as the input dataframes, with an additional column
+“Anomaly” or “Anomaly_X” for each method used (where X is the number of the method), containing the anomaly score
+for each time point. If there are less than 2 dataframes in the input list, the function returns None.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="backend-graph-preview-module">
-<h2>backend.graph_preview module<a class="headerlink" href="#backend-graph-preview-module" title="Permalink to this heading"></a></h2>
+<section id="module-backend.graph_preview">
+<span id="backend-graph-preview-module"></span><h2>backend.graph_preview module<a class="headerlink" href="#module-backend.graph_preview" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.graph_preview.create_plot">
+<span class="sig-prename descclassname"><span class="pre">backend.graph_preview.</span></span><span class="sig-name descname"><span class="pre">create_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/graph_preview.html#create_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.graph_preview.create_plot" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-graph PlotWidget object
+-plot_info dictionary containing information about a plot that will be created</p>
+</dd>
+<dt>Returns:</dt><dd><p>-PlotWidget object displaying plot of currency exchange rate data.</p>
+</dd>
+<dt>Funcionality”</dt><dd><p>-creating plot widget and shows data of a currency exchange.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="backend-tab-functions-module">
-<h2>backend.tab_functions module<a class="headerlink" href="#backend-tab-functions-module" title="Permalink to this heading"></a></h2>
+<section id="module-backend.tab_functions">
+<span id="backend-tab-functions-module"></span><h2>backend.tab_functions module<a class="headerlink" href="#module-backend.tab_functions" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.tab_functions.create_button">
+<span class="sig-prename descclassname"><span class="pre">backend.tab_functions.</span></span><span class="sig-name descname"><span class="pre">create_button</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/tab_functions.html#create_button"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.tab_functions.create_button" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-text (str): The text to be displayed on the button. Default is an empty string.
+-style (str): The CSS style to be applied to the button. Default is an empty string.
+-icon (QIcon): The icon to be displayed on the button. Default is None.
+-function (function): The function to be called when the button is clicked. Default is None.
+-min_size (tuple of ints): The minimum size of the button. Default is None.
+-max_size (tuple of ints): The maximum size of the button. Default is None.</p>
+</dd>
+<dt>Returns:</dt><dd><p>-button (QPushButton): The created button widget.</p>
+</dd>
+<dt>Functionality:</dt><dd><p>-creating button</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.tab_functions.create_calendar">
+<span class="sig-prename descclassname"><span class="pre">backend.tab_functions.</span></span><span class="sig-name descname"><span class="pre">create_calendar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/tab_functions.html#create_calendar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.tab_functions.create_calendar" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-widget (class) representing a widget type.</p>
+</dd>
+<dt>Functionality:</dt><dd><p>-creating calendar widget.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.tab_functions.create_creators_tab">
+<span class="sig-prename descclassname"><span class="pre">backend.tab_functions.</span></span><span class="sig-name descname"><span class="pre">create_creators_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/tab_functions.html#create_creators_tab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.tab_functions.create_creators_tab" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Functionality:</dt><dd><p>-Creating widget containing authors of the app.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.tab_functions.create_graph_tab">
+<span class="sig-prename descclassname"><span class="pre">backend.tab_functions.</span></span><span class="sig-name descname"><span class="pre">create_graph_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pack_fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">methods_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">important</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/tab_functions.html#create_graph_tab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.tab_functions.create_graph_tab" title="Permalink to this definition"></a></dt>
+<dd><dl>
+<dt>Args:</dt><dd><p>close: a function to close the tab
+pack_fun: a function to pack the necessary parameters for the graph
+methods_list: a list of available graphing methods
+file: the file to be graphed
+important: a function to mark the graph as important</p>
+</dd>
+<dt>Functionality:</dt><dd><dl class="simple">
+<dt>-Importing csv data using fucntion from backend_functions.py</dt><dd><p>Return: None if file is empty or has error</p>
+</dd>
+</dl>
+<p>-QWidget object creating box layout
+-QLineEdit object for the graph title adding it to the widget layout
+-QComboBox object for the date format adding it to to the widget layout
+-Function GenerateGraph button for widget layout, creating dictionary pack (nescessary elements for generating a graph)
+-Pack:</p>
+<blockquote>
+<div><p>-method: the QComboBox object for the graphing method
+-csv: the Pandas DataFrame object of the CSV data
+-title: the QLineEdit object for the graph title
+-date: the QComboBox object for the date column
+-target: a list of two QComboBox objects for the target column
+-format1: the QComboBox object for the first date format
+-format2: the QComboBox object for the second date format
+-format3: the QComboBox object for the third date format</p>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.tab_functions.create_help_tab">
+<span class="sig-prename descclassname"><span class="pre">backend.tab_functions.</span></span><span class="sig-name descname"><span class="pre">create_help_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/tab_functions.html#create_help_tab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.tab_functions.create_help_tab" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-close called when user clicks close button.</p>
+</dd>
+<dt>Functionality:</dt><dd><p>-Help tab to show user a description of the methods used in program.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.tab_functions.create_settings_tab">
+<span class="sig-prename descclassname"><span class="pre">backend.tab_functions.</span></span><span class="sig-name descname"><span class="pre">create_settings_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkbox</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/tab_functions.html#create_settings_tab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.tab_functions.create_settings_tab" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>-method_list list of methods (strings) that are used in the application.
+-interval_list list of intervals (strings) that are used in the application.
+-close function that is called when the user clicks the “close” button on the tab.
+-save function that is called when the user clicks the “save” button on the tab.
+-reset function that is called when the user clicks the “reset” button on the tab.
+-checkbox checkbox widget that is used to enable/disable certain functionalities.</p>
+</dd>
+<dt>Functionality:</dt><dd><p>Reading current settings from a file setting values of the widgets.
+User can modify settings and save them using “save” button and saving it in the file
+Reset button to reset setting to default values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.tab_functions.read_settings_from_file">
+<span class="sig-prename descclassname"><span class="pre">backend.tab_functions.</span></span><span class="sig-name descname"><span class="pre">read_settings_from_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/backend/tab_functions.html#read_settings_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#backend.tab_functions.read_settings_from_file" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Functionality:</dt><dd><p>-reading content of setting file.
+-extracting values from each line</p>
+</dd>
+<dt>Returns:</dt><dd><p>-returning dictionary which contains different key-valuepairs</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-backend">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-backend" title="Permalink to this heading"></a></h2>

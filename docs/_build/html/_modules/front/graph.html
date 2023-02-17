@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>front.graph &mdash; Projekt_innowacja 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Projekt_innowacja
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Projekt-Innowacje</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Projekt_innowacja</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">front.graph</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for front.graph</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pyqtgraph</span> <span class="k">as</span> <span class="nn">pg</span>
+
+<span class="kn">from</span> <span class="nn">front.styles</span> <span class="kn">import</span> <span class="n">labelStyleSheet_red</span><span class="p">,</span> <span class="n">labelStyleSheet</span><span class="p">,</span> <span class="n">labelStyleSheet_yellow</span><span class="p">,</span> <span class="n">labelStyleSheet_orange</span><span class="p">,</span>\
+    <span class="n">labelStyleSheet_green</span><span class="p">,</span> <span class="n">labelStyleSheet_light_green</span><span class="p">,</span> <span class="n">method_properties</span> <span class="k">as</span> <span class="n">mp</span>
+<span class="kn">from</span> <span class="nn">backend.backend_functions</span> <span class="kn">import</span> <span class="n">run_method</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<div class="viewcode-block" id="Graph"><a class="viewcode-back" href="../../front.html#front.graph.Graph">[docs]</a><span class="k">class</span> <span class="nc">Graph</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Args:</span>
+<span class="sd">                -method (str): The plot method to use, which can be one of the following: &#39;plot&#39;, &#39;scatter&#39;, or &#39;bar&#39;.</span>
+<span class="sd">                -csv (DataFrame): The Pandas DataFrame containing the dataset to plot.</span>
+<span class="sd">                -date (str): The name of the date column in the dataset.</span>
+<span class="sd">                -target (str): The name of the target variable column in the dataset.</span>
+<span class="sd">                -label (QLabel): The QLabel object used to display the current date range of the plot.</span>
+<span class="sd">                -slider (QSlider): The QSlider object used to adjust the current date range of the plot.</span>
+<span class="sd">                -slider_label (QLabel): The QLabel object used to display the current value of the slider.</span>
+<span class="sd">                -checkbox (QCheckBox): The QCheckBox object used to toggle the display of anomalies on the plot.</span>
+<span class="sd">                -date_label (QLabel): The QLabel object used to display the current date value of the plot.</span>
+<span class="sd">                -value_label (QLabel): The QLabel object used to display the current value of the target variable on the plot.</span>
+<span class="sd">                -currency1 (str, optional): The name of the first currency, used to generate the plot title. Default is set to &quot;&quot;.</span>
+<span class="sd">                -currency2 (str, optional): The name of the second currency, used to generate the plot title. Default is set to &quot;&quot;.</span>
+<span class="sd">                -title (str, optional): The title of the plot. Default is set to &quot;&quot;.</span>
+<span class="sd">                -with_anomalies (bool, optional): Whether to include anomalies on the plot. Default is set to False.</span>
+<span class="sd">            Functionality:</span>
+<span class="sd">                -Class for creating and updating the PyqtGraph plot with specified methods, datasets, date ranges and allows for user interactions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">csv</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">slider</span><span class="p">,</span> <span class="n">slider_label</span><span class="p">,</span> <span class="n">checkbox</span><span class="p">,</span> <span class="n">date_label</span><span class="p">,</span> <span class="n">value_label</span><span class="p">,</span>
+                 <span class="n">currency1</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">currency2</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">with_anomalies</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flipped</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">multiplayer</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anomalies_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Anomaly_1&quot;</span><span class="p">,</span> <span class="s2">&quot;Anomaly_2&quot;</span><span class="p">,</span> <span class="s2">&quot;Anomaly_3&quot;</span><span class="p">,</span> <span class="s2">&quot;Anomaly_4&quot;</span><span class="p">,</span> <span class="s2">&quot;Anomaly_5&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">PlotWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">an_graph</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">csv</span> <span class="o">=</span> <span class="n">csv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pen</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">mkPen</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anomalies_to_download</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">date</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">date_range</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">][</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_indexes</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">date_label_range</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">date_label_range</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Zakres dat: od &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; do &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">date_label_range</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">with_anomalies</span> <span class="o">=</span> <span class="n">with_anomalies</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkbox</span> <span class="o">=</span> <span class="n">checkbox</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">currency1</span> <span class="o">=</span> <span class="n">currency1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">currency2</span> <span class="o">=</span> <span class="n">currency2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slider</span> <span class="o">=</span> <span class="n">slider</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slider_label</span> <span class="o">=</span> <span class="n">slider_label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">date_label</span> <span class="o">=</span> <span class="n">date_label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value_label</span> <span class="o">=</span> <span class="n">value_label</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkbox</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_graph</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="n">currency1</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="n">currency2</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">currency1</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">currency2</span>
+
+        <span class="n">mult</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">])</span> <span class="o">//</span> <span class="mi">9</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">9</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="n">x_ticks_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">])</span> <span class="o">//</span> <span class="n">mult</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">*</span> <span class="n">mult</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">]):</span>
+                <span class="n">x_ticks_dict</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">mult</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">][</span><span class="n">i</span> <span class="o">*</span> <span class="n">mult</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_ticks</span> <span class="o">=</span> <span class="n">x_ticks_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_graph</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Graph.init_graph"><a class="viewcode-back" href="../../front.html#front.graph.Graph.init_graph">[docs]</a>    <span class="k">def</span> <span class="nf">init_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                    Funcionality:</span>
+<span class="sd">                            -setting up mouse movement with ps.SignalProxy.</span>
+<span class="sd">                            -adjusting graph.</span>
+<span class="sd">                            -filtering csv file.</span>
+<span class="sd">                            -if anomalies are not being displayed connect &#39;udpate_graph&#39;.</span>
+<span class="sd">                            -plotting financial data.</span>
+<span class="sd">                            -running anomalies.</span>
+<span class="sd">                            -when &#39;Wszystkie&#39; method is chosen plot each type of anomaly.</span>
+<span class="sd">                            -when anomaly is detected plot those oon red.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">SignalProxy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">scene</span><span class="p">()</span><span class="o">.</span><span class="n">sigMouseMoved</span><span class="p">,</span> <span class="n">rateLimit</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">slot</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">update_crosshair</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flipped</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;Grupowanie przestrzenne&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slider</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;Las izolacji&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slider</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">multiplayer</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;Lokalna wartość odstająca&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slider</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">multiplayer</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">slider_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Czułość metody: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slider</span><span class="o">.</span><span class="n">value</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;%&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_anomalies</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">csv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;Wszystkie&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">csv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="s1">&#39;Anomaly_1&#39;</span><span class="p">,</span> <span class="s1">&#39;Anomaly_2&#39;</span><span class="p">,</span> <span class="s1">&#39;Anomaly_3&#39;</span><span class="p">,</span> <span class="s1">&#39;Anomaly_4&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;Anomaly_5&#39;</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">csv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="s1">&#39;Anomaly&#39;</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">csv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span> <span class="s2">&quot;Exchange&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">:</span> <span class="s2">&quot;Date&quot;</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="s2">&quot;Date&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="s2">&quot;Exchange&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">setBackground</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">setXRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">setYRange</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">]))</span>
+        <span class="n">x_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="s2">&quot;bottom&quot;</span><span class="p">)</span>
+        <span class="n">x_axis</span><span class="o">.</span><span class="n">setTicks</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">x_ticks</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_anomalies</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">sigRangeChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_graph</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">sigSceneMouseMoved</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_graph</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">],</span> <span class="n">pen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pen</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_anomalies</span><span class="p">:</span>
+            <span class="n">anomaly_detected_data</span> <span class="o">=</span> <span class="n">run_method</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">,</span>
+                                               <span class="bp">self</span><span class="o">.</span><span class="n">slider</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">/</span> <span class="mi">100</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiplayer</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">anomaly_detected_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">anomalies_to_download</span> <span class="o">=</span> <span class="n">anomaly_detected_data</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;Wszystkie&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">anomaly_detected_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">addLegend</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">anomalies</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">anomalies_list</span><span class="p">:</span>
+                    <span class="n">anomaly</span> <span class="o">=</span> <span class="n">anomaly_detected_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">anomaly_detected_data</span><span class="p">[</span><span class="n">anomalies</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Exchange&#39;</span><span class="p">]]</span>
+                    <span class="n">temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">anomaly</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">[[</span><span class="s1">&#39;Exchange&#39;</span><span class="p">]])</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">],</span> <span class="n">pen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pen</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">anomalies</span><span class="p">,</span> <span class="n">method</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="p">,</span> <span class="n">mp</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">an_graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">anomalies</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">anomalies</span><span class="p">[</span><span class="s2">&quot;Exchange&quot;</span><span class="p">],</span> <span class="n">pen</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                    <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">symbolSize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">symbolPen</span><span class="o">=</span><span class="n">mp</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="s1">&#39;color&#39;</span><span class="p">],</span>
+                                                    <span class="n">symbolBrush</span><span class="o">=</span><span class="n">mp</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="s1">&#39;color&#39;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">mp</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="s1">&#39;polish_name&#39;</span><span class="p">])</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">showGrid</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">anomaly_detected_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">anomalies</span> <span class="o">=</span> <span class="n">anomaly_detected_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">anomaly_detected_data</span><span class="p">[</span><span class="s1">&#39;Anomaly&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Exchange&#39;</span><span class="p">]]</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">anomalies</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="s1">&#39;Exchange&#39;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">an_graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="p">,</span> <span class="n">pen</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span>
+                                                <span class="n">symbolSize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">symbolPen</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">symbolBrush</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">showGrid</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Graph.update_graph"><a class="viewcode-back" href="../../front.html#front.graph.Graph.update_graph">[docs]</a>    <span class="k">def</span> <span class="nf">update_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Funcionality:</span>
+<span class="sd">                    -updating slider bar to relfect slider&#39;s current value.</span>
+<span class="sd">                    -determining current x-axis range based on the axis object and size of the CSV data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slider_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Czułość metody: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slider</span><span class="o">.</span><span class="n">value</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;%&quot;</span><span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ax</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">x1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x1</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">ax</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">ax</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">x2</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">x1</span> <span class="o">&lt;</span> <span class="n">x2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_indexes</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">date_range</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">][</span><span class="n">x1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">][</span><span class="n">x2</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">date_label_range</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Zakres dat: od &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; do &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">date_label_range</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+            <span class="n">mult</span> <span class="o">=</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">9</span> <span class="k">if</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">9</span> <span class="k">else</span> <span class="mi">1</span>
+            <span class="n">x_ticks_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x2</span> <span class="o">//</span> <span class="n">mult</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">*</span> <span class="n">mult</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">]):</span>
+                    <span class="n">x_ticks_dict</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">mult</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">][</span><span class="n">i</span> <span class="o">*</span> <span class="n">mult</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_ticks</span> <span class="o">=</span> <span class="n">x_ticks_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="n">x_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="s2">&quot;bottom&quot;</span><span class="p">)</span>
+            <span class="n">x_axis</span><span class="o">.</span><span class="n">setTicks</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">x_ticks</span><span class="p">])</span>
+
+            <span class="n">zoom_level</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">])</span> <span class="o">//</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span>
+            <span class="n">zoom_level</span> <span class="o">=</span> <span class="mi">7</span> <span class="k">if</span> <span class="n">zoom_level</span> <span class="o">&gt;</span> <span class="mi">7</span> <span class="k">else</span> <span class="n">zoom_level</span>
+
+            <span class="n">anomaly_detected_data</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkbox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">:</span>
+                <span class="n">anomaly_detected_data</span> <span class="o">=</span> <span class="n">run_method</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="n">x1</span><span class="p">:</span><span class="n">x2</span><span class="p">]],</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">,</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">slider</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">/</span> <span class="mi">100</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiplayer</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;Wszystkie&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">anomaly_detected_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">checkbox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">):</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">anomalies</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">anomalies_list</span><span class="p">:</span>
+                        <span class="n">anomaly</span> <span class="o">=</span> <span class="n">anomaly_detected_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">anomaly_detected_data</span><span class="p">[</span><span class="n">anomalies</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Exchange&#39;</span><span class="p">]]</span>
+                        <span class="n">temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">anomaly</span><span class="p">])</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">[[</span><span class="s1">&#39;Exchange&#39;</span><span class="p">]])</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">addLegend</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">],</span> <span class="n">pen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pen</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">anomalies</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">method</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="p">,</span> <span class="n">mp</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">an_graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">anomalies</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">anomalies</span><span class="p">[</span><span class="s2">&quot;Exchange&quot;</span><span class="p">],</span> <span class="n">pen</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                        <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">symbolSize</span><span class="o">=</span><span class="mi">5</span> <span class="o">+</span> <span class="n">zoom_level</span><span class="p">,</span> <span class="n">symbolPen</span><span class="o">=</span><span class="n">mp</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="s1">&#39;color&#39;</span><span class="p">],</span>
+                                                        <span class="n">symbolBrush</span><span class="o">=</span><span class="n">mp</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="s1">&#39;color&#39;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">mp</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="s1">&#39;polish_name&#39;</span><span class="p">])</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">setYRange</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">][</span><span class="n">x1</span><span class="p">:</span><span class="n">x2</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">][</span><span class="n">x1</span><span class="p">:</span><span class="n">x2</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">anomaly_detected_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">checkbox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span> <span class="o">=</span> <span class="n">anomaly_detected_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">anomaly_detected_data</span><span class="p">[</span><span class="s1">&#39;Anomaly&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Exchange&#39;</span><span class="p">]]</span>
+
+                    <span class="n">temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="s1">&#39;Exchange&#39;</span><span class="p">]</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">],</span> <span class="n">pen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pen</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">an_graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="p">,</span> <span class="n">pen</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                    <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">symbolSize</span><span class="o">=</span><span class="mi">5</span> <span class="o">+</span> <span class="n">zoom_level</span><span class="p">,</span> <span class="n">symbolPen</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
+                                                    <span class="n">symbolBrush</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">setYRange</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">][</span><span class="n">x1</span><span class="p">:</span><span class="n">x2</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">][</span><span class="n">x1</span><span class="p">:</span><span class="n">x2</span><span class="p">]))</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">an_graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pen</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Graph.flip"><a class="viewcode-back" href="../../front.html#front.graph.Graph.flip">[docs]</a>    <span class="k">def</span> <span class="nf">flip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Args:</span>
+
+<span class="sd">                    -self: the MainWindow instance</span>
+
+<span class="sd">                Functionality:</span>
+<span class="sd">                    -flip method flips the currency pair and the corresponding values of the csv dataframe in the MainWindow class.</span>
+<span class="sd">                    If the currency1 and currency2 attributes have been set, it swaps them and updates the title of the graph with the new currency pair.</span>
+<span class="sd">                    It also calculates the inverse values of the target column of the csv dataframe (i.e. the exchange rates) and updates them in the dataframe.</span>
+<span class="sd">                    Finally, it refreshes the graph with the new data.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flipped</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">flipped</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">currency1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">currency2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currency2</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">currency1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currency1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">currency1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currency2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">currency2</span> <span class="o">=</span> <span class="n">temp</span>
+
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_graph</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Graph.reset_slider"><a class="viewcode-back" href="../../front.html#front.graph.Graph.reset_slider">[docs]</a>    <span class="k">def</span> <span class="nf">reset_slider</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Reseting the value of the slider to a default value based on the current method selected in the GUI, and then refreshing the graph.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;Grupowanie przestrzenne&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slider</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;Las izolacji&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slider</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;Lokalna wartość odstająca&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slider</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_graph</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Graph.refresh_graph"><a class="viewcode-back" href="../../front.html#front.graph.Graph.refresh_graph">[docs]</a>    <span class="k">def</span> <span class="nf">refresh_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Refreshes graph.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_graph</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Graph.reset_graph"><a class="viewcode-back" href="../../front.html#front.graph.Graph.reset_graph">[docs]</a>    <span class="k">def</span> <span class="nf">reset_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Reset graph to default values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkbox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_graph</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_graph</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Graph.update_crosshair"><a class="viewcode-back" href="../../front.html#front.graph.Graph.update_crosshair">[docs]</a>    <span class="k">def</span> <span class="nf">update_crosshair</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            The update_crosshair method is used to update the crosshair in the graph whenever the mouse is moved over it.</span>
+<span class="sd">            It takes an event e as input and uses the position pos of the mouse to calculate the corresponding x and y values in the plot.</span>
+
+<span class="sd">            If the x value is within the range of the available data, the method checks whether the selected method is &quot;Wszystkie&quot;  or a specific one.</span>
+<span class="sd">            Based on that, it updates the color of the date and value labels to indicate whether the selected data point is an anomaly or not.</span>
+
+<span class="sd">            The date and value labels are then updated with the corresponding data point&#39;s date and value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">sceneBoundingRect</span><span class="p">()</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">pos</span><span class="p">):</span>
+            <span class="n">mouse_point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">getPlotItem</span><span class="p">()</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">mapSceneToView</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">mouse_point</span><span class="o">.</span><span class="n">x</span><span class="p">()))</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">!=</span> <span class="s2">&quot;Wszystkie&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">mouse_point</span><span class="o">.</span><span class="n">x</span><span class="p">()))</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">date_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_red</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">value_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_red</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">date_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">value_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">mouse_point</span><span class="o">.</span><span class="n">x</span><span class="p">()))</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">date_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_red</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">value_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_red</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">mouse_point</span><span class="o">.</span><span class="n">x</span><span class="p">()))</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">date_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_orange</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">value_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_orange</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">mouse_point</span><span class="o">.</span><span class="n">x</span><span class="p">()))</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">date_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_yellow</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">value_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_yellow</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">mouse_point</span><span class="o">.</span><span class="n">x</span><span class="p">()))</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">date_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_light_green</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">value_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_light_green</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">mouse_point</span><span class="o">.</span><span class="n">x</span><span class="p">()))</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">anomalies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">date_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_green</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">value_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet_green</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">date_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">value_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">labelStyleSheet</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">date_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Data: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">][</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">mouse_point</span><span class="o">.</span><span class="n">x</span><span class="p">()))]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">value_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Wartość: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">][</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">mouse_point</span><span class="o">.</span><span class="n">x</span><span class="p">()))],</span> <span class="mi">7</span><span class="p">)))</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mateusz Orski 235939.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
